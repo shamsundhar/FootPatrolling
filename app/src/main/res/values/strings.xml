@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Foot Patrolling</string>
+
+    <string name="crash_toast_text">Oops Crashe Occurred</string>
+
+    <string name="text_please_wait">Please wait...</string>
+    <string name="text_authenticating">Authenticating...</string>
+
+    <string name="text_datasync">Data Sync</string>
+    <string name="text_reports">Reports and Status</string>
+    <string name="text_schedule">Schedule Entry</string>
+    <string name="text_reload">Reload</string>
+    <string name="text_login">Login</string>
+    <string name="text_dbstatus">Local DB Status</string>
+    <string name="text_terms">Terms of Use</string>
+    <string name="text_logout">Logout</string>
+    <string name="text_exit">Exit</string>
+    <string name="text_register">Register</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>
