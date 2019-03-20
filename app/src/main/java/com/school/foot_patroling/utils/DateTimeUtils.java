@@ -4,6 +4,7 @@ import android.text.format.DateUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -26,7 +27,9 @@ public class DateTimeUtils {
             return "";
         }
     }
-
+    public static String getCurrentDate(String originalFormat){
+        return new SimpleDateFormat(originalFormat, new Locale("US")).format(Calendar.getInstance().getTime());
+    }
     public static String getRelativeTimeSpan(String dateString, String originalFormat){
 
         SimpleDateFormat formatter = new SimpleDateFormat(originalFormat, Locale.US);

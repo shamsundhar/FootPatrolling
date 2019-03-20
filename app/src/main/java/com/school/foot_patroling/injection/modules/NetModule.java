@@ -1,4 +1,4 @@
-package com.school.edsense_lite.injection.modules;
+package com.school.foot_patroling.injection.modules;
 import com.school.foot_patroling.BuildConfig;
 import com.school.foot_patroling.injection.scopes.PerApplication;
 import com.school.foot_patroling.register.RegisterApi;
@@ -63,7 +63,7 @@ public class NetModule {
     @PerApplication
     static RegisterApi provideRegisterApi(OkHttpClient.Builder httpClientBuilder ) {
         return new Retrofit.Builder()
-                .baseUrl("")
+                .baseUrl("http://www.google.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .callFactory(httpClientBuilder.build())

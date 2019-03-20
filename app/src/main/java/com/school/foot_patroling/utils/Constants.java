@@ -5,7 +5,13 @@ package com.school.foot_patroling.utils;
  */
 
 public class Constants {
-    public static final String BUNDLE_KEY_MOBILE_NUMBER = "BUNDLE_MOBILE_NUMBER";
+    public static final String BUNDLE_KEY_REG_ID = "BUNDLE_REG_ID";
+    public static final String BUNDLE_KEY_AUTH = "BUNDLE_AUTH";
+    public static final String BUNDLE_KEY_URL = "BUNDLE_URL";
+    public static final String BUNDLE_KEY_IMEI1 = "BUNDLE_IMEI1";
+    public static final String BUNDLE_KEY_IMEI2 = "BUNDLE_IMEI2";
+
+
     public static final String BUNDLE_KEY_SHOP_NAME = "BUNDLE_SHOP_NAME";
     public static final String BUNDLE_KEY_SHOP_ID = "BUNDLE_SHOP_ID";
     public static final String BUNDLE_KEY_TOTAL_PAYABLE_AMOUNT = "BUNDLE_TOTAL_PAYABLE_AMOUNT";

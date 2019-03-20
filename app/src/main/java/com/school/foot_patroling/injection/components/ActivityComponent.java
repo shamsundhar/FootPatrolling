@@ -2,6 +2,7 @@ package com.school.foot_patroling.injection.components;
 
 
 import com.school.foot_patroling.NavigationDrawerActivity;
+import com.school.foot_patroling.datasync.DataSyncActivity;
 import com.school.foot_patroling.injection.modules.ActivityModule;
 import com.school.foot_patroling.injection.scopes.PerActivity;
 import com.school.foot_patroling.register.RegisterActivity;
@@ -21,6 +22,7 @@ public interface ActivityComponent extends AppComponent {
 
   //  void inject(SignupActivity activity);
     void inject(NavigationDrawerActivity activity);
+    void inject(DataSyncActivity activity);
     void inject(RegisterActivity activity);
 
 }

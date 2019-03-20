@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,10 +38,19 @@ import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.school.foot_patroling.BaseActivity;
 import com.school.foot_patroling.MainActivity;
+import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
+import com.school.foot_patroling.database.DatabaseHelper;
+import com.school.foot_patroling.datasync.DataSyncActivity;
+import com.school.foot_patroling.register.model.DeviceAuthModel;
+import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.DateTimeUtils;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -53,6 +63,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
+
 public class RegisterActivity extends BaseActivity {
 
     @Inject
@@ -63,7 +79,10 @@ public class RegisterActivity extends BaseActivity {
 
     @BindView(R.id.et_url)
     EditText etUrl;
-
+    String TAG = "Registration Activity";
+    String selectedImei;
+    DatabaseHelper dbhelper;
+    PreferenceHelper preferenceHelper;
     @OnClick(R.id.imeiLayout)
     public void clickImei(){
         displayImeiPopup();
@@ -73,10 +92,27 @@ public class RegisterActivity extends BaseActivity {
         if (validate()) {
             if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) {
                 if (Common.isNetworkAvailable(RegisterActivity.this)) {
-                    registerApi.register()
+                    String url = etUrl.getText().toString().trim();
+
+                    final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
+                            R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setMessage(getString(R.string.text_please_wait));
+                    progressDialog.show();
+
+                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_URL, url);
+                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI1, imeiList.get(0));
+                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI2,imeiList.get(1) );
+                    url = url + "/warehouse/fpApp/get-fp-data";
+                    RegistrationRequestModel model = new RegistrationRequestModel();
+                    model.setAppName("TRD_FP");
+                    model.setCurrentTimestamp(DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S"));
+                    model.setImeiNumber(selectedImei);
+                    model.setPreviousTimestamp("31-01-1990 17:26:15.613");
+                    registerApi.register(url, model)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<String>() {
+                            .subscribe(new Observer<DeviceAuthModel>() {
                                 @Override
                                 public void onError(Throwable e) {
                                     System.out.println("error called::" + e.fillInStackTrace());
@@ -93,8 +129,23 @@ public class RegisterActivity extends BaseActivity {
                                 }
 
                                 @Override
-                                public void onNext(String sectionResponse) {
+                                public void onNext(DeviceAuthModel authInfo) {
+                                    if (authInfo.isImeiAuth()){
+                                        progressDialog.dismiss();
+                                        preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, authInfo.getRegistrationId());
+                                        preferenceHelper.setBoolean(RegisterActivity.this, BUNDLE_KEY_AUTH, authInfo.isImeiAuth());
+                                        try {
+                                            dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
+                                            dbhelper.deleteDatabase();
+                                            dbhelper.createDataBase();
 
+                                        } catch (Exception e){
+
+                                            Log.e(TAG, "creating database - "+ e.getMessage());
+                                        }
+                                        startActivity(new Intent(RegisterActivity.this, NavigationDrawerActivity.class));
+                                        finish();
+                                    }
                                 }
                             });
                 }
@@ -111,6 +162,8 @@ public class RegisterActivity extends BaseActivity {
         activityComponent().inject(this);
         setContentView(R.layout.activity_register2);
         ButterKnife.bind(this);
+
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
         requestPhoneStatePermission();
         requestAccessStatePermission();
@@ -149,7 +202,7 @@ public class RegisterActivity extends BaseActivity {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 builder.dismiss();
-
+                selectedImei = imeiList.get(position);
                 imeiTV.setText( imeiList.get(position));
             }
         });
@@ -253,17 +306,17 @@ public class RegisterActivity extends BaseActivity {
         boolean valid = true;
 
         String url = etUrl.getText().toString().trim();
-         if (url.isEmpty()) {
+        if (url.isEmpty()) {
             etUrl.setError("Enter a valid URL");
             valid = false;
         } else {
             etUrl.setError(null);
-             if (!Common.isValidURL(url)) {
-                 etUrl.setError("Enter between 4 and 10 alphanumeric characters");
-                 valid = false;
-             } else {
-                 etUrl.setError(null);
-             }
+            if (!Common.isValidURL(url)) {
+                etUrl.setError("Enter between 4 and 10 alphanumeric characters");
+                valid = false;
+            } else {
+                etUrl.setError(null);
+            }
         }
         return valid;
     }
