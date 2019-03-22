@@ -5,14 +5,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,18 +43,35 @@ import com.school.foot_patroling.BaseActivity;
 import com.school.foot_patroling.MainActivity;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
+import com.school.foot_patroling.database.DataUpdateDAO;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.datasync.DataSyncActivity;
 import com.school.foot_patroling.register.model.DeviceAuthModel;
+import com.school.foot_patroling.register.model.FacilityDto;
+import com.school.foot_patroling.register.model.FacilityDto_;
+import com.school.foot_patroling.register.model.MasterDto;
+import com.school.foot_patroling.register.model.ProductDto;
+import com.school.foot_patroling.register.model.ProductDto_;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
+import com.school.foot_patroling.register.model.UserLoginDto;
+import com.school.foot_patroling.register.model.UserLoginDto_;
 import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -62,8 +82,16 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
@@ -112,7 +140,7 @@ public class RegisterActivity extends BaseActivity {
                     registerApi.register(url, model)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DeviceAuthModel>() {
+                            .subscribe(new Observer<MasterDto>() {
                                 @Override
                                 public void onError(Throwable e) {
                                     System.out.println("error called::" + e.fillInStackTrace());
@@ -129,15 +157,20 @@ public class RegisterActivity extends BaseActivity {
                                 }
 
                                 @Override
-                                public void onNext(DeviceAuthModel authInfo) {
-                                    if (authInfo.isImeiAuth()){
+                                public void onNext(MasterDto masterDto) {
+                                    if (masterDto.getImeiAuth()){
                                         progressDialog.dismiss();
-                                        preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, authInfo.getRegistrationId());
-                                        preferenceHelper.setBoolean(RegisterActivity.this, BUNDLE_KEY_AUTH, authInfo.isImeiAuth());
+                                     //   preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, masterDto.getRegistrationId());
+                                        preferenceHelper.setBoolean(RegisterActivity.this, BUNDLE_KEY_AUTH, masterDto.getImeiAuth());
                                         try {
                                             dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
                                             dbhelper.deleteDatabase();
                                             dbhelper.createDataBase();
+
+                                            DatabaseHelper dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
+                                            SQLiteDatabase db = dbhelper.getDBObject(0);
+
+                                            String result = syncMasterData(db, masterDto);
 
                                         } catch (Exception e){
 
@@ -319,5 +352,384 @@ public class RegisterActivity extends BaseActivity {
             }
         }
         return valid;
+    }
+
+    private String syncMasterData(final SQLiteDatabase db, MasterDto masterDto) {
+
+        String result = "Failed";
+
+        try {
+
+            Log.d(TAG, "Performing");
+
+            String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+            preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_CURRENT_SYNC_TIME, currentTimeStamp);
+
+            String sql1 = " ";
+            String sql2 = " ";
+            String sql3 = " ";
+
+            String args[] = {};
+            Cursor c1 = null;
+            Cursor c2 = null;
+            Cursor c3 = null;
+
+            Response response = null;
+
+
+//                try {
+//
+//                    ResponseFacilityDto responseFacilityDto = dto.getCreatedResponseFacilityDto();
+//                    List<FacilityDto> facilityDtos = responseFacilityDto.getFacilityDtos();
+//                    Log.d(TAG,"flow order check here**");
+//                   /* for (FacilityDto facilityDto : facilityDtos) {
+//                        Log.d(TAG, ".if..facility..id.." + facilityDto.getFacilityId());
+//                    }*/
+//                    progressValue = progressValue + 2;
+//                    publishProgress(progressValue);
+//
+//                    if (dto != null) {
+//                        Log.d(TAG, "entering this block");
+//
+                        if (updateDatabase(masterDto, db)) {
+
+                            result = "Success";
+
+                        } else {
+
+                            result = "Failed";
+
+                        }
+//
+//
+//                        Log.d(TAG, "Value of result**" + result);
+//
+//
+//                    } else
+//
+//                    {
+//                        Log.d(TAG, "not coming");
+//                    }
+//
+//                } catch (Exception e) {
+//
+//                    e.printStackTrace();
+//                }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+    private boolean updateDatabase(MasterDto dto, SQLiteDatabase db) {
+
+        Log.d(TAG, "flow checking**");
+        boolean result = false;
+
+        int progressValue = 7;
+
+        if (dto != null) {
+
+            Log.d(TAG,"in update database method");
+
+            try {
+                DataUpdateDAO dataUpdateDAO = DataUpdateDAO.getInstance();
+
+
+                // retrieveValuesFromListMethod();
+                //*****  updating ASH seq_id  *************
+
+                Map serverToAppAssetsScheduleHistoryMap
+                        =  dto.getServerToAppAssetsScheduleHistoryMap() ;
+
+                if(serverToAppAssetsScheduleHistoryMap != null) {
+
+                    String args[] = {};
+
+                    Iterator myIterator1 = serverToAppAssetsScheduleHistoryMap.keySet().iterator();
+                    while (myIterator1.hasNext()) {
+                        String key = (String) myIterator1.next();
+                        String value = (String) serverToAppAssetsScheduleHistoryMap.get(key);
+                        Log.d(TAG, " ASH key_value******");
+                        Log.d(TAG, "key**" + key + "\n" + "value**" + value);
+
+                        StringTokenizer tokens = new StringTokenizer(key, "_");
+                        dsi = tokens.nextToken();
+                        di = tokens.nextToken();
+
+                        Log.d(TAG, "dsi is**" + dsi + "\n" + "di is**" + di);
+
+                        try {
+
+                            if (db != null) {
+                                Log.d(TAG, " updating ASH records from device****");
+
+                                ContentValues cv = new ContentValues();
+                                cv.put("seq_id", value);
+                                db.update("assets_schedule_history",cv,"device_id="+di+ "  and  device_seq_id="+dsi,null);
+                                Log.d(TAG, " executing * ASH * seq_id updation query");
+                                String ashUpdateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(new Date());
+                                Log.d(TAG,"Response Time is---"+ashUpdateTime);
+                                globals.setAshSeqUpdateTime(ashUpdateTime);
+
+                               /* Log.d(TAG, " updating ASC records from device****");
+
+                                ContentValues cv2 = new ContentValues();
+                                cv2.put("seq_id",value);
+                                db.update("asset_schedule_content",cv2,"device_id="+di+ "  and device_ash_seq_id="+dsi,null);
+                                Log.d(TAG, " executing ** ASC ** seq_id updation query");*/
+                                // String ascUpdateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(new Date());
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                }else {
+                    Log.d(TAG," No AppToServer ** ASH ** Data");
+                }
+
+                //*********** updating ASAR seq_id ****************
+
+
+                Map serverToAppAssetScheduleActivityRecordMap = dto.getServerToAppAssetScheduleActivityRecordMap();
+                if(serverToAppAssetScheduleActivityRecordMap != null) {
+
+                    Iterator myIterator2 = serverToAppAssetScheduleActivityRecordMap.keySet().iterator();
+                    while (myIterator2.hasNext()) {
+                        String key2 = (String) myIterator2.next();
+                        String value2 = (String) serverToAppAssetScheduleActivityRecordMap.get(key2);
+                        Log.d(TAG, " ASAR key_value******");
+                        Log.d(TAG, "key**" + key2 + "\n" + "value**" + value2);
+
+                        StringTokenizer tokens = new StringTokenizer(key2, "_");
+                        dsi = tokens.nextToken();
+                        di = tokens.nextToken();
+                        Log.d(TAG, "dsi is**" + dsi + "\n" + "di is**" + di);
+
+                        StringTokenizer tokenizer = new StringTokenizer(value2, "_");
+                        amos = tokenizer.nextToken();
+                        ashi = tokenizer.nextToken();
+                        Log.d(TAG, "ashi is**" + ashi + "\n" + "amos is**" + amos);
+
+                        try{
+                            if ((db != null)){
+                                Log.d(TAG, " updating ASAR records from device****");
+
+                                ContentValues cv1 = new ContentValues();
+                                cv1.put("asset_schedule_history_id", ashi);
+                                cv1.put("asset_measure_obser_seq_id", amos);
+                                db.update("asset_schedule_activity_record",cv1,"device_id="+di+ "  and  device_seq_id="+dsi,null);
+                                Log.d(TAG, " executing seq_id and mesureORobser id updation query");
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                }else {
+                    Log.d(TAG," No AppToServer ** ASAR ** Data");
+                }
+
+
+                //*********** updating ASC content id ****************
+
+             /*   Map serverToAppAssetScheduleContentMap = dto.getServerToAppAssetScheduleContentMap();
+                if(serverToAppAssetScheduleContentMap != null){
+                    Iterator myIterator3 = serverToAppAssetScheduleContentMap.keySet().iterator();
+                    while (myIterator3.hasNext()){
+                        String key3 = (String) myIterator3.next();
+                        String value3 = (String) serverToAppAssetScheduleContentMap.get(key3);
+                        Log.d(TAG, " ASC key_value******");
+                        Log.d(TAG, "key**" + key3 + "\n" + "value**" + value3);
+                        StringTokenizer tokens = new StringTokenizer(key3,"_");
+                        dsi = tokens.nextToken();
+                        di = tokens.nextToken();
+                        Log.d(TAG, "dsi is**" + dsi + "\n" + "di is**" + di);
+                        try{
+                            if (db != null) {
+                                Log.d(TAG, " updating ASC records from device****");
+                                ContentValues cv3 = new ContentValues();
+                                cv3.put("content_id",value3);
+                                db.update("asset_schedule_content",cv3,"device_id="+di+ " and device_seq_id=" +dsi,null);
+                                Log.d(TAG, " executing ** ASC ** content_id updation query");
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                }else {
+                    Log.d(TAG," No AppToServer ** ASC ** Data");
+                }*/
+
+
+                List<FacilityDto> insertFacilityDtos = dto.getCreatedResponseFacilityDto().getFacilityDtos();
+
+                if (insertFacilityDtos != null && insertFacilityDtos.size() > 0) {
+
+                    Log.d(TAG, "facility insert records : " + insertFacilityDtos.size());
+
+                    for (FacilityDto facilityDto : insertFacilityDtos) {
+
+                        dataUpdateDAO.insertFacilityData(facilityDto, db);
+                    }
+
+                    progressValue = progressValue + 1;
+//                    publishProgress(progressValue);
+                }
+
+                List<FacilityDto_> updateFacilityDtos = dto.getUpdatedResponseFacilityDto().getFacilityDtos();
+
+                if (updateFacilityDtos != null && updateFacilityDtos.size() > 0) {
+                    Log.d(TAG, "facility update records : " + updateFacilityDtos.size());
+
+                    for (FacilityDto_ facilityDto : updateFacilityDtos) {
+
+                        dataUpdateDAO.updateFacilityData(facilityDto, db);
+                    }
+                    progressValue = progressValue + 1;
+                   // publishProgress(progressValue);
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
+
+                if (insertProductDtos != null && insertProductDtos.size() > 0) {
+
+                    Log.d(TAG, "product insert records : " + insertProductDtos.size());
+
+                    for (ProductDto productDto : insertProductDtos) {
+                        dataUpdateDAO.insertProductData(productDto, db);
+                    }
+                    progressValue = progressValue + 1;
+                  //  publishProgress(progressValue);
+                }
+
+                List<ProductDto_> updateProductDtos = dto.getUpdatedResponseProductDto().getProductDtos();
+
+                if (updateProductDtos != null && updateProductDtos.size() > 0) {
+                    Log.d(TAG, "product update records : " + updateProductDtos.size());
+
+
+                    for (ProductDto_ productDto : updateProductDtos) {
+                        dataUpdateDAO.updateProductData(productDto, db);
+                    }
+                    progressValue = progressValue + 1;
+                 //   publishProgress(progressValue);
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                List<UserLoginDto> insertUserLoginDtos = dto.getCreatedResponseUserLoginDto().getUserLoginDtos();
+
+                if (insertUserLoginDtos != null && insertUserLoginDtos.size() > 0) {
+
+                    Log.d(TAG, "User Login Dto insert records : " + insertUserLoginDtos.size());
+
+
+                    for (UserLoginDto userLoginDto : insertUserLoginDtos) {
+
+                        dataUpdateDAO.insertUserLoginData(userLoginDto,db);
+                    }
+
+                    progressValue = progressValue + 1;
+                //    publishProgress(progressValue);
+                }
+
+                List<UserLoginDto_> updateUserLoginDtos = dto.getUpdatedResponseUserLoginDto().getUserLoginDtos();
+
+                if (updateUserLoginDtos != null && updateUserLoginDtos.size() > 0) {
+
+                    Log.d(TAG, "User Login Dto update records : " + updateUserLoginDtos.size());
+
+                    for (UserLoginDto_ userLoginDto : updateUserLoginDtos) {
+
+                        dataUpdateDAO.updateUserLoginData(userLoginDto, db);
+                    }
+
+                    progressValue = progressValue + 1;
+                  //  publishProgress(progressValue);
+                }
+
+                result = true;
+            } catch (Exception e) {
+
+                Log.e(TAG, "updateDatabase  - : " + e.getMessage());
+                e.printStackTrace();
+            }
+
+
+        } else {
+
+            result = true;
+        }
+
+
+        return result;
     }
 }
