@@ -1,6 +1,7 @@
 package com.school.foot_patroling.register;
 
 import com.school.foot_patroling.register.model.DeviceAuthModel;
+import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
 
 import io.reactivex.Observable;
@@ -16,5 +17,5 @@ public interface RegisterApi {
 
  @POST
  @Headers({"Content-Type: application/json"})
- Observable<DeviceAuthModel> register(@Url String url, @Body RegistrationRequestModel model);
+ Observable<MasterDto> register(@Url String url, @Body RegistrationRequestModel model);
 }
