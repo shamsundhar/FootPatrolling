@@ -1,29 +1,55 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+@Entity(tableName = "UserLoginDto")
 public class UserLoginDto {
 
-    private String createdStamp;
-    private String createdTxStamp;
-    private String currentPassword;
-    private String deviceId;
-    private String disabledDateTime;
-    private String enabled;
-    private String externalAuthId;
-    private String hasLoggedOut;
-    private String isSystem;
-    private String lastCurrencyUom;
-    private String lastLocale;
-    private String lastTimeZone;
-    private String lastUpdatedStamp;
-    private String lastUpdatedTxStamp;
-    private String partyId;
-    private String passwordHint;
-    private String requirePasswordChange;
-    private String successiveFailedLogins;
-    private String userLdapDn;
+    @PrimaryKey
+    @ColumnInfo(name = "userLoginId")
     private String userLoginId;
+    @ColumnInfo(name = "createdStamp")
+    private String createdStamp;
+    @ColumnInfo(name = "createdTxStamp")
+    private String createdTxStamp;
+    @ColumnInfo(name = "currentPassword")
+    private String currentPassword;
+    @ColumnInfo(name = "deviceId")
+    private String deviceId;
+    @ColumnInfo(name = "disabledDateTime")
+    private String disabledDateTime;
+    @ColumnInfo(name = "enabled")
+    private String enabled;
+    @ColumnInfo(name = "externalAuthId")
+    private String externalAuthId;
+    @ColumnInfo(name = "hasLoggedOut")
+    private String hasLoggedOut;
+    @ColumnInfo(name = "isSystem")
+    private String isSystem;
+    @ColumnInfo(name = "lastCurrencyUom")
+    private String lastCurrencyUom;
+    @ColumnInfo(name = "lastLocale")
+    private String lastLocale;
+    @ColumnInfo(name = "lastTimeZone")
+    private String lastTimeZone;
+    @ColumnInfo(name = "lastUpdatedStamp")
+    private String lastUpdatedStamp;
+    @ColumnInfo(name = "lastUpdatedTxStamp")
+    private String lastUpdatedTxStamp;
+    @ColumnInfo(name = "partyId")
+    private String partyId;
+    @ColumnInfo(name = "passwordHint")
+    private String passwordHint;
+    @ColumnInfo(name = "requirePasswordChange")
+    private String requirePasswordChange;
+    @ColumnInfo(name = "successiveFailedLogins")
+    private String successiveFailedLogins;
+    @ColumnInfo(name = "userLdapDn")
+    private String userLdapDn;
+
 
     public String getCreatedStamp() {
         return createdStamp;

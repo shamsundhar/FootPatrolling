@@ -1,11 +1,22 @@
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity(tableName = "DeviceAuthModel")
 public class DeviceAuthModel {
 
+	@PrimaryKey
+	@ColumnInfo(name = "imeiNo")
 	private String imeiNo;
+	@ColumnInfo(name = "imeiAuth")
 	private boolean imeiAuth;
+	@ColumnInfo(name = "registrationId")
 	private String registrationId;
+	@ColumnInfo(name = "message")
 	private String message;
+	@ColumnInfo(name = "appName")
 	private String appName;
 
 	public String getImeiNo() {

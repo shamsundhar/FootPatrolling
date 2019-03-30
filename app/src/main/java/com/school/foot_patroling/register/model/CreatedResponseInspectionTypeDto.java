@@ -1,11 +1,16 @@
 
 package com.school.foot_patroling.register.model;
 
-import java.util.List;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
 
+import java.util.List;
+@Entity(tableName = "ResponseInspectionTypeDto")
 public class CreatedResponseInspectionTypeDto {
 
+    @ColumnInfo(name = "count")
     private Integer count;
+    @ColumnInfo(name = "inspectionTypeDtos")
     private List<InspectionTypeDto> inspectionTypeDtos = null;
 
     public Integer getCount() {

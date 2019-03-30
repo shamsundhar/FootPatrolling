@@ -1,44 +1,86 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+@Entity(tableName = "MasterDto")
 public class MasterDto {
 
+    @PrimaryKey
+    @ColumnInfo(name = "appName")
     private String appName;
+    @Embedded
     private Object createdFootPatrollingInspectionDto;
+    @Embedded
     private CreatedFootPatrollingSectionsDto createdFootPatrollingSectionsDto;
+    @Embedded
     private Object createdFpLocationTrackDto;
+    @Embedded
     private CreatedFunctionalLocationHierarchyDto createdFunctionalLocationHierarchyDto;
+    @Embedded
     private CreatedObservationCategoriesDto createdObservationCategoriesDto;
+    @Embedded
     private CreatedObservationsCheckListDto createdObservationsCheckListDto;
+    @Embedded
     private Object createdResponseCompliancesDto;
+    @Embedded
     private CreatedResponseFacilityDto createdResponseFacilityDto;
+    @Embedded
     private CreatedResponseInspectionTypeDto createdResponseInspectionTypeDto;
+    @Embedded
     private Object createdResponseObservationsDto;
+    @Embedded
     private CreatedResponseOheLocationDto createdResponseOheLocationDto;
+    @Embedded
     private CreatedResponseProductDto createdResponseProductDto;
+    @Embedded
     private CreatedResponseUserLoginDto createdResponseUserLoginDto;
+    @ColumnInfo(name = "currentTimestamp")
     private String currentTimestamp;
+    @Embedded
     private Object deletedResponseFacilityDto;
+    @Embedded
     private Object deletedResponseOheLocationDto;
+    @Embedded
     private Object deletedResponseProductDto;
+    @Embedded
     private Object deletedResponseUserLoginDto;
+    @ColumnInfo(name = "imeiAuth")
     private Boolean imeiAuth;
+    @ColumnInfo(name = "imeiNo")
     private String imeiNo;
+    @ColumnInfo(name = "message")
     private String message;
+    @ColumnInfo(name = "previousTimestamp")
     private String previousTimestamp;
+    @Embedded
     private Object updatedFootPatrollingInspectionDto;
+    @Embedded
     private UpdatedFootPatrollingSectionsDto updatedFootPatrollingSectionsDto;
+    @Embedded
     private Object updatedFpLocationTrackDto;
+    @Embedded
     private UpdatedFunctionalLocationHierarchyDto updatedFunctionalLocationHierarchyDto;
+    @Embedded
     private UpdatedObservationCategoriesDto updatedObservationCategoriesDto;
+    @Embedded
     private UpdatedObservationsCheckListDto updatedObservationsCheckListDto;
+    @Embedded
     private Object updatedResponseCompliancesDto;
+    @Embedded
     private UpdatedResponseFacilityDto updatedResponseFacilityDto;
+    @Embedded
     private UpdatedResponseInspectionTypeDto updatedResponseInspectionTypeDto;
+    @Embedded
     private Object updatedResponseObservationsDto;
+    @Embedded
     private UpdatedResponseOheLocationDto updatedResponseOheLocationDto;
+    @Embedded
     private UpdatedResponseProductDto updatedResponseProductDto;
+    @Embedded
     private UpdatedResponseUserLoginDto updatedResponseUserLoginDto;
 
     public String getAppName() {

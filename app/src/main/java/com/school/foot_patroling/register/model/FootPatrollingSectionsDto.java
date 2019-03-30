@@ -1,16 +1,29 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+@Entity(tableName = "FootPatrollingSections")
 public class FootPatrollingSectionsDto {
 
-    private String facilityDepot;
-    private String fpSection;
-    private String fromDate;
-    private String fromLocation;
-    private Object remarks;
+    @PrimaryKey
+    @ColumnInfo(name = "seqId")
     private String seqId;
+    @ColumnInfo(name = "facilityDepot")
+    private String facilityDepot;
+    @ColumnInfo(name = "fpSection")
+    private String fpSection;
+    @ColumnInfo(name = "fromDate")
+    private String fromDate;
+    @ColumnInfo(name = "fromLocation")
+    private String fromLocation;
+    @ColumnInfo(name = "remarks")
+    private Object remarks;
+    @ColumnInfo(name = "toDate")
     private String toDate;
+    @ColumnInfo(name = "toLocation")
     private String toLocation;
 
     public String getFacilityDepot() {

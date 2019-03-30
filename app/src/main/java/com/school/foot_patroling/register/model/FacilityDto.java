@@ -1,37 +1,72 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+@Entity(tableName = "FacilityDto")
 public class FacilityDto {
 
-    private String closedDate;
-    private String createdStamp;
-    private String createdTxStamp;
-    private String defaultDaysToShip;
-    private String defaultDimensionUomId;
-    private String defaultInventoryItemTypeId;
-    private String defaultWeightUomId;
-    private String depotType;
-    private String description;
+    @PrimaryKey
+    @ColumnInfo(name = "facilityId")
     private String facilityId;
+    @ColumnInfo(name = "closedDate")
+    private String closedDate;
+    @ColumnInfo(name = "createdStamp")
+    private String createdStamp;
+    @ColumnInfo(name = "createdTxStamp")
+    private String createdTxStamp;
+    @ColumnInfo(name = "defaultDaysToShip")
+    private String defaultDaysToShip;
+    @ColumnInfo(name = "defaultDimensionUomId")
+    private String defaultDimensionUomId;
+    @ColumnInfo(name = "defaultInventoryItemTypeId")
+    private String defaultInventoryItemTypeId;
+    @ColumnInfo(name = "defaultWeightUomId")
+    private String defaultWeightUomId;
+    @ColumnInfo(name = "depotType")
+    private String depotType;
+    @ColumnInfo(name = "description")
+    private String description;
+
+    @ColumnInfo(name = "facilityName")
     private String facilityName;
+    @ColumnInfo(name = "facilitySize")
     private String facilitySize;
+    @ColumnInfo(name = "facilitySizeUomId")
     private String facilitySizeUomId;
+    @ColumnInfo(name = "facilityTypeId")
     private String facilityTypeId;
+    @ColumnInfo(name = "geoPointId")
     private String geoPointId;
+    @ColumnInfo(name = "isDisable")
     private String isDisable;
+    @ColumnInfo(name = "lastUpdatedStamp")
     private String lastUpdatedStamp;
+    @ColumnInfo(name = "lastUpdatedTxStamp")
     private String lastUpdatedTxStamp;
+    @ColumnInfo(name = "manufAllocEnable")
     private String manufAllocEnable;
+    @ColumnInfo(name = "openedDate")
     private String openedDate;
+    @ColumnInfo(name = "organized")
     private String organized;
+    @ColumnInfo(name = "ownerPartyId")
     private String ownerPartyId;
+    @ColumnInfo(name = "parentFacilityId")
     private String parentFacilityId;
+    @ColumnInfo(name = "primaryFacilityGroupId")
     private String primaryFacilityGroupId;
+    @ColumnInfo(name = "productStoreId")
     private String productStoreId;
+    @ColumnInfo(name = "remarks")
     private String remarks;
+    @ColumnInfo(name = "reserveOrderEnumId")
     private String reserveOrderEnumId;
+    @ColumnInfo(name = "skipPackInvCheck")
     private String skipPackInvCheck;
+    @ColumnInfo(name = "squareFootage")
     private String squareFootage;
 
     public String getClosedDate() {

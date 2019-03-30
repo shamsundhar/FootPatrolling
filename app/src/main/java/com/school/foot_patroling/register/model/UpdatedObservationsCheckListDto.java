@@ -1,10 +1,16 @@
 
 package com.school.foot_patroling.register.model;
 
-import java.util.List;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+import java.util.List;
+@Entity(tableName = "UpdatedObservationsCheckListDto")
 public class UpdatedObservationsCheckListDto {
 
+    @PrimaryKey
+    @ColumnInfo(name = "count")
     private Integer count;
     private List<ObservationsCheckListDto_> observationsCheckListDtos = null;
 
