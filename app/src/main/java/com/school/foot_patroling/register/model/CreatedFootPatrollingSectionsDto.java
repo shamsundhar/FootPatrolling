@@ -1,11 +1,17 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+
 import java.util.List;
 
+@Entity(tableName = "CreatedFootPatrollingSections")
 public class CreatedFootPatrollingSectionsDto {
 
+    @ColumnInfo(name = "count")
     private Integer count;
+
     private List<FootPatrollingSectionsDto> footPatrollingSectionsDtos = null;
 
     public Integer getCount() {

@@ -1,10 +1,17 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity(tableName = "UpdatedResponseProductDto")
 public class UpdatedResponseProductDto {
 
+    @PrimaryKey
+    @ColumnInfo(name = "count")
     private Integer count;
     private List<ProductDto_> productDtos = null;
 

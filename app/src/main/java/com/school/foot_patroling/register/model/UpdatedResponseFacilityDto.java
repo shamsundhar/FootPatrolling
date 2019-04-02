@@ -1,9 +1,12 @@
 
 package com.school.foot_patroling.register.model;
 
-import java.util.List;
+import android.arch.persistence.room.Entity;
 
+import java.util.List;
+@Entity(tableName = "UpdatedResponseFacilityDto")
 public class UpdatedResponseFacilityDto {
+
 
     private Integer count;
     private List<FacilityDto_> facilityDtos = null;

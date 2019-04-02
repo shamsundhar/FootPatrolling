@@ -10,6 +10,7 @@ public class Constants {
     public static final String BUNDLE_KEY_URL = "BUNDLE_URL";
     public static final String BUNDLE_KEY_IMEI1 = "BUNDLE_IMEI1";
     public static final String BUNDLE_KEY_IMEI2 = "BUNDLE_IMEI2";
+    public static final String FOOTPATROLLING_DATABASE = "FootPatrollingDB";
     public static final String BUNDLE_KEY_CURRENT_SYNC_TIME = "BUNDLE_CURRENT_SYNC_TIME";
 
 
