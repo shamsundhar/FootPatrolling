@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.login.LoginFragment;
+import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
 
 
 import javax.inject.Inject;
@@ -43,9 +44,21 @@ public class NavigationDrawerActivity extends BaseActivity
     MenuItem attendanceItem;
     MenuItem notesItem;
 
+    Menu nav_Menu;
+
+    public boolean isDISPLAY_LOGIN() {
+        return DISPLAY_LOGIN;
+    }
+
+    public void setDISPLAY_LOGIN(boolean DISPLAY_LOGIN) {
+        this.DISPLAY_LOGIN = DISPLAY_LOGIN;
+    }
+
+    public boolean DISPLAY_LOGIN;
+
     String market_uri = "https://play.google.com/store/apps/details?id=";
-    private static final String TODAY_FRAGMENT_TAG = "TODAY_FRAGMENT";
-    private static final String ATTENDANCE_FRAGMENT_TAG = "ATTENDANCE_FRAGMENT";
+    private static final String LOGIN_FRAGMENT_TAG = "LOGIN_FRAGMENT";
+    private static final String CHECKEDLIST_FRAGMENT_TAG = "CHECKEDLIST_FRAGMENT";
     private static final String NOTES_FRAGMENT_TAG = "NOTES_FRAGMENT";
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
@@ -69,6 +82,9 @@ public class NavigationDrawerActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        nav_Menu = navigationView.getMenu();
+
+
 
         displayLoginFragment();
     }
@@ -88,9 +104,18 @@ public class NavigationDrawerActivity extends BaseActivity
 
     public void displayLoginFragment(){
         setTitle(null);
+        nav_Menu.findItem(R.id.nav_login).setVisible(true);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container,  LoginFragment.newInstance(), TODAY_FRAGMENT_TAG)
+                .replace(R.id.container,  LoginFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayCheckedListFragment(){
+        setTitle(null);
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
                 .commit();
     }
     @SuppressWarnings("StatementWithEmptyBody")
