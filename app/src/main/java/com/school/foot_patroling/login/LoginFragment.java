@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.school.foot_patroling.BaseFragment;
+import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 
@@ -59,7 +60,8 @@ public class LoginFragment extends BaseFragment {
                      shaPassword = sha1(mPassword);
                      if(shaPassword.equals(db_password))
                      {
-
+                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
+                         ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
 //                         globals.setFacilityNameList(facility.getFacilityNameList());
 //                         globals.setFacilityIdList(facility.getFacilityIdList());
 //
