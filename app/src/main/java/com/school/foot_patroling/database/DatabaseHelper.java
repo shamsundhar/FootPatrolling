@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final int DB_VERSION = 1;
     private SQLiteDatabase myDB;
     private Context context;
-    private static String CREATE_DB_SCRIPT = "trd_ams_tables.txt";
+    private static String CREATE_DB_SCRIPT = "fp_tables.txt";
     private static String INSERT_DATA_SCRIPT = "trd_ams_data.txt";
     private static String PASSWORD = "Wf@trd841$ams327";  //237,238
     String TAG = DatabaseHelper.class.getSimpleName();

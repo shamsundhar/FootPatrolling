@@ -19,8 +19,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.school.foot_patroling.datasync.DataSyncFragment;
+import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
 import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
+import com.school.foot_patroling.reload.ReloadFragment;
+import com.school.foot_patroling.reports.ReportsFragment;
+import com.school.foot_patroling.scheduleentry.ScheduleEntryFragment;
+import com.school.foot_patroling.terms.TermsFragment;
 
 
 import javax.inject.Inject;
@@ -125,19 +131,43 @@ public class NavigationDrawerActivity extends BaseActivity
         } else if(id == R.id.nav_login){
             displayLoginFragment();
         }else if (id == R.id.nav_data) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  DataSyncFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         } else if (id == R.id.nav_reports) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         }
         else if (id == R.id.nav_schedule) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  ScheduleEntryFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         }
         else if (id == R.id.nav_reload) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  ReloadFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         }else if (id == R.id.nav_local_db_status) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  LocalDBStatusFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         } else if (id == R.id.nav_terms) {
-
+            setTitle(null);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container,  TermsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                    .commit();
         }else if (id == R.id.nav_exit) {
 
         }

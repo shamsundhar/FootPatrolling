@@ -1,0 +1,764 @@
+
+
+
+
+CREATE TABLE facility
+(
+  facility_id TEXT PRIMARY KEY,
+ facility_type_id TEXT,
+ parent_facility_id TEXT,
+ owner_party_id TEXT,
+ default_inventory_item_type_id TEXT,
+ facility_name TEXT,
+ primary_facility_group_id TEXT,
+ square_footage numeric(20,0),
+ product_store_id TEXT,
+ default_days_to_ship numeric(20,0),
+ opened_date TEXT,
+ closed_date TEXT,
+ description TEXT,
+ default_weight_uom_id TEXT,
+ geo_point_id TEXT,
+ organized TEXT,
+ is_disable TEXT,
+ remarks TEXT,
+ depot_type TEXT,
+ last_updated_stamp TEXT,
+ last_updated_tx_stamp TEXT,
+ created_stamp TEXT,
+ created_tx_stamp TEXT,
+ reserve_order_enum_id TEXT,
+  facility_size  TEXT,
+   facility_size_uom_id TEXT,
+   default_dimension_uom_id TEXT,
+     skip_pack_inv_check TEXT,
+     manuf_alloc_enable TEXT
+ );
+
+	CREATE TABLE product_category_member
+(
+  product_category_id TEXT  ,
+  product_id TEXT  ,
+  from_date TEXT,
+  thru_date TEXT ,
+  comments TEXT,
+  sequence_num TEXT,
+  quantity TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT ,
+  created_stamp  TEXT,
+  created_tx_stamp TEXT,
+  CONSTRAINT pk_product_category_member PRIMARY KEY (product_category_id, product_id, from_date)
+);
+
+CREATE TABLE ohe_location
+
+(
+    seq_id TEXT,
+    division TEXT,
+    section TEXT,
+    pwi TEXT,
+    ohe_mast TEXT,
+    eng_feature TEXT,
+    ohe_feature TEXT,
+    remark_one TEXT,
+    remark_two TEXT,
+    latitude TEXT,
+    longitude TEXT,
+    altitude TEXT,
+    validity TEXT,
+    satellites TEXT,
+    speed TEXT,
+    heading TEXT,
+    ohe_sequence TEXT,
+    curvature TEXT,
+    curvature_remark TEXT,
+    date TEXT,
+    last_updated_stamp TEXT,
+    last_updated_tx_stamp TEXT,
+    created_stamp TEXT,
+    created_tx_stamp TEXT,
+    chainage TEXT,
+    chainage_remark TEXT,
+    structure_type TEXT,
+    track_line TEXT,
+    kilometer TEXT,
+    sequence_no TEXT,
+    facility_id TEXT NOT NULL,
+    major_section TEXT ,
+    adee_section TEXT,
+
+
+       CONSTRAINT pk_ohe_location PRIMARY KEY (seq_id)
+);
+
+
+
+CREATE TABLE data_sync_history
+(
+
+    seq_id TEXT,
+    device_id TEXT,
+    last_sync_date_time TEXT,
+    sync_start_date_time TEXT,
+    ash_sent_count TEXT,
+    asar_sent_count TEXT,
+    asc_sent_count TEXT,
+    ds_request_date_time TEXT,
+    ds_response_date_time TEXT,
+    response_status TEXT,
+    dev_ser_seq_update_date_time TEXT,
+    final_status_update TEXT
+
+
+);
+
+
+
+
+
+
+
+
+
+CREATE TABLE user_login
+(
+  user_login_id  TEXT  NOT NULL,
+  current_password  TEXT ,
+  password_hint  TEXT ,
+  is_system  TEXT ,
+  enabled  TEXT ,
+  has_logged_out  TEXT ,
+  require_password_change  TEXT ,
+  last_currency_uom  TEXT ,
+  last_locale  TEXT ,
+  last_time_zone  TEXT ,
+  disabled_date_time  TEXT ,
+  successive_failed_logins numeric(20,0),
+  user_ldap_dn  TEXT ,
+  last_updated_stamp  TEXT ,
+  last_updated_tx_stamp  TEXT ,
+  created_stamp  TEXT ,
+  created_tx_stamp  TEXT ,
+  party_id  TEXT ,
+  external_auth_id  TEXT ,
+  Device_IMEI TEXT,
+  CONSTRAINT pk_user_login PRIMARY KEY (user_login_id)
+);
+
+
+CREATE TABLE  user_login_history
+(
+  user_login_id  TEXT  NOT NULL,
+  visit_id  TEXT ,
+  from_date  TEXT  NOT NULL,
+  thru_date  TEXT ,
+  password_used  TEXT ,
+  successful_login character(1),
+  last_updated_stamp  TEXT ,
+  last_updated_tx_stamp  TEXT ,
+  created_stamp  TEXT ,
+  created_tx_stamp  TEXT ,
+  party_id  TEXT ,
+  CONSTRAINT pk_user_login_history PRIMARY KEY (user_login_id, from_date)
+);
+
+CREATE TABLE device
+(
+  Device_IMEI TEXT,
+  facility_id TEXT,
+ CONSTRAINT pk_device PRIMARY KEY (Device_IMEI)
+) ;
+
+CREATE TABLE app_device_unit
+(
+  seq_id TEXT NOT NULL,
+  app_device_seq_id TEXT,
+  unit_type TEXT,
+  unit_id TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+    CONSTRAINT pk_app_device_unit PRIMARY KEY (seq_id),
+    CONSTRAINT app_device_unit_seqid FOREIGN KEY (app_device_seq_id)
+        REFERENCES app_device (seq_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE NO ACTION,
+    CONSTRAINT app_device_unit_unitid FOREIGN KEY (unit_id)
+        REFERENCES facility (facility_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE NO ACTION
+
+
+);
+
+
+
+
+
+CREATE TABLE inspection_type
+(
+  seq_id TEXT NOT NULL,
+  department TEXT,
+  inspection_type TEXT,
+  description TEXT,
+  from_date date,
+  thru_date date,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  CONSTRAINT pk_inspection_type PRIMARY KEY (seq_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE inspection_type
+  OWNER TO postgres;
+
+-- Index: inspctn_tp_txcrts
+
+-- DROP INDEX inspctn_tp_txcrts;
+
+CREATE INDEX inspctn_tp_txcrts
+  ON inspection_type
+  USING btree
+  (created_tx_stamp);
+
+-- Index: inspctn_tp_txstmp
+
+-- DROP INDEX inspctn_tp_txstmp;
+
+CREATE INDEX inspctn_tp_txstmp
+  ON inspection_type
+  USING btree
+  (last_updated_tx_stamp);
+
+-- Index: inspectiontypeeeee_unique
+
+-- DROP INDEX inspectiontypeeeee_unique;
+
+CREATE UNIQUE INDEX inspectiontypeeeee_unique
+  ON inspection_type
+  USING btree
+  (inspection_type COLLATE pg_catalog."default");
+
+
+
+
+
+
+
+
+CREATE TABLE foot_patrolling_inspection
+(
+  seq_id TEXT NOT NULL,
+  device_id TEXT,
+  device_seq_id TEXT,
+  inspection_type TEXT,
+  start_time TEXT,
+  stop_time TEXT,
+  inspection_by TEXT,
+  section TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  facility_id TEXT,
+  km TEXT,
+  locatoion TEXT,
+  location TEXT,
+  CONSTRAINT pk_foot_patrolling_inspection PRIMARY KEY (seq_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE foot_patrolling_inspection
+  OWNER TO postgres;
+
+-- Index: ft_ptrlg_insn_txcs
+
+-- DROP INDEX ft_ptrlg_insn_txcs;
+
+CREATE INDEX ft_ptrlg_insn_txcs
+  ON foot_patrolling_inspection
+  USING btree
+  (created_tx_stamp);
+
+-- Index: ft_ptrlg_insn_txsp
+
+-- DROP INDEX ft_ptrlg_insn_txsp;
+
+CREATE INDEX ft_ptrlg_insn_txsp
+  ON foot_patrolling_inspection
+  USING btree
+  (last_updated_tx_stamp);
+
+-- Index: inspectiontype
+
+-- DROP INDEX inspectiontype;
+
+CREATE INDEX inspectiontype
+  ON foot_patrolling_inspection
+  USING btree
+  (inspection_type COLLATE pg_catalog."default");
+
+
+
+CREATE TABLE observations
+(
+  seq_id TEXT NOT NULL,
+  device_id TEXT,
+  device_seq_id TEXT,
+  inspection_seq_id TEXT,
+  observation_category TEXT,
+  observation_item TEXT,
+  observation TEXT,
+  description TEXT,
+  action TEXT,
+  action_by TEXT,
+  created_by TEXT,
+  created_date_time TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  location TEXT,
+  CONSTRAINT pk_observations PRIMARY KEY (seq_id),
+  CONSTRAINT footpatrollinginspection FOREIGN KEY (inspection_seq_id)
+      REFERENCES foot_patrolling_inspection (seq_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE observations
+  OWNER TO postgres;
+
+-- Index: footpatrollinginspection
+
+-- DROP INDEX footpatrollinginspection;
+
+CREATE INDEX footpatrollinginspection
+  ON observations
+  USING btree
+  (inspection_seq_id COLLATE pg_catalog."default");
+
+-- Index: obsrvtns_txcrts
+
+-- DROP INDEX obsrvtns_txcrts;
+
+CREATE INDEX obsrvtns_txcrts
+  ON observations
+  USING btree
+  (created_tx_stamp);
+
+-- Index: obsrvtns_txstmp
+
+-- DROP INDEX obsrvtns_txstmp;
+
+CREATE INDEX obsrvtns_txstmp
+  ON observations
+  USING btree
+  (last_updated_tx_stamp);
+
+
+
+CREATE TABLE observation_categories
+(
+  seq_id TEXT NOT NULL,
+  inspection_type TEXT,
+  department TEXT,
+  observation_category TEXT,
+  description TEXT,
+  remark TEXT,
+  from_date date,
+  thru_date date,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  CONSTRAINT pk_observation_categories PRIMARY KEY (seq_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE observation_categories
+  OWNER TO postgres;
+
+-- Index: fkkkk_inspection_type
+
+-- DROP INDEX fkkkk_inspection_type;
+
+CREATE INDEX fkkkk_inspection_type
+  ON observation_categories
+  USING btree
+  (inspection_type COLLATE pg_catalog."default");
+
+-- Index: obsrvn_ctgs_txcrts
+
+-- DROP INDEX obsrvn_ctgs_txcrts;
+
+CREATE INDEX obsrvn_ctgs_txcrts
+  ON observation_categories
+  USING btree
+  (created_tx_stamp);
+
+-- Index: obsrvn_ctgs_txstmp
+
+-- DROP INDEX obsrvn_ctgs_txstmp;
+
+CREATE INDEX obsrvn_ctgs_txstmp
+  ON observation_categories
+  USING btree
+  (last_updated_tx_stamp);
+
+
+
+
+CREATE TABLE observations_check_list
+(
+  seq_id TEXT NOT NULL,
+  inspection_type TEXT,
+  observation_category TEXT,
+  observation_item TEXT,
+  description TEXT,
+  from_date date,
+  thru_date date,
+  priority TEXT,
+  display_sequence TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  CONSTRAINT pk_observations_check_list PRIMARY KEY (seq_id),
+  CONSTRAINT inspectiontype FOREIGN KEY (inspection_type)
+      REFERENCES inspection_type (inspection_type) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE observations_check_list
+  OWNER TO postgres;
+
+-- Index: observationcategories
+
+-- DROP INDEX observationcategories;
+
+CREATE INDEX observationcategories
+  ON observations_check_list
+  USING btree
+  (observation_category COLLATE pg_catalog."default");
+
+-- Index: obsrs_chk_lst_txcs
+
+-- DROP INDEX obsrs_chk_lst_txcs;
+
+CREATE INDEX obsrs_chk_lst_txcs
+  ON observations_check_list
+  USING btree
+  (created_tx_stamp);
+
+-- Index: obsrs_chk_lst_txsp
+
+-- DROP INDEX obsrs_chk_lst_txsp;
+
+CREATE INDEX obsrs_chk_lst_txsp
+  ON observations_check_list
+  USING btree
+  (last_updated_tx_stamp);
+
+
+
+CREATE TABLE compliances
+(
+  seq_id TEXT NOT NULL,
+  device_id TEXT,
+  device_seq_id TEXT,
+  obeservation_seq_id TEXT,
+  compliance_fullfilled TEXT,
+  description TEXT,
+  status TEXT,
+  compliance_by TEXT,
+  complied_date_time TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  compliance_remark TEXT,
+  action TEXT,
+  CONSTRAINT pk_compliances PRIMARY KEY (seq_id),
+  CONSTRAINT observations FOREIGN KEY (obeservation_seq_id)
+      REFERENCES observations (seq_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE compliances
+  OWNER TO postgres;
+
+-- Index: compliances_txcrts
+
+-- DROP INDEX compliances_txcrts;
+
+CREATE INDEX compliances_txcrts
+  ON compliances
+  USING btree
+  (created_tx_stamp);
+
+-- Index: compliances_txstmp
+
+-- DROP INDEX compliances_txstmp;
+
+CREATE INDEX compliances_txstmp
+  ON compliances
+  USING btree
+  (last_updated_tx_stamp);
+
+
+
+
+CREATE TABLE foot_patrolling_inspection_content
+(
+  seq_id TEXT NOT NULL,
+  content_id TEXT NOT NULL,
+  from_date TEXT,
+  thru_date TEXT,
+  device_seq_id TEXT,
+  device_id TEXT,
+  device_content_id TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  CONSTRAINT pk_foot_patrolling_inspection_ PRIMARY KEY (seq_id, content_id),
+  CONSTRAINT fpi_cnt_cnt FOREIGN KEY (content_id)
+      REFERENCES content (content_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE foot_patrolling_inspection_content
+  OWNER TO postgres;
+
+-- Index: fpi_cnt_cnt
+
+-- DROP INDEX fpi_cnt_cnt;
+
+CREATE INDEX fpi_cnt_cnt
+  ON foot_patrolling_inspection_content
+  USING btree
+  (content_id COLLATE pg_catalog."default");
+
+-- Index: ft_ptg_inn_cnt_txp
+
+-- DROP INDEX ft_ptg_inn_cnt_txp;
+
+CREATE INDEX ft_ptg_inn_cnt_txp
+  ON foot_patrolling_inspection_content
+  USING btree
+  (last_updated_tx_stamp);
+
+-- Index: ft_ptg_inn_cnt_txs
+
+-- DROP INDEX ft_ptg_inn_cnt_txs;
+
+CREATE INDEX ft_ptg_inn_cnt_txs
+  ON foot_patrolling_inspection_content
+  USING btree
+  (created_tx_stamp);
+
+
+
+
+
+
+CREATE TABLE product
+(
+product_id TEXT PRIMARY KEY NOT NULL,
+ autoCreateKeywords  TEXT,
+	  billOfMaterialLevel  TEXT,
+	  brandName  TEXT,
+	  chargeShipping  TEXT,
+	  comments  TEXT,
+	  configId  TEXT,
+	  createdByUserLogin  TEXT,
+	  createdDate  TEXT,
+	  createdStamp  TEXT,
+	  createdTxStamp  TEXT,
+	  defaultShipmentBoxTypeId  TEXT,
+	  depthUomId  TEXT,
+	  description  TEXT,
+	  detailImageUrl  TEXT,
+	  detailScreen  TEXT,
+	  diameterUomId  TEXT,
+	  facilityId  TEXT,
+	  fixedAmount  TEXT,
+	  heightUomId  TEXT,
+	  inShippingBox  TEXT,
+	  includeInPromotions  TEXT,
+	  internalName  TEXT,
+	  introductionDate  TEXT,
+	  inventoryMessage  TEXT,
+	  isActive  TEXT,
+	  isSerialized  TEXT,
+	  isVariant  TEXT,
+	  isVirtual  TEXT,
+	  largeImageUrl  TEXT,
+	  lastModifiedByUserLogin  TEXT,
+	  lastModifiedDate  TEXT,
+	  lastUpdatedStamp  TEXT,
+	  lastUpdatedTxStamp  TEXT,
+	  longDescription  TEXT,
+	  manufacturerPartyId  TEXT,
+	  materialClassification  TEXT,
+	  mediumImageUrl  TEXT,
+	  originGeoId  TEXT,
+	  originalImageUrl  TEXT,
+	  piecesIncluded  TEXT,
+	  plNo  TEXT,
+	  priceDetailText  TEXT,
+	  primaryProductCategoryId  TEXT,
+	  productCodeTypeId  TEXT,
+	  productDepth  TEXT,
+	  productDiameter  TEXT,
+	  productHeight  TEXT,
+	  productId  TEXT,
+	  productMakeDetails  TEXT,
+	  productName  TEXT,
+	  productRating  TEXT,
+	  productTypeId  TEXT,
+	  productWeight  TEXT,
+	  productWidth  TEXT,
+	  quantityIncluded  TEXT,
+	  quantityUomId  TEXT,
+	  ratingTypeEnum  TEXT,
+	  releaseDate  TEXT,
+	  requireAmount  TEXT,
+	  requireInventory  TEXT,
+	  requirementMethodEnumId  TEXT,
+	  reservMaxPersons  TEXT,
+	  reservNthPPPerc  TEXT,
+	  reserv2ndPPPerc  TEXT,
+	  returnable  TEXT,
+	  rlyId  TEXT,
+	  salesDiscWhenNotAvail  TEXT,
+	  salesDiscontinuationDate  TEXT,
+	  shippingDepth  TEXT,
+	  shippingHeight  TEXT,
+	  shippingWidth  TEXT,
+	  smallImageUrl  TEXT,
+	  supportDiscontinuationDate  TEXT,
+	  taxable  TEXT,
+	  trdDivId  TEXT,
+	  virtualVariantMethodEnum  TEXT,
+	  weight  TEXT,
+	  weightUomId  TEXT,
+	  widthUomId  TEXT
+);
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE foot_patrolling_sections
+(
+  seq_id TEXT NOT NULL,
+  facility_depot TEXT,
+  fp_section TEXT,
+  from_location TEXT,
+  to_location TEXT,
+  remarks TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  from_date TEXT,
+  to_date TEXT,
+  CONSTRAINT pk_foot_patrolling_sections PRIMARY KEY (seq_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE foot_patrolling_sections
+  OWNER TO postgres;
+
+-- Index: ft_ptrlg_scs_txcrs
+
+-- DROP INDEX ft_ptrlg_scs_txcrs;
+
+CREATE INDEX ft_ptrlg_scs_txcrs
+  ON foot_patrolling_sections
+  USING btree
+  (created_tx_stamp);
+
+-- Index: ft_ptrlg_scs_txstp
+
+-- DROP INDEX ft_ptrlg_scs_txstp;
+
+CREATE INDEX ft_ptrlg_scs_txstp
+  ON foot_patrolling_sections
+  USING btree
+  (last_updated_tx_stamp);
+
+
+
+
+CREATE TABLE Fp_location_track
+(
+deviceId TEXT,
+     login TEXT,
+     dateTime TEXT,
+     longitude TEXT,
+     latitude TEXT,
+     searchBy TEXT
+
+);
+
+
+CREATE TABLE functional_location_hierarchy
+(
+  id TEXT,
+  head_designation character varying(60),
+  unit_code TEXT,
+  unit_name TEXT,
+  unit_type TEXT,
+  report_manager TEXT,
+  rm_seq_id TEXT,
+  group_id TEXT,
+  org_level TEXT,
+  party_id TEXT NOT NULL,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  unit_station TEXT,
+  head_login_id TEXT,
+  rm_login_id TEXT,
+  CONSTRAINT pk_functional_location_hierarc PRIMARY KEY (party_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE functional_location_hierarchy
+  OWNER TO postgres;
+
+
+
+
+
+
+
+
+
+
+
+
+

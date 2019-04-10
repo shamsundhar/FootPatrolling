@@ -4,7 +4,7 @@ package com.school.foot_patroling.register.model;
 
 public class ObservationsCheckListDto {
 
-    private Object description;
+    private String description;
     private String displaySequence;
     private Object fromDate;
     private String inspectionType;
@@ -14,11 +14,11 @@ public class ObservationsCheckListDto {
     private String seqId;
     private Object thruDate;
 
-    public Object getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

@@ -21,6 +21,8 @@ public class Constants {
     public static final String BUNDLE_KEY_USER_ID = "BUNDLE_USER_ID";
     public static final String BUNDLE_KEY_RESET_PASSWORD_RESULT_FLAG = "RESET_PASSWORD_RESULT_FLAG";
 
+    public static final String BUNDLE_KEY_LAST_SYNC_DATE = "BUNDLE_LAST_SYNC_DATE";
+
     public static final String PREF_KEY_LOGIN_ID = "KEY_LOGIN_ID";
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";
 

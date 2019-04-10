@@ -94,6 +94,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
 
@@ -125,6 +126,7 @@ public class RegisterActivity extends BaseActivity {
                     final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
                             R.style.AppTheme_Dark_Dialog);
                     progressDialog.setIndeterminate(true);
+                    progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.setMessage(getString(R.string.text_please_wait));
                     progressDialog.show();
 
@@ -160,7 +162,7 @@ public class RegisterActivity extends BaseActivity {
                                 public void onNext(MasterDto masterDto) {
                                     if (masterDto.getImeiAuth()){
                                         progressDialog.dismiss();
-                                     //   preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, masterDto.getRegistrationId());
+                                        //   preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, masterDto.getRegistrationId());
                                         preferenceHelper.setBoolean(RegisterActivity.this, BUNDLE_KEY_AUTH, masterDto.getImeiAuth());
                                         try {
                                             dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
@@ -169,7 +171,8 @@ public class RegisterActivity extends BaseActivity {
 
                                             DatabaseHelper dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
                                             SQLiteDatabase db = dbhelper.getDBObject(0);
-
+                                            String currentTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+                                            preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_LAST_SYNC_DATE, currentTime);
                                             String result = syncMasterData(db, masterDto);
 
                                         } catch (Exception e){
@@ -391,15 +394,15 @@ public class RegisterActivity extends BaseActivity {
 //                    if (dto != null) {
 //                        Log.d(TAG, "entering this block");
 //
-                        if (updateDatabase(masterDto, db)) {
+            if (updateDatabase(masterDto, db)) {
 
-                            result = "Success";
+                result = "Success";
 
-                        } else {
+            } else {
 
-                            result = "Failed";
+                result = "Failed";
 
-                        }
+            }
 //
 //
 //                        Log.d(TAG, "Value of result**" + result);
@@ -462,7 +465,7 @@ public class RegisterActivity extends BaseActivity {
                         dataUpdateDAO.updateFacilityData(facilityDto, db);
                     }
                     progressValue = progressValue + 1;
-                   // publishProgress(progressValue);
+                    // publishProgress(progressValue);
                 }
 
                 List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
@@ -475,7 +478,7 @@ public class RegisterActivity extends BaseActivity {
                         dataUpdateDAO.insertProductData(productDto, db);
                     }
                     progressValue = progressValue + 1;
-                  //  publishProgress(progressValue);
+                    //  publishProgress(progressValue);
                 }
 
                 List<ProductDto_> updateProductDtos = dto.getUpdatedResponseProductDto().getProductDtos();
@@ -488,7 +491,7 @@ public class RegisterActivity extends BaseActivity {
                         dataUpdateDAO.updateProductData(productDto, db);
                     }
                     progressValue = progressValue + 1;
-                 //   publishProgress(progressValue);
+                    //   publishProgress(progressValue);
                 }
                 List<UserLoginDto> insertUserLoginDtos = dto.getCreatedResponseUserLoginDto().getUserLoginDtos();
 
@@ -503,7 +506,7 @@ public class RegisterActivity extends BaseActivity {
                     }
 
                     progressValue = progressValue + 1;
-                //    publishProgress(progressValue);
+                    //    publishProgress(progressValue);
                 }
 
                 List<UserLoginDto_> updateUserLoginDtos = dto.getUpdatedResponseUserLoginDto().getUserLoginDtos();
@@ -518,7 +521,7 @@ public class RegisterActivity extends BaseActivity {
                     }
 
                     progressValue = progressValue + 1;
-                  //  publishProgress(progressValue);
+                    //  publishProgress(progressValue);
                 }
 
                 result = true;

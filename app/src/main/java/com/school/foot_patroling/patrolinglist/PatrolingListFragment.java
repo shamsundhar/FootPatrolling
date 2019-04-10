@@ -13,36 +13,34 @@ import android.widget.TextView;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
-import com.school.foot_patroling.login.LoginFragment;
-import com.school.foot_patroling.utils.Common;
-import com.school.foot_patroling.utils.Constants;
-import com.school.foot_patroling.utils.PreferenceHelper;
+import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 
-import javax.inject.Inject;
+import net.sqlcipher.Cursor;
+import net.sqlcipher.database.SQLiteDatabase;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.internal.http2.StreamResetException;
 
 import static android.content.ContentValues.TAG;
 
 public class PatrolingListFragment extends BaseFragment {
-    @BindView(R.id.newsRecyclerview)
-    RecyclerView newsRecyclerView;
+    @BindView(R.id.checklistRecyclerview)
+    RecyclerView checklistRecyclerView;
     @BindView(R.id.empty_view)
     TextView empty_view;
     @BindView(R.id.tv1)
     TextView tv1;
-   // private ChecklistAdapter checklistAdapter;
+    private ChecklistAdapter checklistAdapter;
+    SQLiteDatabase database;
+    DatabaseHelper dbhelper = null;
 
   //  @Inject
   //  TodayApi todayApi;
 
   //  public static EdsenseDatabase mEdsenseDatabase;
- //   private ArrayList<News> newsList;
+    private ArrayList<ObservationsCheckListDto> checkList;
 
     /**
      * Use this factory method to create a new instance of
@@ -70,11 +68,20 @@ public class PatrolingListFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
 
+        try {
+            dbhelper = DatabaseHelper.getInstance(getActivity());
+            dbhelper.createDataBase();
+            database = dbhelper.getReadableDatabase("Wf@trd841$ams327");
+
+        } catch (Exception e){
+
+            Log.e(TAG, "creating database - "+ e.getMessage());
+        }
 
         empty_view.setText(R.string.empty_check_list_message);
-//        checklistAdapter = new ChecklistAdapter();
-//        newsRecyclerView.setAdapter(checklistAdapter);
-//        newsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        checklistAdapter = new ChecklistAdapter();
+        checklistRecyclerView.setAdapter(checklistAdapter);
+        checklistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                 R.style.AppTheme_Dark_Dialog);
@@ -82,24 +89,46 @@ public class PatrolingListFragment extends BaseFragment {
         progressDialog.setMessage(getString(R.string.text_please_wait));
         progressDialog.show();
             progressDialog.dismiss();
-          //  displayNewsFromDB();
+            displayNewsFromDB();
 
 
         return view;
     }
 
-//    private void displayNewsFromDB(){
-//        newsList = (ArrayList<News>)mEdsenseDatabase.getNewsDao().getAllNews();
-//        if(newsList != null && !newsList.isEmpty()){
-//            empty_view.setVisibility(View.GONE);
-////            newsRecyclerView.setVisibility(View.VISIBLE);
-//
-//        }else{
-//            empty_view.setVisibility(View.VISIBLE);
-////            newsRecyclerView.setVisibility(View.GONE);
-//        }
-//        newsRecyclerViewAdapter.setItems(newsList);
-//        newsRecyclerViewAdapter.notifyDataSetChanged();
-//    }
-//
+    private void displayNewsFromDB(){
+
+        try {
+            if (database != null) {
+                Log.d(TAG, "fetching user id");
+                String sql = "select priority, description from observations_check_list";
+
+                Cursor cursor = database.rawQuery(sql, null);
+                if (cursor.moveToFirst()) {
+                    while (!cursor.isAfterLast()) {
+                        ObservationsCheckListDto dto = new ObservationsCheckListDto();
+                        dto.setPriority( cursor.getString(0) );
+                        dto.setDescription( cursor.getString(1) );
+                        cursor.moveToNext();
+                        checkList.add(dto);
+                    }
+                }
+                cursor.close();
+            }
+        }catch(Exception e){
+
+        }
+
+
+        if(checkList != null && !checkList.isEmpty()){
+            empty_view.setVisibility(View.GONE);
+            checklistRecyclerView.setVisibility(View.VISIBLE);
+
+        }else{
+            empty_view.setVisibility(View.VISIBLE);
+            checklistRecyclerView.setVisibility(View.GONE);
+        }
+        checklistAdapter.setItems(checkList);
+        checklistAdapter.notifyDataSetChanged();
+    }
+
 }
