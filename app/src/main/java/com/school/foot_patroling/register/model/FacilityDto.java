@@ -4,11 +4,13 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "FacilityDto")
 public class FacilityDto {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "facilityId")
     private String facilityId;
     @ColumnInfo(name = "closedDate")
@@ -68,6 +70,9 @@ public class FacilityDto {
     private String skipPackInvCheck;
     @ColumnInfo(name = "squareFootage")
     private String squareFootage;
+
+    public FacilityDto() {
+    }
 
     public String getClosedDate() {
         return closedDate;

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  Generate by autoSQLMap Powered by duxing@Taobao -->
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ProductDAO">
+
+    <typeAlias alias="ProductDO" type="com.sample.biz.dal.dataobject.ProductDO"/>
+
+    <resultMap id="resultProductDOMap" class="com.sample.biz.dal.dataobject.ProductDO">
+        <result property="productTypeId" column="PRODUCT_TYPE_ID"/>
+        <result property="internalName" column="INTERNAL_NAME"/>
+        <result property="brandName" column="BRAND_NAME"/>
+        <result property="comments" column="COMMENTS"/>
+        <result property="productName" column="PRODUCT_NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="longDescription" column="LONG_DESCRIPTION"/>
+        <result property="quantityUomId" column="QUANTITY_UOM_ID"/>
+        <result property="quantityIncluded" column="QUANTITY_INCLUDED"/>
+        <result property="chargeShipping" column="CHARGE_SHIPPING"/>
+        <result property="autoCreateKeywords" column="AUTO_CREATE_KEYWORDS"/>
+        <result property="billOfMaterialLevel" column="BILL_OF_MATERIAL_LEVEL"/>
+        <result property="configId" column="CONFIG_ID"/>
+        <result property="productMakeDetails" column="PRODUCT_MAKE_DETAILS"/>
+        <result property="materialClassification" column="MATERIAL_CLASSIFICATION"/>
+        <result property="isActive" column="IS_ACTIVE"/>
+        <result property="isSerialized" column="IS_SERIALIZED"/>
+        <result property="productCodeTypeId" column="PRODUCT_CODE_TYPE_ID"/>
+        <result property="plNo" column="PL_NO"/>
+        <result property="rlyId" column="RLY_ID"/>
+        <result property="trdDivId" column="TRD_DIV_ID"/>
+        <result property="createdDate" column="CREATED_DATE"/>
+        <result property="createdByUserLogin" column="CREATED_BY_USER_LOGIN"/>
+        <result property="lastModifiedDate" column="LAST_MODIFIED_DATE"/>
+        <result property="lastModifiedByUserLogin" column="LAST_MODIFIED_BY_USER_LOGIN"/>
+        <result property="lastUpdatedStamp" column="LAST_UPDATED_STAMP"/>
+        <result property="lastUpdatedTxStamp" column="LAST_UPDATED_TX_STAMP"/>
+        <result property="createdStamp" column="CREATED_STAMP"/>
+        <result property="createdTxStamp" column="CREATED_TX_STAMP"/>
+    </resultMap>
+
+    <sql id="allCols">
+        `PRODUCT_TYPE_ID`
+        ,`INTERNAL_NAME`
+        ,`BRAND_NAME`
+        ,`COMMENTS`
+        ,`PRODUCT_NAME`
+        ,`DESCRIPTION`
+        ,`LONG_DESCRIPTION`
+        ,`QUANTITY_UOM_ID`
+        ,`QUANTITY_INCLUDED`
+        ,`CHARGE_SHIPPING`
+        ,`AUTO_CREATE_KEYWORDS`
+        ,`BILL_OF_MATERIAL_LEVEL`
+        ,`CONFIG_ID`
+        ,`PRODUCT_MAKE_DETAILS`
+        ,`MATERIAL_CLASSIFICATION`
+        ,`IS_ACTIVE`
+        ,`IS_SERIALIZED`
+        ,`PRODUCT_CODE_TYPE_ID`
+        ,`PL_NO`
+        ,`RLY_ID`
+        ,`TRD_DIV_ID`
+        ,`CREATED_DATE`
+        ,`CREATED_BY_USER_LOGIN`
+        ,`LAST_MODIFIED_DATE`
+        ,`LAST_MODIFIED_BY_USER_LOGIN`
+        ,`LAST_UPDATED_STAMP`
+        ,`LAST_UPDATED_TX_STAMP`
+        ,`CREATED_STAMP`
+        ,`CREATED_TX_STAMP`
+    </sql>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：插入单条数据
+       前台或后台：后台
+       频率：每天1000以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+    -->
+    <insert id="insert" parameterClass="ProductDO">
+        <![CDATA[
+	    INSERT INTO `product`(
+	    ]]>
+        <include refid="allCols"/>
+        <![CDATA[
+        )VALUES(
+             #productTypeId#
+            ,#internalName#
+            ,#brandName#
+            ,#comments#
+            ,#productName#
+            ,#description#
+            ,#longDescription#
+            ,#quantityUomId#
+            ,#quantityIncluded#
+            ,#chargeShipping#
+            ,#autoCreateKeywords#
+            ,#billOfMaterialLevel#
+            ,#configId#
+            ,#productMakeDetails#
+            ,#materialClassification#
+            ,#isActive#
+            ,#isSerialized#
+            ,#productCodeTypeId#
+            ,#plNo#
+            ,#rlyId#
+            ,#trdDivId#
+            ,#createdDate#
+            ,#createdByUserLogin#
+            ,#lastModifiedDate#
+            ,#lastModifiedByUserLogin#
+            ,#lastUpdatedStamp#
+            ,#lastUpdatedTxStamp#
+            ,#createdStamp#
+            ,#createdTxStamp#
+        );
+        ]]>
+    </insert>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：更新单条数据
+       前台或后台：后台
+       频率：每天1000以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+    -->
+    <update id="update">
+        <![CDATA[
+        UPDATE `product` SET `${primaryKeyColumn.name}` = #${primaryKeyColumn.property}#;
+        ]]>
+        <dynamic>
+            <isNotNull property="productTypeId" prepend=" , ">
+                `PRODUCT_TYPE_ID` = #productTypeId#
+            </isNotNull>
+            <isNotNull property="internalName" prepend=" , ">
+                `INTERNAL_NAME` = #internalName#
+            </isNotNull>
+            <isNotNull property="brandName" prepend=" , ">
+                `BRAND_NAME` = #brandName#
+            </isNotNull>
+            <isNotNull property="comments" prepend=" , ">
+                `COMMENTS` = #comments#
+            </isNotNull>
+            <isNotNull property="productName" prepend=" , ">
+                `PRODUCT_NAME` = #productName#
+            </isNotNull>
+            <isNotNull property="description" prepend=" , ">
+                `DESCRIPTION` = #description#
+            </isNotNull>
+            <isNotNull property="longDescription" prepend=" , ">
+                `LONG_DESCRIPTION` = #longDescription#
+            </isNotNull>
+            <isNotNull property="quantityUomId" prepend=" , ">
+                `QUANTITY_UOM_ID` = #quantityUomId#
+            </isNotNull>
+            <isNotNull property="quantityIncluded" prepend=" , ">
+                `QUANTITY_INCLUDED` = #quantityIncluded#
+            </isNotNull>
+            <isNotNull property="chargeShipping" prepend=" , ">
+                `CHARGE_SHIPPING` = #chargeShipping#
+            </isNotNull>
+            <isNotNull property="autoCreateKeywords" prepend=" , ">
+                `AUTO_CREATE_KEYWORDS` = #autoCreateKeywords#
+            </isNotNull>
+            <isNotNull property="billOfMaterialLevel" prepend=" , ">
+                `BILL_OF_MATERIAL_LEVEL` = #billOfMaterialLevel#
+            </isNotNull>
+            <isNotNull property="configId" prepend=" , ">
+                `CONFIG_ID` = #configId#
+            </isNotNull>
+            <isNotNull property="productMakeDetails" prepend=" , ">
+                `PRODUCT_MAKE_DETAILS` = #productMakeDetails#
+            </isNotNull>
+            <isNotNull property="materialClassification" prepend=" , ">
+                `MATERIAL_CLASSIFICATION` = #materialClassification#
+            </isNotNull>
+            <isNotNull property="isActive" prepend=" , ">
+                `IS_ACTIVE` = #isActive#
+            </isNotNull>
+            <isNotNull property="isSerialized" prepend=" , ">
+                `IS_SERIALIZED` = #isSerialized#
+            </isNotNull>
+            <isNotNull property="productCodeTypeId" prepend=" , ">
+                `PRODUCT_CODE_TYPE_ID` = #productCodeTypeId#
+            </isNotNull>
+            <isNotNull property="plNo" prepend=" , ">
+                `PL_NO` = #plNo#
+            </isNotNull>
+            <isNotNull property="rlyId" prepend=" , ">
+                `RLY_ID` = #rlyId#
+            </isNotNull>
+            <isNotNull property="trdDivId" prepend=" , ">
+                `TRD_DIV_ID` = #trdDivId#
+            </isNotNull>
+            <isNotNull property="createdDate" prepend=" , ">
+                `CREATED_DATE` = #createdDate#
+            </isNotNull>
+            <isNotNull property="createdByUserLogin" prepend=" , ">
+                `CREATED_BY_USER_LOGIN` = #createdByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastModifiedDate" prepend=" , ">
+                `LAST_MODIFIED_DATE` = #lastModifiedDate#
+            </isNotNull>
+            <isNotNull property="lastModifiedByUserLogin" prepend=" , ">
+                `LAST_MODIFIED_BY_USER_LOGIN` = #lastModifiedByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastUpdatedStamp" prepend=" , ">
+                `LAST_UPDATED_STAMP` = #lastUpdatedStamp#
+            </isNotNull>
+            <isNotNull property="lastUpdatedTxStamp" prepend=" , ">
+                `LAST_UPDATED_TX_STAMP` = #lastUpdatedTxStamp#
+            </isNotNull>
+            <isNotNull property="createdStamp" prepend=" , ">
+                `CREATED_STAMP` = #createdStamp#
+            </isNotNull>
+            <isNotNull property="createdTxStamp" prepend=" , ">
+                `CREATED_TX_STAMP` = #createdTxStamp#
+            </isNotNull>
+        </dynamic>
+        <![CDATA[
+        WHERE `${primaryKeyColumn.name}` = #${primaryKeyColumn.property}#;
+    	]]>
+    </update>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：查询单条数据
+       前台或后台：后台
+       频率：每天1000以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+        -->
+    <select id="select" resultMap="resultProductDOMap">
+        <![CDATA[
+        SELECT
+        ]]>
+        <include refid="allCols"/>
+        <![CDATA[
+        FROM `product` WHERE `${primaryKeyColumn.name}` = #${primaryKeyColumn.property}#;
+        ]]>
+    </select>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：查询多条数据
+       前台或后台：后台
+       频率：每天1000以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+       可能的条件组合:
+    -->
+    <select id="queryList" resultMap="resultProductDOMap">
+        <![CDATA[
+        SELECT
+        ]]>
+        <include refid="allCols"/>
+        <![CDATA[
+        FROM `product` WHERE 1
+        ]]>
+        <dynamic>
+            <isNotNull property="productTypeId" prepend=" AND ">
+                `PRODUCT_TYPE_ID` = #productTypeId#
+            </isNotNull>
+            <isNotNull property="internalName" prepend=" AND ">
+                `INTERNAL_NAME` = #internalName#
+            </isNotNull>
+            <isNotNull property="brandName" prepend=" AND ">
+                `BRAND_NAME` = #brandName#
+            </isNotNull>
+            <isNotNull property="comments" prepend=" AND ">
+                `COMMENTS` = #comments#
+            </isNotNull>
+            <isNotNull property="productName" prepend=" AND ">
+                `PRODUCT_NAME` = #productName#
+            </isNotNull>
+            <isNotNull property="description" prepend=" AND ">
+                `DESCRIPTION` = #description#
+            </isNotNull>
+            <isNotNull property="longDescription" prepend=" AND ">
+                `LONG_DESCRIPTION` = #longDescription#
+            </isNotNull>
+            <isNotNull property="quantityUomId" prepend=" AND ">
+                `QUANTITY_UOM_ID` = #quantityUomId#
+            </isNotNull>
+            <isNotNull property="quantityIncluded" prepend=" AND ">
+                `QUANTITY_INCLUDED` = #quantityIncluded#
+            </isNotNull>
+            <isNotNull property="chargeShipping" prepend=" AND ">
+                `CHARGE_SHIPPING` = #chargeShipping#
+            </isNotNull>
+            <isNotNull property="autoCreateKeywords" prepend=" AND ">
+                `AUTO_CREATE_KEYWORDS` = #autoCreateKeywords#
+            </isNotNull>
+            <isNotNull property="billOfMaterialLevel" prepend=" AND ">
+                `BILL_OF_MATERIAL_LEVEL` = #billOfMaterialLevel#
+            </isNotNull>
+            <isNotNull property="configId" prepend=" AND ">
+                `CONFIG_ID` = #configId#
+            </isNotNull>
+            <isNotNull property="productMakeDetails" prepend=" AND ">
+                `PRODUCT_MAKE_DETAILS` = #productMakeDetails#
+            </isNotNull>
+            <isNotNull property="materialClassification" prepend=" AND ">
+                `MATERIAL_CLASSIFICATION` = #materialClassification#
+            </isNotNull>
+            <isNotNull property="isActive" prepend=" AND ">
+                `IS_ACTIVE` = #isActive#
+            </isNotNull>
+            <isNotNull property="isSerialized" prepend=" AND ">
+                `IS_SERIALIZED` = #isSerialized#
+            </isNotNull>
+            <isNotNull property="productCodeTypeId" prepend=" AND ">
+                `PRODUCT_CODE_TYPE_ID` = #productCodeTypeId#
+            </isNotNull>
+            <isNotNull property="plNo" prepend=" AND ">
+                `PL_NO` = #plNo#
+            </isNotNull>
+            <isNotNull property="rlyId" prepend=" AND ">
+                `RLY_ID` = #rlyId#
+            </isNotNull>
+            <isNotNull property="trdDivId" prepend=" AND ">
+                `TRD_DIV_ID` = #trdDivId#
+            </isNotNull>
+            <isNotNull property="createdDate" prepend=" AND ">
+                `CREATED_DATE` = #createdDate#
+            </isNotNull>
+            <isNotNull property="createdByUserLogin" prepend=" AND ">
+                `CREATED_BY_USER_LOGIN` = #createdByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastModifiedDate" prepend=" AND ">
+                `LAST_MODIFIED_DATE` = #lastModifiedDate#
+            </isNotNull>
+            <isNotNull property="lastModifiedByUserLogin" prepend=" AND ">
+                `LAST_MODIFIED_BY_USER_LOGIN` = #lastModifiedByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastUpdatedStamp" prepend=" AND ">
+                `LAST_UPDATED_STAMP` = #lastUpdatedStamp#
+            </isNotNull>
+            <isNotNull property="lastUpdatedTxStamp" prepend=" AND ">
+                `LAST_UPDATED_TX_STAMP` = #lastUpdatedTxStamp#
+            </isNotNull>
+            <isNotNull property="createdStamp" prepend=" AND ">
+                `CREATED_STAMP` = #createdStamp#
+            </isNotNull>
+            <isNotNull property="createdTxStamp" prepend=" AND ">
+                `CREATED_TX_STAMP` = #createdTxStamp#
+            </isNotNull>
+        </dynamic>
+        <![CDATA[
+        ORDER BY `${primaryKeyColumn.name}` DESC
+        LIMIT #startRow#,#limit#;
+        ]]>
+
+    </select>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：查询条数
+       前台或后台：后台
+       频率：每天1000以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+       可能的条件组合:
+    -->
+    <select id="queryCount" resultClass="java.lang.Integer">
+        <![CDATA[
+        SELECT
+        COUNT(*)
+        FROM `product` WHERE  1
+        ]]>
+        <dynamic>
+            <isNotNull property="productTypeId" prepend=" AND ">
+                `PRODUCT_TYPE_ID` = #productTypeId#
+            </isNotNull>
+            <isNotNull property="internalName" prepend=" AND ">
+                `INTERNAL_NAME` = #internalName#
+            </isNotNull>
+            <isNotNull property="brandName" prepend=" AND ">
+                `BRAND_NAME` = #brandName#
+            </isNotNull>
+            <isNotNull property="comments" prepend=" AND ">
+                `COMMENTS` = #comments#
+            </isNotNull>
+            <isNotNull property="productName" prepend=" AND ">
+                `PRODUCT_NAME` = #productName#
+            </isNotNull>
+            <isNotNull property="description" prepend=" AND ">
+                `DESCRIPTION` = #description#
+            </isNotNull>
+            <isNotNull property="longDescription" prepend=" AND ">
+                `LONG_DESCRIPTION` = #longDescription#
+            </isNotNull>
+            <isNotNull property="quantityUomId" prepend=" AND ">
+                `QUANTITY_UOM_ID` = #quantityUomId#
+            </isNotNull>
+            <isNotNull property="quantityIncluded" prepend=" AND ">
+                `QUANTITY_INCLUDED` = #quantityIncluded#
+            </isNotNull>
+            <isNotNull property="chargeShipping" prepend=" AND ">
+                `CHARGE_SHIPPING` = #chargeShipping#
+            </isNotNull>
+            <isNotNull property="autoCreateKeywords" prepend=" AND ">
+                `AUTO_CREATE_KEYWORDS` = #autoCreateKeywords#
+            </isNotNull>
+            <isNotNull property="billOfMaterialLevel" prepend=" AND ">
+                `BILL_OF_MATERIAL_LEVEL` = #billOfMaterialLevel#
+            </isNotNull>
+            <isNotNull property="configId" prepend=" AND ">
+                `CONFIG_ID` = #configId#
+            </isNotNull>
+            <isNotNull property="productMakeDetails" prepend=" AND ">
+                `PRODUCT_MAKE_DETAILS` = #productMakeDetails#
+            </isNotNull>
+            <isNotNull property="materialClassification" prepend=" AND ">
+                `MATERIAL_CLASSIFICATION` = #materialClassification#
+            </isNotNull>
+            <isNotNull property="isActive" prepend=" AND ">
+                `IS_ACTIVE` = #isActive#
+            </isNotNull>
+            <isNotNull property="isSerialized" prepend=" AND ">
+                `IS_SERIALIZED` = #isSerialized#
+            </isNotNull>
+            <isNotNull property="productCodeTypeId" prepend=" AND ">
+                `PRODUCT_CODE_TYPE_ID` = #productCodeTypeId#
+            </isNotNull>
+            <isNotNull property="plNo" prepend=" AND ">
+                `PL_NO` = #plNo#
+            </isNotNull>
+            <isNotNull property="rlyId" prepend=" AND ">
+                `RLY_ID` = #rlyId#
+            </isNotNull>
+            <isNotNull property="trdDivId" prepend=" AND ">
+                `TRD_DIV_ID` = #trdDivId#
+            </isNotNull>
+            <isNotNull property="createdDate" prepend=" AND ">
+                `CREATED_DATE` = #createdDate#
+            </isNotNull>
+            <isNotNull property="createdByUserLogin" prepend=" AND ">
+                `CREATED_BY_USER_LOGIN` = #createdByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastModifiedDate" prepend=" AND ">
+                `LAST_MODIFIED_DATE` = #lastModifiedDate#
+            </isNotNull>
+            <isNotNull property="lastModifiedByUserLogin" prepend=" AND ">
+                `LAST_MODIFIED_BY_USER_LOGIN` = #lastModifiedByUserLogin#
+            </isNotNull>
+            <isNotNull property="lastUpdatedStamp" prepend=" AND ">
+                `LAST_UPDATED_STAMP` = #lastUpdatedStamp#
+            </isNotNull>
+            <isNotNull property="lastUpdatedTxStamp" prepend=" AND ">
+                `LAST_UPDATED_TX_STAMP` = #lastUpdatedTxStamp#
+            </isNotNull>
+            <isNotNull property="createdStamp" prepend=" AND ">
+                `CREATED_STAMP` = #createdStamp#
+            </isNotNull>
+            <isNotNull property="createdTxStamp" prepend=" AND ">
+                `CREATED_TX_STAMP` = #createdTxStamp#
+            </isNotNull>
+        </dynamic>
+    </select>
+
+    <!--
+       开发负责人：duxing //change at Setting Tab
+       功能说明：物理删除单条数据
+       前台或后台：后台
+       频率：每天100以下
+       表大小：10W
+       分表数量：无
+       是否有缓存：无
+    -->
+    <update id="delete">
+        UPDATE `product` SET `{DELETE_KEY}` = '1' WHERE `${primaryKeyColumn.name}` = #${primaryKeyColumn.property}#;
+    </update>
+
+</sqlMap>

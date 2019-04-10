@@ -2,17 +2,28 @@
 package com.school.foot_patroling.register.model;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
+
+import com.school.foot_patroling.database.dbconverters.InspectionTypeDto_Converter;
 
 import java.util.List;
 @Entity(tableName = "UpdatedResponseInspectionTypeDto")
 public class UpdatedResponseInspectionTypeDto {
 
     @PrimaryKey
-    @ColumnInfo(name = "count")
+    @NonNull
+    @ColumnInfo(name = "count17")
     private Integer count;
-    private List<InspectionTypeDto_> inspectionTypeDtos = null;
+    @TypeConverters(InspectionTypeDto_Converter.class)
+    @ColumnInfo(name = "inspectionTypeDtos")
+    private List<InspectionTypeDto_> inspectionTypeDtos;
+
+    public UpdatedResponseInspectionTypeDto() {
+    }
 
     public Integer getCount() {
         return count;

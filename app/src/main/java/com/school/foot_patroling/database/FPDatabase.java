@@ -6,9 +6,58 @@ import android.arch.persistence.room.DatabaseConfiguration;
 import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import com.school.foot_patroling.database.dao.CreatedFootPatrollingSectionsDtoDao;
+import com.school.foot_patroling.database.dao.CreatedFunctionalLocationHierarchyDtoDao;
+import com.school.foot_patroling.database.dao.CreatedObservationCategoriesDtoDao;
+import com.school.foot_patroling.database.dao.CreatedObservationsCheckListDtoDao;
+import com.school.foot_patroling.database.dao.CreatedResponseFacilityDtoDao;
+import com.school.foot_patroling.database.dao.CreatedResponseInspectionTypeDtoDao;
+import com.school.foot_patroling.database.dao.CreatedResponseOheLocationDtoDao;
+import com.school.foot_patroling.database.dao.CreatedResponseProductDtoDao;
+import com.school.foot_patroling.database.dao.CreatedResponseUserLoginDtoDao;
+import com.school.foot_patroling.database.dao.DeviceAuthModelDao;
+import com.school.foot_patroling.database.dao.FacilityDtoDao;
+import com.school.foot_patroling.database.dao.FacilityDto_Dao;
+import com.school.foot_patroling.database.dao.FootPatrollingSectionsDtoDao;
+import com.school.foot_patroling.database.dao.FootPatrollingSectionsDto_Dao;
+import com.school.foot_patroling.database.dao.InspectionTypeDtoDao;
+import com.school.foot_patroling.database.dao.InspectionTypeDto_Dao;
+import com.school.foot_patroling.database.dao.MasterDtoDao;
+import com.school.foot_patroling.database.dao.ObservationCategoriesDtoDao;
+import com.school.foot_patroling.database.dao.ObservationCategoriesDto_Dao;
+import com.school.foot_patroling.database.dao.ObservationsCheckListDtoDao;
+import com.school.foot_patroling.database.dao.ObservationsCheckListDto_Dao;
+import com.school.foot_patroling.database.dao.ProductDtoDao;
+import com.school.foot_patroling.database.dao.ProductDto_Dao;
+import com.school.foot_patroling.database.dao.RegistrationRequestModelDao;
+import com.school.foot_patroling.database.dao.UpdatedFootPatrollingSectionsDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedFunctionalLocationHierarchyDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedObservationCategoriesDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedObservationsCheckListDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedResponseFacilityDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedResponseInspectionTypeDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedResponseOheLocationDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedResponseProductDtoDao;
+import com.school.foot_patroling.database.dao.UpdatedResponseUserLoginDtoDao;
+import com.school.foot_patroling.database.dao.UserLoginDtoDao;
+import com.school.foot_patroling.database.dao.UserLoginDto_Dao;
+import com.school.foot_patroling.database.dbconverters.FacilityDtoConverter;
+import com.school.foot_patroling.database.dbconverters.FacilityDto_Converter;
+import com.school.foot_patroling.database.dbconverters.FootPatrollingSectionsDtoConverter;
+import com.school.foot_patroling.database.dbconverters.FootPatrollingSectionsDto_Converter;
+import com.school.foot_patroling.database.dbconverters.InspectionTypeDtoConverter;
+import com.school.foot_patroling.database.dbconverters.InspectionTypeDto_Converter;
+import com.school.foot_patroling.database.dbconverters.ObservationCategoriesDtoConverter;
+import com.school.foot_patroling.database.dbconverters.ObservationCategoriesDto_Converter;
+import com.school.foot_patroling.database.dbconverters.ObservationsCheckListDtoConverter;
+import com.school.foot_patroling.database.dbconverters.ObservationsCheckListDto_Converter;
+import com.school.foot_patroling.database.dbconverters.ProductDtoConverter;
+import com.school.foot_patroling.database.dbconverters.ProductDto_Converter;
+import com.school.foot_patroling.database.dbconverters.UserLoginDtoConverter;
+import com.school.foot_patroling.database.dbconverters.UserLoginDto_Converter;
 import com.school.foot_patroling.register.model.CreatedFootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.CreatedFunctionalLocationHierarchyDto;
 import com.school.foot_patroling.register.model.CreatedObservationCategoriesDto;
@@ -80,42 +129,49 @@ import com.school.foot_patroling.register.model.UserLoginDto_;
         UpdatedResponseUserLoginDto.class,
         UserLoginDto.class,
         UserLoginDto_.class},version = 1)
+//@TypeConverters({ObservationCategoriesDtoConverter.class, FacilityDto_Converter.class, FacilityDtoConverter.class,
+//        FootPatrollingSectionsDto_Converter.class, FootPatrollingSectionsDtoConverter.class,
+//        InspectionTypeDtoConverter.class, InspectionTypeDto_Converter.class,
+//        ObservationCategoriesDtoConverter.class, ObservationCategoriesDto_Converter.class,
+//        ObservationsCheckListDto_Converter.class, ObservationsCheckListDtoConverter.class,
+//        ProductDto_Converter.class, ProductDtoConverter.class,
+//        UserLoginDto_Converter.class, UserLoginDtoConverter.class})
 public abstract class FPDatabase extends RoomDatabase {
 
-    public abstract CreatedFootPatrollingSectionsDtoDao CreatedFootPatrollingSectionsDtoDaoDao();
-    public abstract CreatedFunctionalLocationHierarchyDto CreatedFunctionalLocationHierarchyDtoDao();
-    public abstract CreatedObservationCategoriesDto CreatedObservationCategoriesDtoDao();
-    public abstract CreatedObservationsCheckListDto CreatedObservationsCheckListDtoDao();
-    public abstract CreatedResponseFacilityDto CreatedResponseFacilityDtoDao();
-    public abstract CreatedResponseInspectionTypeDto CreatedResponseInspectionTypeDtoDao();
-    public abstract CreatedResponseOheLocationDto CreatedResponseOheLocationDtoDao();
-    public abstract CreatedResponseProductDto CreatedResponseProductDtoDao();
-    public abstract CreatedResponseUserLoginDto CreatedResponseUserLoginDtoDao();
-    public abstract DeviceAuthModel DeviceAuthModelDao();
-    public abstract FacilityDto FacilityDtoDao();
-    public abstract FacilityDto_ FacilityDto_Dao();
-    public abstract FootPatrollingSectionsDto FootPatrollingSectionsDtoDao();
-    public abstract FootPatrollingSectionsDto_ FootPatrollingSectionsDto_Dao();
-    public abstract InspectionTypeDto InspectionTypeDtoDao();
-    public abstract InspectionTypeDto_ InspectionTypeDto_Dao();
-    public abstract MasterDto MasterDtoDao();
-    public abstract ObservationCategoriesDto ObservationCategoriesDtoDao();
-    public abstract ObservationCategoriesDto_ ObservationCategoriesDto_Dao();
-    public abstract ObservationsCheckListDto ObservationsCheckListDtoDao();
-    public abstract ObservationsCheckListDto_ ObservationsCheckListDto_Dao();
-    public abstract ProductDto ProductDtoDao();
-    public abstract ProductDto_ ProductDto_Dao();
-    public abstract RegistrationRequestModel RegistrationRequestModelDao();
-    public abstract UpdatedObservationCategoriesDto UpdatedObservationCategoriesDtoDao();
-    public abstract UpdatedObservationsCheckListDto UpdatedObservationsCheckListDtoDao();
-    public abstract UpdatedFootPatrollingSectionsDto UpdatedFootPatrollingSectionsDtoDao();
-    public abstract UpdatedFunctionalLocationHierarchyDto UpdatedFunctionalLocationHierarchyDtoDao();
-    public abstract UpdatedResponseFacilityDto UpdatedResponseFacilityDtoDao();
-    public abstract UpdatedResponseInspectionTypeDto UpdatedResponseInspectionTypeDtoDao();
-    public abstract UpdatedResponseOheLocationDto UpdatedResponseOheLocationDtoDao();
-    public abstract UpdatedResponseProductDto UpdatedResponseProductDtoDao();
-    public abstract UpdatedResponseUserLoginDto UpdatedResponseUserLoginDtoDao();
-    public abstract UserLoginDto UserLoginDtoDao();
-    public abstract UserLoginDto_ UserLoginDto_Dao();
+    public abstract CreatedFootPatrollingSectionsDtoDao createdFootPatrollingSectionsDtoDaoDao();
+    public abstract CreatedFunctionalLocationHierarchyDtoDao createdFunctionalLocationHierarchyDtoDao();
+    public abstract CreatedObservationCategoriesDtoDao createdObservationCategoriesDtoDao();
+    public abstract CreatedObservationsCheckListDtoDao createdObservationsCheckListDtoDao();
+    public abstract CreatedResponseFacilityDtoDao createdResponseFacilityDtoDao();
+    public abstract CreatedResponseInspectionTypeDtoDao createdResponseInspectionTypeDtoDao();
+    public abstract CreatedResponseOheLocationDtoDao createdResponseOheLocationDtoDao();
+    public abstract CreatedResponseProductDtoDao createdResponseProductDtoDao();
+    public abstract CreatedResponseUserLoginDtoDao createdResponseUserLoginDtoDao();
+    public abstract DeviceAuthModelDao deviceAuthModelDao();
+    public abstract FacilityDtoDao facilityDtoDao();
+    public abstract FacilityDto_Dao facilityDto_Dao();
+    public abstract FootPatrollingSectionsDtoDao footPatrollingSectionsDtoDao();
+    public abstract FootPatrollingSectionsDto_Dao footPatrollingSectionsDto_Dao();
+    public abstract InspectionTypeDtoDao inspectionTypeDtoDao();
+    public abstract InspectionTypeDto_Dao inspectionTypeDto_Dao();
+    public abstract MasterDtoDao masterDtoDao();
+    public abstract ObservationCategoriesDtoDao observationCategoriesDtoDao();
+    public abstract ObservationCategoriesDto_Dao observationCategoriesDto_Dao();
+    public abstract ObservationsCheckListDtoDao observationsCheckListDtoDao();
+    public abstract ObservationsCheckListDto_Dao observationsCheckListDto_Dao();
+    public abstract ProductDtoDao productDtoDao();
+    public abstract ProductDto_Dao productDto_Dao();
+    public abstract RegistrationRequestModelDao registrationRequestModelDao();
+    public abstract UpdatedObservationCategoriesDtoDao updatedObservationCategoriesDtoDao();
+    public abstract UpdatedObservationsCheckListDtoDao updatedObservationsCheckListDtoDao();
+    public abstract UpdatedFootPatrollingSectionsDtoDao updatedFootPatrollingSectionsDtoDao();
+    public abstract UpdatedFunctionalLocationHierarchyDtoDao updatedFunctionalLocationHierarchyDtoDao();
+    public abstract UpdatedResponseFacilityDtoDao updatedResponseFacilityDtoDao();
+    public abstract UpdatedResponseInspectionTypeDtoDao updatedResponseInspectionTypeDtoDao();
+    public abstract UpdatedResponseOheLocationDtoDao updatedResponseOheLocationDtoDao();
+    public abstract UpdatedResponseProductDtoDao updatedResponseProductDtoDao();
+    public abstract UpdatedResponseUserLoginDtoDao updatedResponseUserLoginDtoDao();
+    public abstract UserLoginDtoDao userLoginDtoDao();
+    public abstract UserLoginDto_Dao userLoginDto_Dao();
 
 }

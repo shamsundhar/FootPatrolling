@@ -16,10 +16,10 @@ public interface CreatedObservationCategoriesDtoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CreatedObservationCategoriesDto createdObservationCategoriesDto);
 
-    @Query("DELETE FROM ObservationCategoriesDto")
+    @Query("DELETE FROM CreatedObservationCategoriesDto")
     void deleteAll();
 
-    @Query("SELECT * from ObservationCategoriesDto") //" ORDER BY message_id ASC")
+    @Query("SELECT * from CreatedObservationCategoriesDto") //" ORDER BY message_id ASC")
     List<CreatedObservationCategoriesDto> getAllCreatedObservationCategoriesDtos();
 
 

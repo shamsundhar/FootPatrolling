@@ -2,17 +2,23 @@
 package com.school.foot_patroling.register.model;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "UpdatedResponseOheLocationDto")
 public class UpdatedResponseOheLocationDto {
 
     @PrimaryKey
-    @ColumnInfo(name = "count")
+    @NonNull
+    @ColumnInfo(name = "count8")
     private Integer count;
-    @ColumnInfo(name = "oheLocationDtos")
+    @Embedded
     private Object oheLocationDtos;
+
+    public UpdatedResponseOheLocationDto() {
+    }
 
     public Integer getCount() {
         return count;

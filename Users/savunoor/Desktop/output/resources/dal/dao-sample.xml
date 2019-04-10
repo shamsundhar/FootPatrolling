@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Generate by autoDAO.Xml Powered by duxing@Taobao -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-autowire="byName">
+
+    <bean id="productDAO" class="com.sample.biz.dal.dao.impl.ProductDAOImpl" parent="baseDAO"/>
+
+</beans>

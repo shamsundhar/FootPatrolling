@@ -4,27 +4,32 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "ObservationCategoriesDto")
 public class ObservationCategoriesDto {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "seqId")
     private String seqId;
     @ColumnInfo(name = "department")
     private String department;
     @ColumnInfo(name = "description")
-    private Object description;
+    private String description;
     @ColumnInfo(name = "fromDate")
-    private Object fromDate;
+    private String fromDate;
     @ColumnInfo(name = "inspectionType")
     private String inspectionType;
     @ColumnInfo(name = "observationCategory")
     private String observationCategory;
     @ColumnInfo(name = "remark")
-    private Object remark;
+    private String remark;
     @ColumnInfo(name = "thruDate")
-    private Object thruDate;
+    private String thruDate;
+
+    public ObservationCategoriesDto() {
+    }
 
     public String getDepartment() {
         return department;
@@ -34,19 +39,19 @@ public class ObservationCategoriesDto {
         this.department = department;
     }
 
-    public Object getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Object getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Object fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
@@ -66,11 +71,11 @@ public class ObservationCategoriesDto {
         this.observationCategory = observationCategory;
     }
 
-    public Object getRemark() {
+    public String getRemark() {
         return remark;
     }
 
-    public void setRemark(Object remark) {
+    public void setRemark(String remark) {
         this.remark = remark;
     }
 
@@ -82,11 +87,11 @@ public class ObservationCategoriesDto {
         this.seqId = seqId;
     }
 
-    public Object getThruDate() {
+    public String getThruDate() {
         return thruDate;
     }
 
-    public void setThruDate(Object thruDate) {
+    public void setThruDate(String thruDate) {
         this.thruDate = thruDate;
     }
 

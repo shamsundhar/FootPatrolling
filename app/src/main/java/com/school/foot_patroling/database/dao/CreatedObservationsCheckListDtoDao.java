@@ -15,9 +15,9 @@ public interface CreatedObservationsCheckListDtoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CreatedObservationsCheckListDto createdObservationsCheckListDto);
 
-    @Query("DELETE FROM ObservationsCheckListDto")
+    @Query("DELETE FROM CreatedObservationsCheckListDto")
     void deleteAll();
 
-    @Query("SELECT * from ObservationsCheckListDto") //" ORDER BY message_id ASC")
+    @Query("SELECT * from CreatedObservationsCheckListDto") //" ORDER BY message_id ASC")
     List<CreatedObservationsCheckListDto> getAllCreatedObservationsCheckListDtos();
 }

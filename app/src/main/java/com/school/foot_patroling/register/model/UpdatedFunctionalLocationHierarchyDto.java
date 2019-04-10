@@ -10,10 +10,13 @@ import android.arch.persistence.room.PrimaryKey;
 public class UpdatedFunctionalLocationHierarchyDto {
 
     @PrimaryKey
-    @ColumnInfo(name = "count")
+    @ColumnInfo(name = "count15")
     private Integer count;
     @Embedded
     private Object functionalLocationHierarchyDtos;
+
+    public UpdatedFunctionalLocationHierarchyDto() {
+    }
 
     public Integer getCount() {
         return count;

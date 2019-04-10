@@ -3,11 +3,13 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "DeviceAuthModel")
 public class DeviceAuthModel {
 
 	@PrimaryKey
+	@NonNull
 	@ColumnInfo(name = "imeiNo")
 	private String imeiNo;
 	@ColumnInfo(name = "imeiAuth")
@@ -18,6 +20,9 @@ public class DeviceAuthModel {
 	private String message;
 	@ColumnInfo(name = "appName")
 	private String appName;
+
+	public DeviceAuthModel() {
+	}
 
 	public String getImeiNo() {
 		return imeiNo;

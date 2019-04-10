@@ -5,11 +5,13 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "MasterDto")
 public class MasterDto {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "appName")
     private String appName;
     @Embedded
@@ -82,6 +84,9 @@ public class MasterDto {
     private UpdatedResponseProductDto updatedResponseProductDto;
     @Embedded
     private UpdatedResponseUserLoginDto updatedResponseUserLoginDto;
+
+    public MasterDto() {
+    }
 
     public String getAppName() {
         return appName;

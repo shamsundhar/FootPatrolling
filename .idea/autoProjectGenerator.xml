@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PluginProjectConfig">
+    <option name="path" value="$USER_HOME$/Desktop/output" />
+    <option name="sql" value="&#10;&#10;&#10;CREATE TABLE product&#10;( product_id TEXT PRIMARY KEY NOT NULL,&#10;product_type_id TEXT,&#10;internal_name TEXT,&#10;brand_name TEXT,&#10;comments TEXT,&#10;product_name TEXT,&#10;description TEXT,&#10;long_description TEXT,&#10;quantity_uom_id TEXT,&#10;quantity_included numeric(18,6),&#10;charge_shipping TEXT,&#10;auto_create_keywords TEXT,&#10;bill_of_material_level numeric(20,0),&#10;config_id TEXT,&#10;product_make_details TEXT,&#10;material_classification TEXT,&#10;is_active TEXT,&#10;is_serialized TEXT,&#10;product_code_type_id TEXT,&#10;pl_no TEXT, rly_id TEXT,&#10;trd_div_id TEXT,&#10;created_date TEXT,&#10;created_by_user_login TEXT,&#10;last_modified_date TEXT,&#10;last_modified_by_user_login TEXT,&#10;last_updated_stamp TEXT,&#10;last_updated_tx_stamp TEXT,&#10;created_stamp TEXT,&#10;created_tx_stamp TEXT&#10;);" />
+  </component>
+</project>

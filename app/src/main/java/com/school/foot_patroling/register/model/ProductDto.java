@@ -4,11 +4,13 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "ProductDto")
 public class ProductDto {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "amountUomTypeId")
     private String amountUomTypeId;
     @ColumnInfo(name = "autoCreateKeywords")
@@ -170,6 +172,8 @@ public class ProductDto {
     @ColumnInfo(name = "widthUomId")
     private String widthUomId;
 
+    public ProductDto() {
+    }
 
     public String getAmountUomTypeId() {
         return amountUomTypeId;

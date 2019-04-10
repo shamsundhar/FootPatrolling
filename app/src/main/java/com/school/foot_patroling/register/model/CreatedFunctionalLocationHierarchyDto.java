@@ -2,14 +2,24 @@
 package com.school.foot_patroling.register.model;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "FunctionalLocationHierarchyDto")
 public class CreatedFunctionalLocationHierarchyDto {
 
-    @ColumnInfo(name = "count")
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "count1")
     private Integer count;
-    @ColumnInfo(name = "functionalLocationHierarchyDtos")
+
+    public CreatedFunctionalLocationHierarchyDto() {
+
+    }
+
+    @Embedded
     private Object functionalLocationHierarchyDtos;
 
     public Integer getCount() {

@@ -4,19 +4,21 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-@Entity(tableName = "ObservationsCheckListDto")
+@Entity(tableName = "ObservationsCheckListDto_2")
 public class ObservationsCheckListDto {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "seqId")
     private String seqId;
     @ColumnInfo(name = "description")
-    private Object description;
+    private String description;
     @ColumnInfo(name = "displaySequence")
     private String displaySequence;
     @ColumnInfo(name = "fromDate")
-    private Object fromDate;
+    private String fromDate;
     @ColumnInfo(name = "inspectionType")
     private String inspectionType;
     @ColumnInfo(name = "observationCategory")
@@ -26,13 +28,16 @@ public class ObservationsCheckListDto {
     @ColumnInfo(name = "priority")
     private String priority;
     @ColumnInfo(name = "thruDate")
-    private Object thruDate;
+    private String thruDate;
 
-    public Object getDescription() {
+    public ObservationsCheckListDto() {
+    }
+
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -44,11 +49,11 @@ public class ObservationsCheckListDto {
         this.displaySequence = displaySequence;
     }
 
-    public Object getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Object fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
@@ -92,11 +97,11 @@ public class ObservationsCheckListDto {
         this.seqId = seqId;
     }
 
-    public Object getThruDate() {
+    public String getThruDate() {
         return thruDate;
     }
 
-    public void setThruDate(Object thruDate) {
+    public void setThruDate(String thruDate) {
         this.thruDate = thruDate;
     }
 

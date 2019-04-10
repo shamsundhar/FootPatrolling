@@ -4,11 +4,13 @@ package com.school.foot_patroling.register.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "UserLoginDto_")
 public class UserLoginDto_ {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "userLoginId")
     private String userLoginId;
     @ColumnInfo(name = "createdStamp")
@@ -49,6 +51,9 @@ public class UserLoginDto_ {
     private String successiveFailedLogins;
     @ColumnInfo(name = "userLdapDn")
     private String userLdapDn;
+
+    public UserLoginDto_() {
+    }
 
     public String getCreatedStamp() {
         return createdStamp;

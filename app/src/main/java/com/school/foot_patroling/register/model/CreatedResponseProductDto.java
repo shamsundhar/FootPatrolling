@@ -2,16 +2,28 @@
 package com.school.foot_patroling.register.model;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
+
+import com.school.foot_patroling.database.dbconverters.ProductDtoConverter;
 
 import java.util.List;
 @Entity(tableName = "ResponseProductDto")
 public class CreatedResponseProductDto {
 
-    @ColumnInfo(name = "count")
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "count4")
     private Integer count;
-    @ColumnInfo(name = "productDtos")
-    private List<ProductDto> productDtos = null;
+    @TypeConverters(ProductDtoConverter.class)
+    @ColumnInfo(name = "productDtos6")
+    private List<ProductDto> productDtos;
+
+    public CreatedResponseProductDto() {
+    }
 
     public Integer getCount() {
         return count;

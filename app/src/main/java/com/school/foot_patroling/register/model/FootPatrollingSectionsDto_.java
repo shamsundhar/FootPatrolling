@@ -2,13 +2,16 @@
 package com.school.foot_patroling.register.model;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "FootPatrollingSectionsDto_")
 public class FootPatrollingSectionsDto_ {
 
     @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "seqId")
     private String seqId;
     @ColumnInfo(name = "facilityDepot")
@@ -19,12 +22,15 @@ public class FootPatrollingSectionsDto_ {
     private String fromDate;
     @ColumnInfo(name = "fromLocation")
     private String fromLocation;
-    @ColumnInfo(name = "remarks")
-    private Object remarks;
+    @Embedded
+    private String remarks;
     @ColumnInfo(name = "toDate")
     private String toDate;
     @ColumnInfo(name = "toLocation")
     private String toLocation;
+
+    public FootPatrollingSectionsDto_() {
+    }
 
     public String getFacilityDepot() {
         return facilityDepot;
@@ -58,11 +64,11 @@ public class FootPatrollingSectionsDto_ {
         this.fromLocation = fromLocation;
     }
 
-    public Object getRemarks() {
+    public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(Object remarks) {
+    public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
 
