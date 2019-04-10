@@ -6,6 +6,7 @@
     <string name="text_please_wait">Please wait...</string>
     <string name="text_authenticating">Authenticating...</string>
 
+    <string name="text_checklist">Check List</string>
     <string name="text_datasync">Data Sync</string>
     <string name="text_reports">Reports and Status</string>
     <string name="text_schedule">Schedule Entry</string>

@@ -107,6 +107,7 @@ public class NavigationDrawerActivity extends BaseActivity
     public void displayLoginFragment(){
         setTitle(null);
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
+        nav_Menu.findItem(R.id.nav_checklist).setVisible(false);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  LoginFragment.newInstance(), LOGIN_FRAGMENT_TAG)
@@ -115,6 +116,7 @@ public class NavigationDrawerActivity extends BaseActivity
     public void displayCheckedListFragment(){
         setTitle(null);
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
@@ -130,6 +132,8 @@ public class NavigationDrawerActivity extends BaseActivity
             doLogout();
         } else if(id == R.id.nav_login){
             displayLoginFragment();
+        }else if(id == R.id.nav_checklist){
+            displayCheckedListFragment();
         }else if (id == R.id.nav_data) {
             setTitle(null);
             getSupportFragmentManager()
