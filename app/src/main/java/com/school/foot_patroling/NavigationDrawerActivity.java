@@ -2,6 +2,7 @@ package com.school.foot_patroling;
 
 import android.app.ProgressDialog;
 
+import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncFragment;
 import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
 import com.school.foot_patroling.login.LoginFragment;
@@ -36,6 +38,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,7 +68,7 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String NOTES_FRAGMENT_TAG = "NOTES_FRAGMENT";
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
-
+    public static FPDatabase mFPDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +77,7 @@ public class NavigationDrawerActivity extends BaseActivity
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mFPDatabase = Room.databaseBuilder(this,FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
         ActionBar actionBar = getSupportActionBar();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

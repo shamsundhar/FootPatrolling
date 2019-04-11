@@ -12,6 +12,7 @@ import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
+import com.school.foot_patroling.register.model.UserLoginDto;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -45,20 +46,21 @@ public class LoginFragment extends BaseFragment {
              try {
                  if (database != null) {
                      Log.d(TAG, "fetching user id");
-                     String sql = "select user_login_id,current_password from user_login";
-                     String db_username = "";
-                     String db_password = "";
-                     Cursor cursor = database.rawQuery(sql, null);
-                     if (cursor.moveToFirst()) {
-                         while (!cursor.isAfterLast()) {
-                             db_username = cursor.getString(0);
-                             db_password = cursor.getString(1);
-                             cursor.moveToNext();
-                         }
-                     }
-                     cursor.close();
+//                     String sql = "select user_login_id,current_password from user_login";
+//                     String db_username = "";
+//                     String db_password = "";
+//                     Cursor cursor = database.rawQuery(sql, null);
+//                     if (cursor.moveToFirst()) {
+//                         while (!cursor.isAfterLast()) {
+//                             db_username = cursor.getString(0);
+//                             db_password = cursor.getString(1);
+//                             cursor.moveToNext();
+//                         }
+//                     }
+//                     cursor.close();
+                     UserLoginDto userLoginDto = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getUserByUnamePassword(mUsername);
                      shaPassword = sha1(mPassword);
-                     if(shaPassword.equals(db_password))
+                     if(shaPassword.equals(userLoginDto.getCurrentPassword()))
                      {
                          ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
                          ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();

@@ -1,8 +1,10 @@
 package com.school.foot_patroling;
 
 import android.app.Application;
+import android.arch.persistence.room.Room;
 import android.content.res.Resources;
 
+import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.injection.components.AppComponent;
 import com.school.foot_patroling.injection.components.DaggerAppComponent;
 import com.school.foot_patroling.injection.modules.AppModule;
@@ -12,6 +14,8 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+
+import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 
 @ReportsCrashes(mailTo = "shyam.kdp@gmail.com", customReportContent = {
         ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME,
@@ -31,6 +35,8 @@ public class MyApplication extends Application {
         sAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
+        NavigationDrawerActivity.mFPDatabase = Room.databaseBuilder(this, FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
+
 //        sAppComponent = DaggerAppComponent.create();
 
 
