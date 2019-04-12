@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
+import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.register.model.ProductDto;
 import com.school.foot_patroling.register.model.ProductDto_;
 import com.school.foot_patroling.register.model.UserLoginDto;
@@ -809,6 +810,37 @@ public class DataUpdateDAO {
 //
 //        return result;
 //    }
+public boolean insertChecklistData(ObservationsCheckListDto checkListDto, SQLiteDatabase db) {
+    boolean result = false;
+    ArrayList<String> values = new ArrayList<>();
+    if(checkListDto.getDescription() == null){
+        checkListDto.setDescription("");
+    }
+    if(checkListDto.getFromDate() == null){
+        checkListDto.setFromDate("");
+    }
+    if(checkListDto.getThruDate() == null){
+        checkListDto.setThruDate("");
+    }
+    values.add(checkListDto.getSeqId());
+    values.add(checkListDto.getInspectionType());
+    values.add(checkListDto.getObservationCategory());
+    values.add(checkListDto.getObservationItem());
+    values.add(checkListDto.getDescription());
+    values.add(checkListDto.getFromDate());
+    values.add(checkListDto.getThruDate());
+    values.add(checkListDto.getPriority());
+    values.add(checkListDto.getDisplaySequence());
+
+    try {
+        result = DataUpdateDAO.getInstance().insertTableData(Constants.CHECKLIST_INSERT_SQL, values.toArray(new String[values.size()]), db);
+
+    } catch (Exception e){
+
+        Log.e(TAG, "syncChecklistData - : " + e.getMessage());
+    }
+    return result;
+}
 
         public boolean insertProductData(ProductDto productDto, SQLiteDatabase db) {
 

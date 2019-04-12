@@ -41,6 +41,10 @@ public class Constants {
             "is_active, product_code_type_id, pl_no, rly_id, trd_div_id, last_updated_stamp, last_updated_tx_stamp, " +
             "created_stamp, created_tx_stamp ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+    public static String CHECKLIST_INSERT_SQL = "insert into observations_check_list (seq_id, inspection_type, observation_category, observation_item, description, " +
+            "from_date, thru_date, priority, display_sequence ) values (?,?,?,?,?,?,?,?,?)";
+
+
     public static String PRODUCT_UPDATE_SQL = "update product set product_type_id = ?, internal_name = ?, product_name = ?, " +
             "bill_of_material_level = ?, is_active = ?, product_code_type_id = ?, pl_no = ?, rly_id = ?, trd_div_id = ?, last_updated_stamp = ?, " +
             "last_updated_tx_stamp = ?, created_stamp = ?, created_tx_stamp = ? where product_id = ?";

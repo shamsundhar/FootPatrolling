@@ -50,6 +50,7 @@ import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
 import com.school.foot_patroling.register.model.MasterDto;
+import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.register.model.ProductDto;
 import com.school.foot_patroling.register.model.ProductDto_;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
@@ -467,6 +468,18 @@ public class RegisterActivity extends BaseActivity {
                     progressValue = progressValue + 1;
                     // publishProgress(progressValue);
                 }
+                List<ObservationsCheckListDto> insertChecklistDtos = dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos();
+                if (insertChecklistDtos != null && insertChecklistDtos.size() > 0) {
+
+                    Log.d(TAG, "product insert records : " + insertChecklistDtos.size());
+
+                    for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
+                        dataUpdateDAO.insertChecklistData(checkListDto, db);
+                    }
+                    progressValue = progressValue + 1;
+                    //  publishProgress(progressValue);
+                }
+
 
                 List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
 

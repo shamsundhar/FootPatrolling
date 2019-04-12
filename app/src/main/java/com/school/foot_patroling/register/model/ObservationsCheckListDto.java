@@ -6,13 +6,13 @@ public class ObservationsCheckListDto {
 
     private String description;
     private String displaySequence;
-    private Object fromDate;
+    private String fromDate;
     private String inspectionType;
     private String observationCategory;
     private String observationItem;
     private String priority;
     private String seqId;
-    private Object thruDate;
+    private String thruDate;
 
     public String getDescription() {
         return description;
@@ -30,11 +30,11 @@ public class ObservationsCheckListDto {
         this.displaySequence = displaySequence;
     }
 
-    public Object getFromDate() {
+    public String getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Object fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
@@ -78,11 +78,11 @@ public class ObservationsCheckListDto {
         this.seqId = seqId;
     }
 
-    public Object getThruDate() {
+    public String getThruDate() {
         return thruDate;
     }
 
-    public void setThruDate(Object thruDate) {
+    public void setThruDate(String thruDate) {
         this.thruDate = thruDate;
     }
 
