@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.school.foot_patroling.BaseFragment;
+import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
@@ -101,18 +102,19 @@ public class PatrolingListFragment extends BaseFragment {
             if (database != null) {
                 Log.d(TAG, "fetching user id");
                 String sql = "select priority, description from observations_check_list";
-
-                Cursor cursor = database.rawQuery(sql, null);
-                if (cursor.moveToFirst()) {
-                    while (!cursor.isAfterLast()) {
-                        ObservationsCheckListDto dto = new ObservationsCheckListDto();
-                        dto.setPriority( cursor.getString(0) );
-                        dto.setDescription( cursor.getString(1) );
-                        cursor.moveToNext();
-                        checkList.add(dto);
-                    }
-                }
-                cursor.close();
+                checkList = new ArrayList<>();
+                checkList.addAll(NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos());
+//                Cursor cursor = database.rawQuery(sql, null);
+//                if (cursor.moveToFirst()) {
+//                    while (!cursor.isAfterLast()) {
+//                        ObservationsCheckListDto dto = new ObservationsCheckListDto();
+//                        dto.setPriority( cursor.getString(0) );
+//                        dto.setDescription( cursor.getString(1) );
+//                        cursor.moveToNext();
+//                        checkList.add(dto);
+//                    }
+//                }
+//                cursor.close();
             }
         }catch(Exception e){
 

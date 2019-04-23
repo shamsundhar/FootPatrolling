@@ -139,6 +139,7 @@ public class RegisterActivity extends BaseActivity {
                     model.setAppName("TRD_FP");
                     model.setCurrentTimestamp(DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S"));
                     model.setImeiNumber(selectedImei);
+                    model.setImeiNumber("867520040587478");
                     model.setPreviousTimestamp("31-01-1990 17:26:15.613");
                     registerApi.register(url, model)
                             .subscribeOn(Schedulers.io())
@@ -515,7 +516,13 @@ public class RegisterActivity extends BaseActivity {
 
                     for (UserLoginDto userLoginDto : insertUserLoginDtos) {
 
-                        dataUpdateDAO.insertUserLoginData(userLoginDto,db);
+                        //dataUpdateDAO.insertUserLoginData(userLoginDto,db);
+                        NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
+
+                    }
+
+                    for(ObservationsCheckListDto observationsCheckListDto : dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos()){
+                        NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().insert(observationsCheckListDto);
                     }
 
                     progressValue = progressValue + 1;
@@ -531,6 +538,7 @@ public class RegisterActivity extends BaseActivity {
                     for (UserLoginDto_ userLoginDto : updateUserLoginDtos) {
 
                         dataUpdateDAO.updateUserLoginData(userLoginDto, db);
+                        //NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
                     }
 
                     progressValue = progressValue + 1;
