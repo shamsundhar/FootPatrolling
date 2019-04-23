@@ -17,6 +17,7 @@
     <string name="text_logout">Logout</string>
     <string name="text_exit">Exit</string>
     <string name="text_register">Register</string>
+    <string name="text_sync_now">Sync Now</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

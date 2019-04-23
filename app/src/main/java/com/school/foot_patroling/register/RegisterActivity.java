@@ -139,7 +139,7 @@ public class RegisterActivity extends BaseActivity {
                     model.setAppName("TRD_FP");
                     model.setCurrentTimestamp(DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S"));
                     model.setImeiNumber(selectedImei);
-                    model.setImeiNumber("867520040587478");
+                 //   model.setImeiNumber("867520040587478");
                     model.setPreviousTimestamp("31-01-1990 17:26:15.613");
                     registerApi.register(url, model)
                             .subscribeOn(Schedulers.io())

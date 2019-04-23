@@ -69,14 +69,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void configureViewHolder1(ChecklistAdapter.ViewHolder1 vh1, int position) {
         ObservationsCheckListDto model = (ObservationsCheckListDto) items.get(position);
         if (model != null) {
-            vh1.getTitle().setText(model.getPriority());
-            if(model.getDescription() != null && model.getDescription().trim().length() > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    vh1.getSubtitle().setText(Html.fromHtml(model.getDescription(), Html.FROM_HTML_MODE_COMPACT));
-                } else {
-                    vh1.getSubtitle().setText(Html.fromHtml(model.getDescription()));
-                }
-            }
+            vh1.getTitle().setText(model.getObservationItem());
+            vh1.getSubtitle().setText(model.getPriority());
+
         }
     }
 
@@ -84,15 +79,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private TextView title;
         private TextView subtitle;
-        private TextView date;
-
-        public TextView getDate() {
-            return date;
-        }
-
-        public void setDate(TextView date) {
-            this.date = date;
-        }
 
         public TextView getTitle() {
             return title;
@@ -114,8 +100,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
-            date = (TextView)v.findViewById(R.id.date);
-
             applyFonts(v);
         }
         private void applyFonts(View v){
@@ -127,7 +111,6 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             Typeface tf2 = Typeface.createFromAsset(v.getContext().getAssets(), fontPath2);
             title.setTypeface(tf);
             subtitle.setTypeface(tf);
-            date.setTypeface(tf2);
         }
     }
 
