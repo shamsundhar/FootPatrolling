@@ -1,89 +1,177 @@
 
 package com.school.foot_patroling.register.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+@Entity(tableName = "product")
 public class ProductDto {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "amountUomTypeId")
     private String amountUomTypeId;
+    @ColumnInfo(name = "autoCreateKeywords")
     private String autoCreateKeywords;
+    @ColumnInfo(name = "billOfMaterialLevel")
     private String billOfMaterialLevel;
+    @ColumnInfo(name = "brandName")
     private String brandName;
+    @ColumnInfo(name = "chargeShipping")
     private String chargeShipping;
+    @ColumnInfo(name = "comments")
     private String comments;
+    @ColumnInfo(name = "configId")
     private String configId;
+    @ColumnInfo(name = "createdByUserLogin")
     private String createdByUserLogin;
+    @ColumnInfo(name = "createdDate")
     private String createdDate;
+    @ColumnInfo(name = "createdStamp")
     private String createdStamp;
+    @ColumnInfo(name = "createdTxStamp")
     private String createdTxStamp;
+    @ColumnInfo(name = "defaultShipmentBoxTypeId")
     private String defaultShipmentBoxTypeId;
+    @ColumnInfo(name = "depthUomId")
     private String depthUomId;
+    @ColumnInfo(name = "description")
     private String description;
+    @ColumnInfo(name = "detailImageUrl")
     private String detailImageUrl;
+    @ColumnInfo(name = "detailScreen")
     private String detailScreen;
+    @ColumnInfo(name = "diameterUomId")
     private String diameterUomId;
+    @ColumnInfo(name = "facilityId")
     private String facilityId;
+    @ColumnInfo(name = "fixedAmount")
     private String fixedAmount;
+    @ColumnInfo(name = "heightUomId")
     private String heightUomId;
+    @ColumnInfo(name = "includeInPromotions")
     private String includeInPromotions;
+    @ColumnInfo(name = "inShippingBox")
     private String inShippingBox;
+    @ColumnInfo(name = "internalName")
     private String internalName;
+    @ColumnInfo(name = "introductionDate")
     private String introductionDate;
+    @ColumnInfo(name = "inventoryMessage")
     private String inventoryMessage;
+    @ColumnInfo(name = "isActive")
     private String isActive;
+    @ColumnInfo(name = "isSerialized")
     private String isSerialized;
+    @ColumnInfo(name = "isVariant")
     private String isVariant;
+    @ColumnInfo(name = "isVirtual")
     private String isVirtual;
+    @ColumnInfo(name = "largeImageUrl")
     private String largeImageUrl;
+    @ColumnInfo(name = "lastModifiedByUserLogin")
     private String lastModifiedByUserLogin;
+    @ColumnInfo(name = "lastModifiedDate")
     private String lastModifiedDate;
+    @ColumnInfo(name = "lastUpdatedStamp")
     private String lastUpdatedStamp;
+    @ColumnInfo(name = "lastUpdatedTxStamp")
     private String lastUpdatedTxStamp;
+    @ColumnInfo(name = "longDescription")
     private String longDescription;
+    @ColumnInfo(name = "manufacturerPartyId")
     private String manufacturerPartyId;
+    @ColumnInfo(name = "materialClassification")
     private String materialClassification;
+    @ColumnInfo(name = "mediumImageUrl")
     private String mediumImageUrl;
+    @ColumnInfo(name = "originalImageUrl")
     private String originalImageUrl;
+    @ColumnInfo(name = "originGeoId")
     private String originGeoId;
+    @ColumnInfo(name = "piecesIncluded")
     private String piecesIncluded;
+    @ColumnInfo(name = "plNo")
     private String plNo;
+    @ColumnInfo(name = "priceDetailText")
     private String priceDetailText;
+    @ColumnInfo(name = "primaryProductCategoryId")
     private String primaryProductCategoryId;
+    @ColumnInfo(name = "productCodeTypeId")
     private String productCodeTypeId;
+    @ColumnInfo(name = "productDepth")
     private String productDepth;
+    @ColumnInfo(name = "productDiameter")
     private String productDiameter;
+    @ColumnInfo(name = "productHeight")
     private String productHeight;
+    @ColumnInfo(name = "productId")
     private String productId;
+    @ColumnInfo(name = "productMakeDetails")
     private String productMakeDetails;
+    @ColumnInfo(name = "productName")
     private String productName;
+    @ColumnInfo(name = "productRating")
     private String productRating;
+    @ColumnInfo(name = "productTypeId")
     private String productTypeId;
+    @ColumnInfo(name = "productWeight")
     private String productWeight;
+    @ColumnInfo(name = "productWidth")
     private String productWidth;
+    @ColumnInfo(name = "quantityIncluded")
     private String quantityIncluded;
+    @ColumnInfo(name = "quantityUomId")
     private String quantityUomId;
+    @ColumnInfo(name = "ratingTypeEnum")
     private String ratingTypeEnum;
+    @ColumnInfo(name = "releaseDate")
     private String releaseDate;
+    @ColumnInfo(name = "requireAmount")
     private String requireAmount;
+    @ColumnInfo(name = "requireInventory")
     private String requireInventory;
+    @ColumnInfo(name = "requirementMethodEnumId")
     private String requirementMethodEnumId;
+    @ColumnInfo(name = "reserv2ndPPPerc")
     private String reserv2ndPPPerc;
+    @ColumnInfo(name = "reservMaxPersons")
     private String reservMaxPersons;
+    @ColumnInfo(name = "reservNthPPPerc")
     private String reservNthPPPerc;
+    @ColumnInfo(name = "returnable")
     private String returnable;
+    @ColumnInfo(name = "rlyId")
     private String rlyId;
+    @ColumnInfo(name = "salesDiscontinuationDate")
     private String salesDiscontinuationDate;
+    @ColumnInfo(name = "salesDiscWhenNotAvail")
     private String salesDiscWhenNotAvail;
+    @ColumnInfo(name = "shippingDepth")
     private String shippingDepth;
+    @ColumnInfo(name = "shippingHeight")
     private String shippingHeight;
+    @ColumnInfo(name = "shippingWidth")
     private String shippingWidth;
+    @ColumnInfo(name = "smallImageUrl")
     private String smallImageUrl;
+    @ColumnInfo(name = "supportDiscontinuationDate")
     private String supportDiscontinuationDate;
+    @ColumnInfo(name = "taxable")
     private String taxable;
+    @ColumnInfo(name = "trdDivId")
     private String trdDivId;
+    @ColumnInfo(name = "virtualVariantMethodEnum")
     private String virtualVariantMethodEnum;
+    @ColumnInfo(name = "weight")
     private String weight;
+    @ColumnInfo(name = "weightUomId")
     private String weightUomId;
+    @ColumnInfo(name = "widthUomId")
     private String widthUomId;
+
 
     public String getAmountUomTypeId() {
         return amountUomTypeId;
