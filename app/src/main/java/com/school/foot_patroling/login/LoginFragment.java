@@ -13,6 +13,7 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.register.model.UserLoginDto;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
@@ -26,9 +27,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.content.ContentValues.TAG;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 
 public class LoginFragment extends BaseFragment {
     DatabaseHelper dbhelper = null;
+    PreferenceHelper preferenceHelper;
     SQLiteDatabase database;
     @BindView(R.id.input_username)
     EditText etUsername;
@@ -40,12 +43,12 @@ public class LoginFragment extends BaseFragment {
 
     @OnClick(R.id.btn_signin)
     public void clickOnLogin(){
-         mUsername = etUsername.getText().toString().trim();
-         mPassword = etPassword.getText().toString().trim();
-         if(validate(mUsername, mPassword)) {
-             try {
-                 if (database != null) {
-                     Log.d(TAG, "fetching user id");
+        mUsername = etUsername.getText().toString().trim();
+        mPassword = etPassword.getText().toString().trim();
+        if(validate(mUsername, mPassword)) {
+            try {
+                if (database != null) {
+                    Log.d(TAG, "fetching user id");
 //                     String sql = "select user_login_id,current_password from user_login";
 //                     String db_username = "";
 //                     String db_password = "";
@@ -58,12 +61,16 @@ public class LoginFragment extends BaseFragment {
 //                         }
 //                     }
 //                     cursor.close();
-                     UserLoginDto userLoginDto = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getUserByUnamePassword(mUsername);
-                     shaPassword = sha1(mPassword);
-                     if(shaPassword.equals(userLoginDto.getCurrentPassword()))
-                     {
-                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
-                         ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
+                    UserLoginDto userLoginDto = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getUserByUnamePassword(mUsername);
+                    shaPassword = sha1(mPassword);
+                    if(shaPassword.equals(userLoginDto.getCurrentPassword()))
+                    {
+                        ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
+                        Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
+                        if(fpStarted)
+                            ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
+                        else
+                            ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
 //                         globals.setFacilityNameList(facility.getFacilityNameList());
 //                         globals.setFacilityIdList(facility.getFacilityIdList());
 //
@@ -73,12 +80,12 @@ public class LoginFragment extends BaseFragment {
 //                         //   Log.d(TAG, "facility - " +facility.getFacilityId());
 //                         startActivity(intent);
 //                         finish();
-                     }
-                 }
-             } catch (Exception e) {
-                 e.printStackTrace();
-             }
-         }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -102,6 +109,7 @@ public class LoginFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         try {
             dbhelper = DatabaseHelper.getInstance(getActivity());
             dbhelper.createDataBase();

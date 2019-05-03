@@ -26,6 +26,7 @@ public class Constants {
 
     public static final String PREF_KEY_LOGIN_ID = "KEY_LOGIN_ID";
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";
+    public static final String PREF_KEY_FP_STARTED = "KEY_FP_STARTED";
 
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";

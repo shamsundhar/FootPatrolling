@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_corners_white"
+    android:minWidth="300dp"
+    android:orientation="vertical"
+    android:padding="10dp" >
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/close"
+        android:id="@+id/close"
+        android:layout_gravity="right"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/input_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:minLines="2"
+            android:hint="Comments" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:textSize="18sp"
+        android:background="@drawable/layout_corners_primary_gradient"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:text="Save"/>
+</LinearLayout>

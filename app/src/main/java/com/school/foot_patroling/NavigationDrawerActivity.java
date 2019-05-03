@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncFragment;
+import com.school.foot_patroling.depotselection.DepotSelectionFragment;
 import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
 import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
@@ -65,6 +66,7 @@ public class NavigationDrawerActivity extends BaseActivity
     String market_uri = "https://play.google.com/store/apps/details?id=";
     private static final String LOGIN_FRAGMENT_TAG = "LOGIN_FRAGMENT";
     private static final String CHECKEDLIST_FRAGMENT_TAG = "CHECKEDLIST_FRAGMENT";
+    private static final String DEPOT_SELECTION_FRAGMENT_TAG = "DEPO_SELECTION_FRAGMENT";
     private static final String NOTES_FRAGMENT_TAG = "NOTES_FRAGMENT";
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
@@ -124,6 +126,15 @@ public class NavigationDrawerActivity extends BaseActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayDepotSelectionFragment(){
+        setTitle(null);
+      //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
+     //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  DepotSelectionFragment.newInstance(), DEPOT_SELECTION_FRAGMENT_TAG)
                 .commit();
     }
     @SuppressWarnings("StatementWithEmptyBody")

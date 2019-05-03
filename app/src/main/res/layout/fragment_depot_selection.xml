@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="56dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp">
+
+        <ImageView android:src="@mipmap/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="72dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="center_horizontal" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/depotLayout"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/depotTV"
+                android:layout_centerVertical="true"
+                android:text="Select Depot"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/sectionLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sectionTV"
+                android:layout_centerVertical="true"
+                android:text="Select FP Section"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical"
+            android:padding="2dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="5dp"
+                android:layout_centerVertical="true"
+                android:text="Scheduled"/>
+            <Switch
+                android:id="@+id/scheduleSwitch"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+
+                android:padding="5dp"/>
+        </RelativeLayout>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_startFP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:background="@drawable/drawable_corners_primary_gradient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="@string/text_startFP"/>
+
+
+
+    </LinearLayout>
+</ScrollView>

@@ -1,22 +1,33 @@
 package com.school.foot_patroling.patrolinglist;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.util.ArrayList;
@@ -37,10 +48,10 @@ public class PatrolingListFragment extends BaseFragment {
     SQLiteDatabase database;
     DatabaseHelper dbhelper = null;
 
-  //  @Inject
-  //  TodayApi todayApi;
+    //  @Inject
+    //  TodayApi todayApi;
 
-  //  public static EdsenseDatabase mEdsenseDatabase;
+    //  public static EdsenseDatabase mEdsenseDatabase;
     private ArrayList<ObservationsCheckListDto> checkList;
 
     /**
@@ -57,9 +68,9 @@ public class PatrolingListFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-   //     mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
-    //            .allowMainThreadQueries()
-   //             .build();
+        //     mEdsenseDatabase = Room.databaseBuilder(getActivity(), EdsenseDatabase.class, EDSENSE_DATABASE)
+        //            .allowMainThreadQueries()
+        //             .build();
     }
 
     @Override
@@ -81,6 +92,14 @@ public class PatrolingListFragment extends BaseFragment {
 
         empty_view.setText(R.string.empty_check_list_message);
         checklistAdapter = new ChecklistAdapter();
+        checklistAdapter.setClickListener(new ClickListener() {
+            @Override
+            public void onCheckListSwitchSelected(ObservationsCheckListDto model, int position) {
+                //display dialog with comments section
+             //   Toast.makeText(getActivity(), position+" clicked", Toast.LENGTH_LONG).show();
+                displayCommentsPopup(model, position);
+            }
+        });
         checklistRecyclerView.setAdapter(checklistAdapter);
         checklistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -89,8 +108,8 @@ public class PatrolingListFragment extends BaseFragment {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(getString(R.string.text_please_wait));
         progressDialog.show();
-            progressDialog.dismiss();
-            displayNewsFromDB();
+        progressDialog.dismiss();
+        displayNewsFromDB();
 
 
         return view;
@@ -131,6 +150,51 @@ public class PatrolingListFragment extends BaseFragment {
         }
         checklistAdapter.setItems(checkList);
         checklistAdapter.notifyDataSetChanged();
+    }
+    private void displayCommentsPopup(final ObservationsCheckListDto model, final int position){
+        final Dialog builder = new Dialog(getActivity());
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = builder.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+        builder.setCanceledOnTouchOutside(false);
+        builder.setContentView(R.layout.popup_enter_observations);
+
+        String fontPath = "fonts/bariol_bold-webfont.ttf";
+        // Loading Font Face
+        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), fontPath);
+
+        final EditText reasonEditText = (EditText)builder.findViewById(R.id.input_reason);
+
+        final ImageView close = (ImageView)builder.findViewById(R.id.close);
+        Button save = (Button)builder.findViewById(R.id.btn_save);
+
+        reasonEditText.setTypeface(tf);save.setTypeface(tf);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder.dismiss();
+            }
+        });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String reason = reasonEditText.getText().toString().trim();
+              //  Toast.makeText(getActivity(), ""+reason, Toast.LENGTH_LONG).show();
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage(getString(R.string.text_please_wait));
+                // progressDialog.show();
+                builder.dismiss();
+                Toast.makeText(getActivity(), "Comments saved successfully", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setCanceledOnTouchOutside(true);
+        builder.show();
     }
 
 }

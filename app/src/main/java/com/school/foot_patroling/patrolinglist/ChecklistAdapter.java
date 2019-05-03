@@ -7,6 +7,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.school.foot_patroling.R;
@@ -18,9 +20,13 @@ import java.util.List;
 
 public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<ObservationsCheckListDto> items;
+    private ClickListener clickListener;
     private final int NEWS_LIST_ITEM = 0;
 
     public ChecklistAdapter(){}
+    public void setClickListener(ClickListener listener){
+        this.clickListener = listener;
+    }
     public void setItems(List<ObservationsCheckListDto> items) {
         this.items = items;
     }
@@ -66,11 +72,17 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
         return -1;
     }
-    private void configureViewHolder1(ChecklistAdapter.ViewHolder1 vh1, int position) {
-        ObservationsCheckListDto model = (ObservationsCheckListDto) items.get(position);
+    private void configureViewHolder1(ChecklistAdapter.ViewHolder1 vh1, final int position) {
+        final ObservationsCheckListDto model = (ObservationsCheckListDto) items.get(position);
         if (model != null) {
             vh1.getTitle().setText(model.getObservationItem());
             vh1.getSubtitle().setText(model.getPriority());
+            vh1.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    clickListener.onCheckListSwitchSelected(model, position);
+                }
+            });
 
         }
     }
@@ -79,6 +91,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         private TextView title;
         private TextView subtitle;
+        private Switch aSwitch;
 
         public TextView getTitle() {
             return title;
@@ -95,11 +108,18 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void setSubtitle(TextView subtitle) {
             this.subtitle = subtitle;
         }
+        public Switch getaSwitch() {
+            return aSwitch;
+        }
 
+        public void setaSwitch(Switch aSwitch) {
+            this.aSwitch = aSwitch;
+        }
         public ViewHolder1(View v) {
             super(v);
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
+            aSwitch = (Switch)v.findViewById(R.id.switch1);
             applyFonts(v);
         }
         private void applyFonts(View v){

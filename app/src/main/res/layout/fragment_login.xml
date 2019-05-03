@@ -27,6 +27,7 @@
             <EditText android:id="@+id/input_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="sse_ohe_ms"
                 android:inputType="textEmailAddress"
                 android:hint="Username" />
         </android.support.design.widget.TextInputLayout>
@@ -41,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:text="123456"
                 android:hint="Password"/>
         </android.support.design.widget.TextInputLayout>
 
