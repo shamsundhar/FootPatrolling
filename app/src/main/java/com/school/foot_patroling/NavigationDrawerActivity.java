@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.school.foot_patroling.database.DtoWrapper;
 import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncFragment;
 import com.school.foot_patroling.depotselection.DepotSelectionFragment;
@@ -71,6 +72,7 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
     public static FPDatabase mFPDatabase;
+    public static DtoWrapper mDtoWrapper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,7 @@ public class NavigationDrawerActivity extends BaseActivity
         setSupportActionBar(toolbar);
         mFPDatabase = Room.databaseBuilder(this,FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
         ActionBar actionBar = getSupportActionBar();
-
+        mDtoWrapper = new DtoWrapper(mFPDatabase);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

@@ -450,7 +450,9 @@ public class RegisterActivity extends BaseActivity {
 
                     for (FacilityDto facilityDto : insertFacilityDtos) {
 
-                        dataUpdateDAO.insertFacilityData(facilityDto, db);
+                        //dataUpdateDAO.insertFacilityData(facilityDto, db);
+                        NavigationDrawerActivity.mFPDatabase.facilityDtoDao().insert(facilityDto);
+
                     }
 
                     progressValue = progressValue + 1;
@@ -464,7 +466,8 @@ public class RegisterActivity extends BaseActivity {
 
                     for (FacilityDto_ facilityDto : updateFacilityDtos) {
 
-                        dataUpdateDAO.updateFacilityData(facilityDto, db);
+                        //dataUpdateDAO.updateFacilityData(facilityDto, db);
+                        NavigationDrawerActivity.mDtoWrapper.updateFacilityData(facilityDto);
                     }
                     progressValue = progressValue + 1;
                     // publishProgress(progressValue);
@@ -475,7 +478,8 @@ public class RegisterActivity extends BaseActivity {
                     Log.d(TAG, "product insert records : " + insertChecklistDtos.size());
 
                     for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
-                        dataUpdateDAO.insertChecklistData(checkListDto, db);
+                        //dataUpdateDAO.insertChecklistData(checkListDto, db);
+                        NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
                     }
                     progressValue = progressValue + 1;
                     //  publishProgress(progressValue);
@@ -489,7 +493,8 @@ public class RegisterActivity extends BaseActivity {
                     Log.d(TAG, "product insert records : " + insertProductDtos.size());
 
                     for (ProductDto productDto : insertProductDtos) {
-                        dataUpdateDAO.insertProductData(productDto, db);
+                        //dataUpdateDAO.insertProductData(productDto, db);
+                        NavigationDrawerActivity.mFPDatabase.productDtoDao().insert(productDto);
                     }
                     progressValue = progressValue + 1;
                     //  publishProgress(progressValue);
@@ -502,7 +507,8 @@ public class RegisterActivity extends BaseActivity {
 
 
                     for (ProductDto_ productDto : updateProductDtos) {
-                        dataUpdateDAO.updateProductData(productDto, db);
+                       // dataUpdateDAO.updateProductData(productDto, db);
+                        NavigationDrawerActivity.mDtoWrapper.updateProductData(productDto);
                     }
                     progressValue = progressValue + 1;
                     //   publishProgress(progressValue);
@@ -537,8 +543,9 @@ public class RegisterActivity extends BaseActivity {
 
                     for (UserLoginDto_ userLoginDto : updateUserLoginDtos) {
 
-                        dataUpdateDAO.updateUserLoginData(userLoginDto, db);
+                        //dataUpdateDAO.updateUserLoginData(userLoginDto, db);
                         //NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
+                        NavigationDrawerActivity.mDtoWrapper.updateUserLoginData(userLoginDto);
                     }
 
                     progressValue = progressValue + 1;

@@ -8,6 +8,10 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "ObservationsCheckListDto")
 public class ObservationsCheckListDto {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "seqId")
+    private String seqId;
     @ColumnInfo(name = "description")
     private String description;
     @ColumnInfo(name = "displaySequence")
@@ -22,10 +26,7 @@ public class ObservationsCheckListDto {
     private String observationItem;
     @ColumnInfo(name = "priority")
     private String priority;
-    @PrimaryKey
-    @NonNull
-    @ColumnInfo(name = "seqId")
-    private String seqId;
+
     @ColumnInfo(name = "thruDate")
     private String thruDate;
 
