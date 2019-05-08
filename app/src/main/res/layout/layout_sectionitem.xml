@@ -20,6 +20,12 @@
             android:textColor="@color/dark_blue"
             android:textSize="20sp"
             android:text="Description" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="1dp"
+            android:layout_below="@id/title"
+            android:background="@color/aluminum"/>
 
     </RelativeLayout>
 

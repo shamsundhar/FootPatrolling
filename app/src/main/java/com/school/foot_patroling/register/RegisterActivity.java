@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.arch.persistence.room.Room;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -45,10 +46,13 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DataUpdateDAO;
 import com.school.foot_patroling.database.DatabaseHelper;
+import com.school.foot_patroling.database.DtoWrapper;
+import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncActivity;
 import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.register.model.ProductDto;
@@ -98,6 +102,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
+import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -112,6 +117,8 @@ public class RegisterActivity extends BaseActivity {
     String TAG = "Registration Activity";
     String selectedImei;
     DatabaseHelper dbhelper;
+    public static FPDatabase mFPDatabase;
+    public static DtoWrapper mDtoWrapper;
     PreferenceHelper preferenceHelper;
     @OnClick(R.id.imeiLayout)
     public void clickImei(){
@@ -201,6 +208,8 @@ public class RegisterActivity extends BaseActivity {
         setContentView(R.layout.activity_register2);
         ButterKnife.bind(this);
 
+        mFPDatabase = Room.databaseBuilder(this,FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
+        mDtoWrapper = new DtoWrapper(mFPDatabase);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
         requestPhoneStatePermission();
@@ -451,7 +460,7 @@ public class RegisterActivity extends BaseActivity {
                     for (FacilityDto facilityDto : insertFacilityDtos) {
 
                         //dataUpdateDAO.insertFacilityData(facilityDto, db);
-                        NavigationDrawerActivity.mFPDatabase.facilityDtoDao().insert(facilityDto);
+                        RegisterActivity.mFPDatabase.facilityDtoDao().insert(facilityDto);
 
                     }
 
@@ -467,11 +476,22 @@ public class RegisterActivity extends BaseActivity {
                     for (FacilityDto_ facilityDto : updateFacilityDtos) {
 
                         //dataUpdateDAO.updateFacilityData(facilityDto, db);
-                        NavigationDrawerActivity.mDtoWrapper.updateFacilityData(facilityDto);
+                        RegisterActivity.mDtoWrapper.updateFacilityData(facilityDto);
                     }
                     progressValue = progressValue + 1;
                     // publishProgress(progressValue);
                 }
+
+              List<FootPatrollingSectionsDto> insertFootPatrolingSectionsDtos =  dto.getCreatedFootPatrollingSectionsDto().getFootPatrollingSectionsDtos();
+                if(insertFootPatrolingSectionsDtos != null && insertFootPatrolingSectionsDtos.size() > 0){
+                    Log.d(TAG, "foot patroling section insert records : " + insertFootPatrolingSectionsDtos.size());
+                    for(FootPatrollingSectionsDto sectionsDto : insertFootPatrolingSectionsDtos){
+                        RegisterActivity.mFPDatabase.footPatrollingSectionsDao().insert(sectionsDto);
+                    }
+                }
+//TODO WRITE UPDATE LOGIC insertFootPatrolingSectionsDtos HERE
+
+
                 List<ObservationsCheckListDto> insertChecklistDtos = dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos();
                 if (insertChecklistDtos != null && insertChecklistDtos.size() > 0) {
 
@@ -479,40 +499,40 @@ public class RegisterActivity extends BaseActivity {
 
                     for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
                         //dataUpdateDAO.insertChecklistData(checkListDto, db);
-                        NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
+                        RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
                     }
                     progressValue = progressValue + 1;
                     //  publishProgress(progressValue);
                 }
 
 
-                List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
+              //  List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
 
-                if (insertProductDtos != null && insertProductDtos.size() > 0) {
-
-                    Log.d(TAG, "product insert records : " + insertProductDtos.size());
-
-                    for (ProductDto productDto : insertProductDtos) {
-                        //dataUpdateDAO.insertProductData(productDto, db);
-                        NavigationDrawerActivity.mFPDatabase.productDtoDao().insert(productDto);
-                    }
-                    progressValue = progressValue + 1;
-                    //  publishProgress(progressValue);
-                }
-
-                List<ProductDto_> updateProductDtos = dto.getUpdatedResponseProductDto().getProductDtos();
-
-                if (updateProductDtos != null && updateProductDtos.size() > 0) {
-                    Log.d(TAG, "product update records : " + updateProductDtos.size());
-
-
-                    for (ProductDto_ productDto : updateProductDtos) {
-                       // dataUpdateDAO.updateProductData(productDto, db);
-                        NavigationDrawerActivity.mDtoWrapper.updateProductData(productDto);
-                    }
-                    progressValue = progressValue + 1;
-                    //   publishProgress(progressValue);
-                }
+//                if (insertProductDtos != null && insertProductDtos.size() > 0) {
+//
+//                    Log.d(TAG, "product insert records : " + insertProductDtos.size());
+//
+//                    for (ProductDto productDto : insertProductDtos) {
+//                        //dataUpdateDAO.insertProductData(productDto, db);
+//                        RegisterActivity.mFPDatabase.productDtoDao().insert(productDto);
+//                    }
+//                    progressValue = progressValue + 1;
+//                    //  publishProgress(progressValue);
+//                }
+//
+//                List<ProductDto_> updateProductDtos = dto.getUpdatedResponseProductDto().getProductDtos();
+//
+//                if (updateProductDtos != null && updateProductDtos.size() > 0) {
+//                    Log.d(TAG, "product update records : " + updateProductDtos.size());
+//
+//
+//                    for (ProductDto_ productDto : updateProductDtos) {
+//                       // dataUpdateDAO.updateProductData(productDto, db);
+//                        RegisterActivity.mDtoWrapper.updateProductData(productDto);
+//                    }
+//                    progressValue = progressValue + 1;
+//                    //   publishProgress(progressValue);
+//                }
                 List<UserLoginDto> insertUserLoginDtos = dto.getCreatedResponseUserLoginDto().getUserLoginDtos();
 
                 if (insertUserLoginDtos != null && insertUserLoginDtos.size() > 0) {
@@ -523,12 +543,12 @@ public class RegisterActivity extends BaseActivity {
                     for (UserLoginDto userLoginDto : insertUserLoginDtos) {
 
                         //dataUpdateDAO.insertUserLoginData(userLoginDto,db);
-                        NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
+                        RegisterActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
 
                     }
 
                     for(ObservationsCheckListDto observationsCheckListDto : dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos()){
-                        NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().insert(observationsCheckListDto);
+                        RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(observationsCheckListDto);
                     }
 
                     progressValue = progressValue + 1;
@@ -544,8 +564,8 @@ public class RegisterActivity extends BaseActivity {
                     for (UserLoginDto_ userLoginDto : updateUserLoginDtos) {
 
                         //dataUpdateDAO.updateUserLoginData(userLoginDto, db);
-                        //NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
-                        NavigationDrawerActivity.mDtoWrapper.updateUserLoginData(userLoginDto);
+                        //RegisterActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
+                        RegisterActivity.mDtoWrapper.updateUserLoginData(userLoginDto);
                     }
 
                     progressValue = progressValue + 1;

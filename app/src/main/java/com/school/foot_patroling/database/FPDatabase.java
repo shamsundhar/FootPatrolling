@@ -10,11 +10,13 @@ import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
 import com.school.foot_patroling.dao.FacilityDtoDao;
+import com.school.foot_patroling.dao.FootPatrollingSectionsDao;
 import com.school.foot_patroling.dao.InspectionDao;
 import com.school.foot_patroling.dao.ObservationsCheckListDtoDao;
 import com.school.foot_patroling.dao.ProductDtoDao;
 import com.school.foot_patroling.dao.UserLoginDtoDao;
 import com.school.foot_patroling.register.model.FacilityDto;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.register.model.ProductDto;
@@ -22,7 +24,7 @@ import com.school.foot_patroling.register.model.UserLoginDto;
 
 
 @Database(entities = {UserLoginDto.class, ObservationsCheckListDto.class,
-        FacilityDto.class, ProductDto.class, Inspection.class},version = 1)
+        FacilityDto.class, ProductDto.class, Inspection.class, FootPatrollingSectionsDto.class},version = 1)
 public abstract class FPDatabase extends RoomDatabase {
 
 
@@ -31,6 +33,7 @@ public abstract class FPDatabase extends RoomDatabase {
     public abstract FacilityDtoDao facilityDtoDao();
     public abstract ProductDtoDao productDtoDao();
     public abstract InspectionDao inspectionDao();
+    public abstract FootPatrollingSectionsDao footPatrollingSectionsDao();
 
 
 }

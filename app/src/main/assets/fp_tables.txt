@@ -35,6 +35,23 @@ CREATE TABLE facility
      manuf_alloc_enable TEXT
  );
 
+CREATE TABLE foot_patrolling_sections
+(
+  seq_id TEXT NOT NULL,
+  facility_depot TEXT,
+  fp_section TEXT,
+  from_location TEXT,
+  to_location TEXT,
+  remarks TEXT,
+  last_updated_stamp TEXT,
+  last_updated_tx_stamp TEXT,
+  created_stamp TEXT,
+  created_tx_stamp TEXT,
+  from_date TEXT,
+  to_date TEXT,
+  CONSTRAINT pk_foot_patrolling_sections PRIMARY KEY (seq_id)
+);
+
 	CREATE TABLE product_category_member
 (
   product_category_id TEXT  ,
@@ -208,42 +225,7 @@ CREATE TABLE inspection_type
   created_stamp TEXT,
   created_tx_stamp TEXT,
   CONSTRAINT pk_inspection_type PRIMARY KEY (seq_id)
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE inspection_type
-  OWNER TO postgres;
-
--- Index: inspctn_tp_txcrts
-
--- DROP INDEX inspctn_tp_txcrts;
-
-CREATE INDEX inspctn_tp_txcrts
-  ON inspection_type
-  USING btree
-  (created_tx_stamp);
-
--- Index: inspctn_tp_txstmp
-
--- DROP INDEX inspctn_tp_txstmp;
-
-CREATE INDEX inspctn_tp_txstmp
-  ON inspection_type
-  USING btree
-  (last_updated_tx_stamp);
-
--- Index: inspectiontypeeeee_unique
-
--- DROP INDEX inspectiontypeeeee_unique;
-
-CREATE UNIQUE INDEX inspectiontypeeeee_unique
-  ON inspection_type
-  USING btree
-  (inspection_type COLLATE pg_catalog."default");
-
-
-
 
 
 
@@ -268,41 +250,7 @@ CREATE TABLE foot_patrolling_inspection
   locatoion TEXT,
   location TEXT,
   CONSTRAINT pk_foot_patrolling_inspection PRIMARY KEY (seq_id)
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE foot_patrolling_inspection
-  OWNER TO postgres;
-
--- Index: ft_ptrlg_insn_txcs
-
--- DROP INDEX ft_ptrlg_insn_txcs;
-
-CREATE INDEX ft_ptrlg_insn_txcs
-  ON foot_patrolling_inspection
-  USING btree
-  (created_tx_stamp);
-
--- Index: ft_ptrlg_insn_txsp
-
--- DROP INDEX ft_ptrlg_insn_txsp;
-
-CREATE INDEX ft_ptrlg_insn_txsp
-  ON foot_patrolling_inspection
-  USING btree
-  (last_updated_tx_stamp);
-
--- Index: inspectiontype
-
--- DROP INDEX inspectiontype;
-
-CREATE INDEX inspectiontype
-  ON foot_patrolling_inspection
-  USING btree
-  (inspection_type COLLATE pg_catalog."default");
-
-
 
 CREATE TABLE observations
 (
@@ -327,40 +275,7 @@ CREATE TABLE observations
   CONSTRAINT footpatrollinginspection FOREIGN KEY (inspection_seq_id)
       REFERENCES foot_patrolling_inspection (seq_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE observations
-  OWNER TO postgres;
-
--- Index: footpatrollinginspection
-
--- DROP INDEX footpatrollinginspection;
-
-CREATE INDEX footpatrollinginspection
-  ON observations
-  USING btree
-  (inspection_seq_id COLLATE pg_catalog."default");
-
--- Index: obsrvtns_txcrts
-
--- DROP INDEX obsrvtns_txcrts;
-
-CREATE INDEX obsrvtns_txcrts
-  ON observations
-  USING btree
-  (created_tx_stamp);
-
--- Index: obsrvtns_txstmp
-
--- DROP INDEX obsrvtns_txstmp;
-
-CREATE INDEX obsrvtns_txstmp
-  ON observations
-  USING btree
-  (last_updated_tx_stamp);
-
 
 
 CREATE TABLE observation_categories
@@ -378,41 +293,7 @@ CREATE TABLE observation_categories
   created_stamp TEXT,
   created_tx_stamp TEXT,
   CONSTRAINT pk_observation_categories PRIMARY KEY (seq_id)
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE observation_categories
-  OWNER TO postgres;
-
--- Index: fkkkk_inspection_type
-
--- DROP INDEX fkkkk_inspection_type;
-
-CREATE INDEX fkkkk_inspection_type
-  ON observation_categories
-  USING btree
-  (inspection_type COLLATE pg_catalog."default");
-
--- Index: obsrvn_ctgs_txcrts
-
--- DROP INDEX obsrvn_ctgs_txcrts;
-
-CREATE INDEX obsrvn_ctgs_txcrts
-  ON observation_categories
-  USING btree
-  (created_tx_stamp);
-
--- Index: obsrvn_ctgs_txstmp
-
--- DROP INDEX obsrvn_ctgs_txstmp;
-
-CREATE INDEX obsrvn_ctgs_txstmp
-  ON observation_categories
-  USING btree
-  (last_updated_tx_stamp);
-
-
 
 
 CREATE TABLE observations_check_list
@@ -434,40 +315,7 @@ CREATE TABLE observations_check_list
   CONSTRAINT inspectiontype FOREIGN KEY (inspection_type)
       REFERENCES inspection_type (inspection_type) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE observations_check_list
-  OWNER TO postgres;
-
--- Index: observationcategories
-
--- DROP INDEX observationcategories;
-
-CREATE INDEX observationcategories
-  ON observations_check_list
-  USING btree
-  (observation_category COLLATE pg_catalog."default");
-
--- Index: obsrs_chk_lst_txcs
-
--- DROP INDEX obsrs_chk_lst_txcs;
-
-CREATE INDEX obsrs_chk_lst_txcs
-  ON observations_check_list
-  USING btree
-  (created_tx_stamp);
-
--- Index: obsrs_chk_lst_txsp
-
--- DROP INDEX obsrs_chk_lst_txsp;
-
-CREATE INDEX obsrs_chk_lst_txsp
-  ON observations_check_list
-  USING btree
-  (last_updated_tx_stamp);
-
 
 
 CREATE TABLE compliances
@@ -491,32 +339,7 @@ CREATE TABLE compliances
   CONSTRAINT observations FOREIGN KEY (obeservation_seq_id)
       REFERENCES observations (seq_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE compliances
-  OWNER TO postgres;
-
--- Index: compliances_txcrts
-
--- DROP INDEX compliances_txcrts;
-
-CREATE INDEX compliances_txcrts
-  ON compliances
-  USING btree
-  (created_tx_stamp);
-
--- Index: compliances_txstmp
-
--- DROP INDEX compliances_txstmp;
-
-CREATE INDEX compliances_txstmp
-  ON compliances
-  USING btree
-  (last_updated_tx_stamp);
-
-
 
 
 CREATE TABLE foot_patrolling_inspection_content
@@ -536,41 +359,7 @@ CREATE TABLE foot_patrolling_inspection_content
   CONSTRAINT fpi_cnt_cnt FOREIGN KEY (content_id)
       REFERENCES content (content_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE foot_patrolling_inspection_content
-  OWNER TO postgres;
-
--- Index: fpi_cnt_cnt
-
--- DROP INDEX fpi_cnt_cnt;
-
-CREATE INDEX fpi_cnt_cnt
-  ON foot_patrolling_inspection_content
-  USING btree
-  (content_id COLLATE pg_catalog."default");
-
--- Index: ft_ptg_inn_cnt_txp
-
--- DROP INDEX ft_ptg_inn_cnt_txp;
-
-CREATE INDEX ft_ptg_inn_cnt_txp
-  ON foot_patrolling_inspection_content
-  USING btree
-  (last_updated_tx_stamp);
-
--- Index: ft_ptg_inn_cnt_txs
-
--- DROP INDEX ft_ptg_inn_cnt_txs;
-
-CREATE INDEX ft_ptg_inn_cnt_txs
-  ON foot_patrolling_inspection_content
-  USING btree
-  (created_tx_stamp);
-
-
 
 
 
@@ -662,55 +451,6 @@ product_id TEXT PRIMARY KEY NOT NULL,
 
 
 
-
-
-
-
-
-
-CREATE TABLE foot_patrolling_sections
-(
-  seq_id TEXT NOT NULL,
-  facility_depot TEXT,
-  fp_section TEXT,
-  from_location TEXT,
-  to_location TEXT,
-  remarks TEXT,
-  last_updated_stamp TEXT,
-  last_updated_tx_stamp TEXT,
-  created_stamp TEXT,
-  created_tx_stamp TEXT,
-  from_date TEXT,
-  to_date TEXT,
-  CONSTRAINT pk_foot_patrolling_sections PRIMARY KEY (seq_id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE foot_patrolling_sections
-  OWNER TO postgres;
-
--- Index: ft_ptrlg_scs_txcrs
-
--- DROP INDEX ft_ptrlg_scs_txcrs;
-
-CREATE INDEX ft_ptrlg_scs_txcrs
-  ON foot_patrolling_sections
-  USING btree
-  (created_tx_stamp);
-
--- Index: ft_ptrlg_scs_txstp
-
--- DROP INDEX ft_ptrlg_scs_txstp;
-
-CREATE INDEX ft_ptrlg_scs_txstp
-  ON foot_patrolling_sections
-  USING btree
-  (last_updated_tx_stamp);
-
-
-
-
 CREATE TABLE Fp_location_track
 (
 deviceId TEXT,
@@ -743,12 +483,7 @@ CREATE TABLE functional_location_hierarchy
   head_login_id TEXT,
   rm_login_id TEXT,
   CONSTRAINT pk_functional_location_hierarc PRIMARY KEY (party_id)
-)
-WITH (
-  OIDS=FALSE
 );
-ALTER TABLE functional_location_hierarchy
-  OWNER TO postgres;
 
 
 

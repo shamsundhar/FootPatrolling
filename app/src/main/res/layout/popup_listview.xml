@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
     android:padding="0dp" >
     <ListView
         android:id="@+id/popupListView"

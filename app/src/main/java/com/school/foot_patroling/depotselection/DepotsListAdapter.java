@@ -12,25 +12,26 @@ import android.widget.TextView;
 
 
 import com.school.foot_patroling.R;
+import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepotsListAdapter extends ArrayAdapter<FootPatrollingSectionsDto>{
+public class DepotsListAdapter extends ArrayAdapter<FacilityDto>{
 
-    private List<FootPatrollingSectionsDto> dataSet;
+    private List<FacilityDto> dataSet;
     Context mContext;
 
     // View lookup cache
     private static class ViewHolder {
         TextView title;
     }
-    public void setItems(List<FootPatrollingSectionsDto> items) {
+    public void setItems(List<FacilityDto> items) {
         this.dataSet = items;
     }
 
-    public DepotsListAdapter(List<FootPatrollingSectionsDto> items, Context context) {
+    public DepotsListAdapter(List<FacilityDto> items, Context context) {
         super(context, R.layout.layout_sectionitem);
         this.mContext=context;
         this.dataSet = items;
@@ -39,7 +40,7 @@ public class DepotsListAdapter extends ArrayAdapter<FootPatrollingSectionsDto>{
 
     @Nullable
     @Override
-    public FootPatrollingSectionsDto getItem(int position) {
+    public FacilityDto getItem(int position) {
         return dataSet.get(position);
     }
 
@@ -68,7 +69,7 @@ public class DepotsListAdapter extends ArrayAdapter<FootPatrollingSectionsDto>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        FootPatrollingSectionsDto dataModel = getItem(position);
+        FacilityDto dataModel = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
 
@@ -92,7 +93,7 @@ public class DepotsListAdapter extends ArrayAdapter<FootPatrollingSectionsDto>{
     //    result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.title.setText(dataModel.getFacilityDepot());
+        viewHolder.title.setText(dataModel.getFacilityName());
      //   viewHolder.title.setOnClickListener(this);
         viewHolder.title.setTag(position);
         // Return the completed view to render on screen

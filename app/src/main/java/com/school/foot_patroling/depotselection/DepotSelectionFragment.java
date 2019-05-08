@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,10 +23,14 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.login.LoginFragment;
+import com.school.foot_patroling.register.model.FacilityDto;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +51,10 @@ public class DepotSelectionFragment extends BaseFragment {
     TextView sectionTV;
     @BindView(R.id.scheduleSwitch)
     Switch scheduleSwitch;
+    DepotsListAdapter depotsListAdapter;
+    SectionsListAdapter sectionsListAdapter;
+    String selectedDepotId;
+    String selectedSectionID;
     @OnClick(R.id.depotLayout)
     public void depotClick(){
         displayDepotPopup();
@@ -98,27 +107,28 @@ preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.TRUE);
         window.setAttributes(wlp);
         builder.setContentView(R.layout.popup_listview);
 
-//        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
-//        listView.setTextFilterEnabled(true);
-//        if(sectionResponseList != null) {
-//            sectionsListAdapter = new DepotsListAdapter(sectionResponseList, getActivity().getBaseContext());
-//            listView.setAdapter(sectionsListAdapter);
-//        }
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                // TODO Auto-generated method stub
-//                builder.dismiss();
-//                SectionResponseModel dataModel = sectionResponseList.get(position);
-//                selectedSection = dataModel.getCompositeTagName();
-//                sectionTV.setText(selectedSection);
-//                selectedSectionId = dataModel.getCompositeTagId();
-//                //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
-//                //          .setAction("No action", null).show();
-//                getUsersBasedOnSection();
-//            }
-//        });
+        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+        listView.setTextFilterEnabled(true);
+        final List<FacilityDto> depotList = NavigationDrawerActivity.mFPDatabase.facilityDtoDao().getAllFacilityDtos();
+        if(depotList != null) {
+            depotsListAdapter = new DepotsListAdapter(depotList, getActivity().getBaseContext());
+            listView.setAdapter(depotsListAdapter);
+        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                builder.dismiss();
+                FacilityDto dataModel = depotList.get(position);
+                depotTV.setText(dataModel.getFacilityName());
+                selectedDepotId = dataModel.getFacilityId();
+                  Snackbar.make(view, " " +dataModel.getFacilityName()+" "+dataModel.getFacilityId(), Snackbar.LENGTH_LONG)
+                          .setAction("No action", null).show();
+               //   displaySectionsPopup();
+
+            }
+        });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
     }
@@ -133,27 +143,29 @@ preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.TRUE);
         window.setAttributes(wlp);
         builder.setContentView(R.layout.popup_listview);
 
-//        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
-//        listView.setTextFilterEnabled(true);
-//        if(sectionResponseList != null) {
-//            sectionsListAdapter = new DepotsListAdapter(sectionResponseList, getActivity().getBaseContext());
-//            listView.setAdapter(sectionsListAdapter);
-//        }
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                // TODO Auto-generated method stub
-//                builder.dismiss();
-//                SectionResponseModel dataModel = sectionResponseList.get(position);
-//                selectedSection = dataModel.getCompositeTagName();
-//                sectionTV.setText(selectedSection);
-//                selectedSectionId = dataModel.getCompositeTagId();
-//                //  Snackbar.make(view, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
-//                //          .setAction("No action", null).show();
-//                getUsersBasedOnSection();
-//            }
-//        });
+        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+        listView.setTextFilterEnabled(true);
+      //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
+        final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtos();
+
+        if(sectionList != null) {
+            sectionsListAdapter = new SectionsListAdapter(sectionList, getActivity().getBaseContext());
+            listView.setAdapter(sectionsListAdapter);
+        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                builder.dismiss();
+                FootPatrollingSectionsDto dataModel = sectionList.get(position);
+                sectionTV.setText(dataModel.getFpSection());
+                selectedSectionID = dataModel.getSeqId();
+                Snackbar.make(view, " " +dataModel.getFpSection()+" "+dataModel.getSeqId(), Snackbar.LENGTH_LONG)
+                        .setAction("No action", null).show();
+
+            }
+        });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
     }

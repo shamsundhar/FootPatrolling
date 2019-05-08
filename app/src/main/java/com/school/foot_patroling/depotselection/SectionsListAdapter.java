@@ -88,7 +88,7 @@ public class SectionsListAdapter extends ArrayAdapter<FootPatrollingSectionsDto>
         //    result.startAnimation(animation);
         lastPosition = position;
 
-        viewHolder.title.setText(dataModel.getFacilityDepot());
+        viewHolder.title.setText(dataModel.getFpSection());
         //   viewHolder.title.setOnClickListener(this);
         viewHolder.title.setTag(position);
         // Return the completed view to render on screen
