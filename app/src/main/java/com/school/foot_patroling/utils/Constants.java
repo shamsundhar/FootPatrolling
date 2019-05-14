@@ -10,6 +10,7 @@ public class Constants {
     public static final String BUNDLE_KEY_URL = "BUNDLE_URL";
     public static final String BUNDLE_KEY_IMEI1 = "BUNDLE_IMEI1";
     public static final String BUNDLE_KEY_IMEI2 = "BUNDLE_IMEI2";
+    public static final String BUNDLE_KEY_SELECTED_IMEI = "BUNDLE_SELECTED_IMEI";
     public static final String BUNDLE_KEY_CURRENT_SYNC_TIME = "BUNDLE_CURRENT_SYNC_TIME";
     public static final String FOOTPATROLLING_DATABASE = "FootPatrollingDB";
 
@@ -27,6 +28,7 @@ public class Constants {
     public static final String PREF_KEY_LOGIN_ID = "KEY_LOGIN_ID";
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";
     public static final String PREF_KEY_FP_STARTED = "KEY_FP_STARTED";
+    public static final String PREF_KEY_FP_STARTED_TIME = "KEY_FP_STARTED_TIME";
 
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";

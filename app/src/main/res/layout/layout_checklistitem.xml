@@ -56,6 +56,17 @@
             android:padding="5dp"/>
     </LinearLayout>
 </LinearLayout>
+    <LinearLayout
+        android:id="@+id/commentsSection"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="this is comments section.."/>
+    </LinearLayout>
     <View android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divider_color2"/>

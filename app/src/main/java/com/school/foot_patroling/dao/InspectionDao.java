@@ -20,4 +20,6 @@ public interface InspectionDao {
 
     @Query("SELECT * from inspection")
     List<Inspection> getAllInspectionDtos();
+    @Query("SELECT * FROM inspection WHERE seq_id=:fpStartedTime")
+    Inspection getStartedInspection(String fpStartedTime);
 }

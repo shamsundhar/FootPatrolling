@@ -4,10 +4,12 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -22,6 +24,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<ObservationsCheckListDto> items;
     private ClickListener clickListener;
     private final int NEWS_LIST_ITEM = 0;
+    int mExpandedPosition = -1;
+    int previousExpandedPosition = -1;
 
     public ChecklistAdapter(){}
     public void setClickListener(ClickListener listener){
@@ -54,6 +58,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 //  configureDefaultViewHolder(vh, position);
                 break;
         }
+
+
     }
 
     @Override
@@ -72,7 +78,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
         return -1;
     }
-    private void configureViewHolder1(ChecklistAdapter.ViewHolder1 vh1, final int position) {
+    private void configureViewHolder1(final ChecklistAdapter.ViewHolder1 vh1, final int position) {
         final ObservationsCheckListDto model = (ObservationsCheckListDto) items.get(position);
         if (model != null) {
             vh1.getTitle().setText(model.getObservationItem());
@@ -80,10 +86,27 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             vh1.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                     clickListener.onCheckListSwitchSelected(model, position);
+
                 }
             });
 
+            final boolean isExpanded = position == mExpandedPosition;
+            vh1.commentsLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+
+            vh1.itemView.setActivated(isExpanded);
+
+            if (isExpanded)
+                previousExpandedPosition = position;
+            vh1.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mExpandedPosition = isExpanded ? -1 : position;
+                    notifyItemChanged(previousExpandedPosition);
+                    notifyItemChanged(position);
+                }
+            });
         }
     }
 
@@ -93,6 +116,15 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView subtitle;
         private Switch aSwitch;
 
+        public LinearLayout getCommentsLayout() {
+            return commentsLayout;
+        }
+
+        public void setCommentsLayout(LinearLayout commentsLayout) {
+            this.commentsLayout = commentsLayout;
+        }
+
+        private LinearLayout commentsLayout;
         public TextView getTitle() {
             return title;
         }
@@ -120,6 +152,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             title = (TextView) v.findViewById(R.id.title);
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             aSwitch = (Switch)v.findViewById(R.id.switch1);
+            commentsLayout = (LinearLayout) v.findViewById(R.id.commentsSection);
             applyFonts(v);
         }
         private void applyFonts(View v){

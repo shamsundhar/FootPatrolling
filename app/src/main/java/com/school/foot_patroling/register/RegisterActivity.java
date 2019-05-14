@@ -53,7 +53,9 @@ import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto_;
 import com.school.foot_patroling.register.model.MasterDto;
+import com.school.foot_patroling.register.model.ObservationCategoriesDto;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.register.model.ProductDto;
 import com.school.foot_patroling.register.model.ProductDto_;
@@ -101,6 +103,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 
@@ -140,7 +143,8 @@ public class RegisterActivity extends BaseActivity {
 
                     preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_URL, url);
                     preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI1, imeiList.get(0));
-                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI2,imeiList.get(1) );
+                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI2,imeiList.get(1));
+                    preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_SELECTED_IMEI, selectedImei);
                     url = url + "/warehouse/fpApp/get-fp-data";
                     RegistrationRequestModel model = new RegistrationRequestModel();
                     model.setAppName("TRD_FP");
@@ -489,7 +493,13 @@ public class RegisterActivity extends BaseActivity {
                         RegisterActivity.mFPDatabase.footPatrollingSectionsDao().insert(sectionsDto);
                     }
                 }
-//TODO WRITE UPDATE LOGIC insertFootPatrolingSectionsDtos HERE
+                List<FootPatrollingSectionsDto_> updateFootPatrolingSectionsDtos =  dto.getUpdatedFootPatrollingSectionsDto().getFootPatrollingSectionsDtos();
+                if(updateFootPatrolingSectionsDtos != null && updateFootPatrolingSectionsDtos.size() > 0){
+                    Log.d(TAG, "foot patroling section insert records : " + insertFootPatrolingSectionsDtos.size());
+                    for(FootPatrollingSectionsDto_ sectionsDto : updateFootPatrolingSectionsDtos){
+                        RegisterActivity.mDtoWrapper.updateSections(sectionsDto);
+                    }
+                }
 
 
                 List<ObservationsCheckListDto> insertChecklistDtos = dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos();
@@ -500,6 +510,19 @@ public class RegisterActivity extends BaseActivity {
                     for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
                         //dataUpdateDAO.insertChecklistData(checkListDto, db);
                         RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
+                    }
+                    progressValue = progressValue + 1;
+                    //  publishProgress(progressValue);
+                }
+
+                List<ObservationCategoriesDto> insertCategoriesDtos = dto.getCreatedObservationCategoriesDto().getObservationCategoriesDtos();
+                if (insertCategoriesDtos != null && insertCategoriesDtos.size() > 0) {
+
+                    Log.d(TAG, "categories insert records : " + insertCategoriesDtos.size());
+
+                    for (ObservationCategoriesDto categoriesDto : insertCategoriesDtos) {
+                        //dataUpdateDAO.insertChecklistData(checkListDto, db);
+                        RegisterActivity.mFPDatabase.observationCategoriesDtoDao().insert(categoriesDto);
                     }
                     progressValue = progressValue + 1;
                     //  publishProgress(progressValue);

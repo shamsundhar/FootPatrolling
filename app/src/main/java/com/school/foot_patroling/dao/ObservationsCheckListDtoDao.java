@@ -21,4 +21,6 @@ public interface ObservationsCheckListDtoDao {
 
     @Query("SELECT * from ObservationsCheckListDto") //" ORDER BY message_id ASC")
     List<ObservationsCheckListDto> getAllObservationsCheckListDtos();
+    @Query("SELECT * FROM ObservationsCheckListDto WHERE observationCategory=:category")
+    List<ObservationsCheckListDto> getAllObservationsCheckListDtosFromCategory(String category);
 }

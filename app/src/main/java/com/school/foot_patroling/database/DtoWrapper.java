@@ -2,6 +2,8 @@ package com.school.foot_patroling.database;
 
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto_;
 import com.school.foot_patroling.register.model.ProductDto;
 import com.school.foot_patroling.register.model.ProductDto_;
 import com.school.foot_patroling.register.model.UserLoginDto;
@@ -93,5 +95,17 @@ public class DtoWrapper {
         productDto1.setProductId(productDto.getProductId());
         
         fpDatabase.productDtoDao().insert(productDto1);
+    }
+    public void updateSections(FootPatrollingSectionsDto_ sectionsDto){
+        FootPatrollingSectionsDto footPatrollingSectionsDto = new FootPatrollingSectionsDto();
+        footPatrollingSectionsDto.setFacilityDepot(sectionsDto.getFacilityDepot());
+        footPatrollingSectionsDto.setFpSection(sectionsDto.getFpSection());
+        footPatrollingSectionsDto.setFromDate(sectionsDto.getFromDate());
+        footPatrollingSectionsDto.setFromLocation(sectionsDto.getFromLocation());
+        footPatrollingSectionsDto.setRemarks(sectionsDto.getRemarks());
+        footPatrollingSectionsDto.setToLocation(sectionsDto.getToLocation());
+        footPatrollingSectionsDto.setToDate(sectionsDto.getToDate());
+
+        fpDatabase.footPatrollingSectionsDao().insert(footPatrollingSectionsDto);
     }
 }

@@ -8,7 +8,7 @@ public class FootPatrollingSectionsDto_ {
     private String fpSection;
     private String fromDate;
     private String fromLocation;
-    private Object remarks;
+    private String remarks;
     private String seqId;
     private String toDate;
     private String toLocation;
@@ -45,11 +45,11 @@ public class FootPatrollingSectionsDto_ {
         this.fromLocation = fromLocation;
     }
 
-    public Object getRemarks() {
+    public String getRemarks() {
         return remarks;
     }
 
-    public void setRemarks(Object remarks) {
+    public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
 

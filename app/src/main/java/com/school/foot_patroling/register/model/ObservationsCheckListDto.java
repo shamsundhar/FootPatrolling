@@ -6,7 +6,14 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 @Entity(tableName = "ObservationsCheckListDto")
-public class ObservationsCheckListDto {
+public class ObservationsCheckListDto{
+    public static final int LOW = 0;
+    public static final int MEDIUM = 1;
+    public static final int HIGH = 2;
+
+
+
+    private boolean isChecked;
 
     @PrimaryKey
     @NonNull
@@ -102,4 +109,27 @@ public class ObservationsCheckListDto {
         this.thruDate = thruDate;
     }
 
+    public int getPriorityValue(){
+        if(getPriority().equals("Low")){
+            return LOW;
+        }
+        else if(getPriority().equals("Medium")){
+            return MEDIUM;
+        }
+        else{
+            return HIGH;
+        }
+    }
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+//    @Override
+//    public int compareTo(@NonNull ObservationsCheckListDto o2) {
+//        return getPriorityValue() - o2.getPriorityValue();
+//    }
 }

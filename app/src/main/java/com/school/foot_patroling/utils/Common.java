@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -28,6 +30,10 @@ public class Common {
             value = activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
         return value;
+    }
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     public static boolean isValidURL(String url)
     {

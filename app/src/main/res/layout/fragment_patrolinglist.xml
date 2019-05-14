@@ -6,14 +6,115 @@
     android:background="@color/white"
     android:padding="10dp"
     android:orientation="vertical">
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rbpriority"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="Priority"
+            android:textColor="@color/radio_flat_text_selector" />
+
+        <RadioButton
+            android:id="@+id/rbcategory"
+            android:gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="Category"
+            android:textColor="@color/radio_flat_text_selector" />
+    </RadioGroup>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="gone"
+            android:id="@+id/categoryLayout"
+            android:background="@drawable/layout_corners_grey_border"
+           >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/categoryTV"
+                android:layout_centerVertical="true"
+                android:text="Category"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv1"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:text="Checklist"
-        android:textSize="30sp"/>
+        android:text="Location : "
+        android:textSize="15sp"/>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_loc1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint=""
+            android:text=""
+            android:inputType="textUri"
+            android:maxLines="1"
+            android:maxEms="3"
+            android:ems="3"
+            android:singleLine="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv2"
+            android:textColor="@color/black"
+            android:text=" / "
+            android:textSize="15sp"/>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_loc2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint=""
+            android:text=""
+            android:inputType="textUri"
+            android:maxLines="1"
+            android:maxEms="5"
+            android:ems="5"
+            android:singleLine="true" />
+
+    </LinearLayout>
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -27,4 +128,43 @@
             android:layout_height="match_parent" />
         <include layout="@layout/empty_text"/>
     </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+       android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:weightSum="3">
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/drawable_corners_primary_gradient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="@string/text_back"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/drawable_corners_primary_gradient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="@string/text_stop"/>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/drawable_corners_primary_gradient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="@string/text_submit"/>
+
+    </LinearLayout>
 </LinearLayout>

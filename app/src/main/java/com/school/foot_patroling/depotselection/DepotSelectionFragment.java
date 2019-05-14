@@ -25,6 +25,7 @@ import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
+import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
@@ -37,7 +38,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.content.ContentValues.TAG;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
 
 public class DepotSelectionFragment extends BaseFragment {
     PreferenceHelper preferenceHelper;
@@ -66,16 +69,29 @@ public class DepotSelectionFragment extends BaseFragment {
     @OnClick(R.id.btn_startFP)
     public void startFPClick(){
 //get current timestamp, and save this info into inspection table. and navigate to checklist fragment
-       String fpStartTime =  DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-       String isScheduled;
-       Boolean scheduleStatus = scheduleSwitch.isChecked();
-       if(scheduleStatus){
-           isScheduled = "Yes";
-       }
-       else{
-           isScheduled = "No";
-       }
-preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.TRUE);
+        String fpStartTime =  DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+        String isScheduled;
+        Boolean scheduleStatus = scheduleSwitch.isChecked();
+        if(scheduleStatus){
+            isScheduled = "Yes";
+        }
+        else{
+            isScheduled = "No";
+        }
+        preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.TRUE);
+        preferenceHelper.setString(getActivity(), PREF_KEY_FP_STARTED_TIME, fpStartTime );
+
+        Inspection inspection = new Inspection();
+        String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+        inspection.setDevice_id(selectedImei);
+        //   inspection.setDevice_seq_id();
+        inspection.setFacility_id(selectedDepotId);
+        //   inspection.setInspection_by();
+        inspection.setInspection_type(isScheduled);
+        inspection.setSection(selectedSectionID);
+        inspection.setSeq_id(fpStartTime);
+        inspection.setStart_time(fpStartTime);
+        NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
 
         ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
     }
@@ -123,9 +139,9 @@ preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.TRUE);
                 FacilityDto dataModel = depotList.get(position);
                 depotTV.setText(dataModel.getFacilityName());
                 selectedDepotId = dataModel.getFacilityId();
-                  Snackbar.make(view, " " +dataModel.getFacilityName()+" "+dataModel.getFacilityId(), Snackbar.LENGTH_LONG)
-                          .setAction("No action", null).show();
-               //   displaySectionsPopup();
+                Snackbar.make(view, " " +dataModel.getFacilityName()+" "+dataModel.getFacilityId(), Snackbar.LENGTH_LONG)
+                        .setAction("No action", null).show();
+                //   displaySectionsPopup();
 
             }
         });
@@ -145,7 +161,7 @@ preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.TRUE);
 
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
-      //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
+        //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
         final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtos();
 
         if(sectionList != null) {

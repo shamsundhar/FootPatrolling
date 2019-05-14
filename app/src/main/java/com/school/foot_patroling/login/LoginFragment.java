@@ -13,6 +13,7 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.register.model.UserLoginDto;
+import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.Cursor;
@@ -67,6 +68,8 @@ public class LoginFragment extends BaseFragment {
                     {
                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
                         Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
+                        //hide keyboard here
+                      //  Common.hideKeyboardFrom();
                         if(fpStarted)
                             ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
                         else
