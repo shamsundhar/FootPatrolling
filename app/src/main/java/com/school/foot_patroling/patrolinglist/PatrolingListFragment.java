@@ -86,7 +86,7 @@ public class PatrolingListFragment extends BaseFragment {
 
 
         //  String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-        inspection.setStop_time(fpStopTime);
+        inspection.setStoptime(fpStopTime);
         NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
 
     }

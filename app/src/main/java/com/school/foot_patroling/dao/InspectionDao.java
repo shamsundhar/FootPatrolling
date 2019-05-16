@@ -20,6 +20,8 @@ public interface InspectionDao {
 
     @Query("SELECT * from inspection")
     List<Inspection> getAllInspectionDtos();
-    @Query("SELECT * FROM inspection WHERE seq_id=:fpStartedTime")
+    @Query("SELECT * FROM inspection WHERE device_seq_id=:fpStartedTime")
     Inspection getStartedInspection(String fpStartedTime);
+    @Query("SELECT * FROM inspection WHERE seq_id='null'")
+    List<Inspection> getNotSyncedInspection();
 }

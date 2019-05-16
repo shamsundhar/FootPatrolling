@@ -3,6 +3,19 @@ package com.school.foot_patroling.register.model;
 public class RegistrationRequestModel {
     private String previousTimestamp;
     private String currentTimestamp;
+    private String imeiNo;
+    private String appName;
+
+    public AppToServerCreatedFootPatrollingInspectionDto getAppToServerCreatedFootPatrollingInspectionDto() {
+        return appToServerCreatedFootPatrollingInspectionDto;
+    }
+
+    public void setAppToServerCreatedFootPatrollingInspectionDto(AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto) {
+        this.appToServerCreatedFootPatrollingInspectionDto = appToServerCreatedFootPatrollingInspectionDto;
+    }
+
+    private AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto;
+
 
     public String getPreviousTimestamp() {
         return previousTimestamp;
@@ -36,6 +49,5 @@ public class RegistrationRequestModel {
         this.appName = appName;
     }
 
-    private String imeiNo;
-    private String appName;
+
 }

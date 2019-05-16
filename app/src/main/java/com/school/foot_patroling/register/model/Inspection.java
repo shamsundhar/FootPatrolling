@@ -8,95 +8,89 @@ import android.support.annotation.NonNull;
 @Entity(tableName = "inspection")
 public class Inspection {
 
+
+    @ColumnInfo(name = "seq_id")
+    private String seqid;
+    @ColumnInfo(name = "device_id")
+    private String deviceid;
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "seq_id")
-    private String seq_id;
-    @ColumnInfo(name = "device_id")
-    private String device_id;
     @ColumnInfo(name = "device_seq_id")
-    private String device_seq_id;
+    private String deviceseqid;
     @ColumnInfo(name = "inspection_type")
-    private String inspection_type;
+    private String inspectiontype;
     @ColumnInfo(name = "start_time")
-    private String start_time;
+    private String starttime;
     @ColumnInfo(name = "stop_time")
-    private String stop_time;
+    private String stoptime;
     @ColumnInfo(name = "inspection_by")
-    private String inspection_by;
+    private String inspectionby;
     @ColumnInfo(name = "section")
     private String section;
     @ColumnInfo(name = "last_updated_stamp")
-    private String last_updated_stamp;
+    private String lastupdatedstamp;
     @ColumnInfo(name = "last_updated_tx_stamp")
-    private String last_updated_tx_stamp;
+    private String lastupdatedtxstamp;
     @ColumnInfo(name = "created_stamp")
-    private String created_stamp;
+    private String createdstamp;
     @ColumnInfo(name = "created_tx_stamp")
-    private String created_tx_stamp;
-    @ColumnInfo(name = "facility_id")
-    private String facility_id;
-    @ColumnInfo(name = "km")
-    private String km;
-    @ColumnInfo(name = "location")
-    private String location;
+    private String createdtxstamp;
 
+    public String getSeqid() {
+        return seqid;
+    }
+
+    public void setSeqid(String seqid) {
+        this.seqid = seqid;
+    }
+
+    public String getDeviceid() {
+        return deviceid;
+    }
+
+    public void setDeviceid(String deviceid) {
+        this.deviceid = deviceid;
+    }
 
     @NonNull
-    public String getSeq_id() {
-        return seq_id;
+    public String getDeviceseqid() {
+        return deviceseqid;
     }
 
-    public void setSeq_id(@NonNull String seq_id) {
-        this.seq_id = seq_id;
+    public void setDeviceseqid(@NonNull String deviceseqid) {
+        this.deviceseqid = deviceseqid;
     }
 
-    public String getDevice_id() {
-        return device_id;
+    public String getInspectiontype() {
+        return inspectiontype;
     }
 
-    public void setDevice_id(String device_id) {
-        this.device_id = device_id;
+    public void setInspectiontype(String inspectiontype) {
+        this.inspectiontype = inspectiontype;
     }
 
-    public String getDevice_seq_id() {
-        return device_seq_id;
+    public String getStarttime() {
+        return starttime;
     }
 
-    public void setDevice_seq_id(String device_seq_id) {
-        this.device_seq_id = device_seq_id;
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
     }
 
-    public String getInspection_type() {
-        return inspection_type;
+    public String getStoptime() {
+        return stoptime;
     }
 
-    public void setInspection_type(String inspection_type) {
-        this.inspection_type = inspection_type;
+    public void setStoptime(String stoptime) {
+        this.stoptime = stoptime;
     }
 
-    public String getStart_time() {
-        return start_time;
+    public String getInspectionby() {
+        return inspectionby;
     }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
-    }
-
-    public String getStop_time() {
-        return stop_time;
-    }
-
-    public void setStop_time(String stop_time) {
-        this.stop_time = stop_time;
-    }
-
-    public String getInspection_by() {
-        return inspection_by;
-    }
-
-    public void setInspection_by(String inspection_by) {
-        this.inspection_by = inspection_by;
+    public void setInspectionby(String inspectionby) {
+        this.inspectionby = inspectionby;
     }
 
     public String getSection() {
@@ -107,44 +101,44 @@ public class Inspection {
         this.section = section;
     }
 
-    public String getLast_updated_stamp() {
-        return last_updated_stamp;
+    public String getLastupdatedstamp() {
+        return lastupdatedstamp;
     }
 
-    public void setLast_updated_stamp(String last_updated_stamp) {
-        this.last_updated_stamp = last_updated_stamp;
+    public void setLastupdatedstamp(String lastupdatedstamp) {
+        this.lastupdatedstamp = lastupdatedstamp;
     }
 
-    public String getLast_updated_tx_stamp() {
-        return last_updated_tx_stamp;
+    public String getLastupdatedtxstamp() {
+        return lastupdatedtxstamp;
     }
 
-    public void setLast_updated_tx_stamp(String last_updated_tx_stamp) {
-        this.last_updated_tx_stamp = last_updated_tx_stamp;
+    public void setLastupdatedtxstamp(String lastupdatedtxstamp) {
+        this.lastupdatedtxstamp = lastupdatedtxstamp;
     }
 
-    public String getCreated_stamp() {
-        return created_stamp;
+    public String getCreatedstamp() {
+        return createdstamp;
     }
 
-    public void setCreated_stamp(String created_stamp) {
-        this.created_stamp = created_stamp;
+    public void setCreatedstamp(String createdstamp) {
+        this.createdstamp = createdstamp;
     }
 
-    public String getCreated_tx_stamp() {
-        return created_tx_stamp;
+    public String getCreatedtxstamp() {
+        return createdtxstamp;
     }
 
-    public void setCreated_tx_stamp(String created_tx_stamp) {
-        this.created_tx_stamp = created_tx_stamp;
+    public void setCreatedtxstamp(String createdtxstamp) {
+        this.createdtxstamp = createdtxstamp;
     }
 
-    public String getFacility_id() {
-        return facility_id;
+    public String getFacilityid() {
+        return facilityid;
     }
 
-    public void setFacility_id(String facility_id) {
-        this.facility_id = facility_id;
+    public void setFacilityid(String facilityid) {
+        this.facilityid = facilityid;
     }
 
     public String getKm() {
@@ -162,4 +156,14 @@ public class Inspection {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    @ColumnInfo(name = "facility_id")
+    private String facilityid;
+    @ColumnInfo(name = "km")
+    private String km;
+    @ColumnInfo(name = "location")
+    private String location;
+
+
+
 }
