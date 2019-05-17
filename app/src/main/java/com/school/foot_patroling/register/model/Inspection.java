@@ -10,87 +10,94 @@ public class Inspection {
 
 
     @ColumnInfo(name = "seq_id")
-    private String seqid;
+    private String seqId;
     @ColumnInfo(name = "device_id")
-    private String deviceid;
+    private String deviceId;
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "device_seq_id")
-    private String deviceseqid;
+    private String deviceSeqId;
     @ColumnInfo(name = "inspection_type")
-    private String inspectiontype;
+    private String inspectionType;
     @ColumnInfo(name = "start_time")
-    private String starttime;
+    private String startTime;
     @ColumnInfo(name = "stop_time")
-    private String stoptime;
+    private String stopTime;
     @ColumnInfo(name = "inspection_by")
-    private String inspectionby;
+    private String inspectionBy;
     @ColumnInfo(name = "section")
     private String section;
     @ColumnInfo(name = "last_updated_stamp")
-    private String lastupdatedstamp;
+    private String lastUpdatedStamp;
     @ColumnInfo(name = "last_updated_tx_stamp")
-    private String lastupdatedtxstamp;
+    private String lastUpdatedtxStamp;
     @ColumnInfo(name = "created_stamp")
-    private String createdstamp;
+    private String createdStamp;
     @ColumnInfo(name = "created_tx_stamp")
-    private String createdtxstamp;
+    private String createdTxStamp;
+    @ColumnInfo(name = "facility_id")
+    private String facilityId;
+    @ColumnInfo(name = "km")
+    private String km;
+    @ColumnInfo(name = "location")
+    private String location;
 
-    public String getSeqid() {
-        return seqid;
+
+    public String getSeqId() {
+        return seqId;
     }
 
-    public void setSeqid(String seqid) {
-        this.seqid = seqid;
+    public void setSeqId(String seqId) {
+        this.seqId = seqId;
     }
 
-    public String getDeviceid() {
-        return deviceid;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceid(String deviceid) {
-        this.deviceid = deviceid;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     @NonNull
-    public String getDeviceseqid() {
-        return deviceseqid;
+    public String getDeviceSeqId() {
+        return deviceSeqId;
     }
 
-    public void setDeviceseqid(@NonNull String deviceseqid) {
-        this.deviceseqid = deviceseqid;
+    public void setDeviceSeqId(@NonNull String deviceSeqId) {
+        this.deviceSeqId = deviceSeqId;
     }
 
-    public String getInspectiontype() {
-        return inspectiontype;
+    public String getInspectionType() {
+        return inspectionType;
     }
 
-    public void setInspectiontype(String inspectiontype) {
-        this.inspectiontype = inspectiontype;
+    public void setInspectionType(String inspectionType) {
+        this.inspectionType = inspectionType;
     }
 
-    public String getStarttime() {
-        return starttime;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 
-    public String getStoptime() {
-        return stoptime;
+    public String getStopTime() {
+        return stopTime;
     }
 
-    public void setStoptime(String stoptime) {
-        this.stoptime = stoptime;
+    public void setStopTime(String stopTime) {
+        this.stopTime = stopTime;
     }
 
-    public String getInspectionby() {
-        return inspectionby;
+    public String getInspectionBy() {
+        return inspectionBy;
     }
 
-    public void setInspectionby(String inspectionby) {
-        this.inspectionby = inspectionby;
+    public void setInspectionBy(String inspectionBy) {
+        this.inspectionBy = inspectionBy;
     }
 
     public String getSection() {
@@ -101,44 +108,44 @@ public class Inspection {
         this.section = section;
     }
 
-    public String getLastupdatedstamp() {
-        return lastupdatedstamp;
+    public String getLastUpdatedStamp() {
+        return lastUpdatedStamp;
     }
 
-    public void setLastupdatedstamp(String lastupdatedstamp) {
-        this.lastupdatedstamp = lastupdatedstamp;
+    public void setLastUpdatedStamp(String lastUpdatedStamp) {
+        this.lastUpdatedStamp = lastUpdatedStamp;
     }
 
-    public String getLastupdatedtxstamp() {
-        return lastupdatedtxstamp;
+    public String getLastUpdatedtxStamp() {
+        return lastUpdatedtxStamp;
     }
 
-    public void setLastupdatedtxstamp(String lastupdatedtxstamp) {
-        this.lastupdatedtxstamp = lastupdatedtxstamp;
+    public void setLastUpdatedtxStamp(String lastUpdatedtxStamp) {
+        this.lastUpdatedtxStamp = lastUpdatedtxStamp;
     }
 
-    public String getCreatedstamp() {
-        return createdstamp;
+    public String getCreatedStamp() {
+        return createdStamp;
     }
 
-    public void setCreatedstamp(String createdstamp) {
-        this.createdstamp = createdstamp;
+    public void setCreatedStamp(String createdStamp) {
+        this.createdStamp = createdStamp;
     }
 
-    public String getCreatedtxstamp() {
-        return createdtxstamp;
+    public String getCreatedTxStamp() {
+        return createdTxStamp;
     }
 
-    public void setCreatedtxstamp(String createdtxstamp) {
-        this.createdtxstamp = createdtxstamp;
+    public void setCreatedTxStamp(String createdTxStamp) {
+        this.createdTxStamp = createdTxStamp;
     }
 
-    public String getFacilityid() {
-        return facilityid;
+    public String getFacilityId() {
+        return facilityId;
     }
 
-    public void setFacilityid(String facilityid) {
-        this.facilityid = facilityid;
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 
     public String getKm() {
@@ -156,14 +163,4 @@ public class Inspection {
     public void setLocation(String location) {
         this.location = location;
     }
-
-    @ColumnInfo(name = "facility_id")
-    private String facilityid;
-    @ColumnInfo(name = "km")
-    private String km;
-    @ColumnInfo(name = "location")
-    private String location;
-
-
-
 }

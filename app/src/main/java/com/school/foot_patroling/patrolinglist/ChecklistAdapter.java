@@ -39,16 +39,20 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        if(viewType == NEWS_LIST_ITEM){
+        //if(viewType == NEWS_LIST_ITEM){
             View v1 = inflater.inflate(R.layout.layout_checklistitem, viewGroup, false);
             viewHolder = new ChecklistAdapter.ViewHolder1(v1);
-        }
+        //}
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        switch (viewHolder.getItemViewType()) {
+        ChecklistAdapter.ViewHolder1 vh1 = (ChecklistAdapter.ViewHolder1) viewHolder;
+        configureViewHolder1(vh1, position);
+
+        /*switch (viewHolder.getItemViewType()) {
+
             case NEWS_LIST_ITEM:
                 ChecklistAdapter.ViewHolder1 vh1 = (ChecklistAdapter.ViewHolder1) viewHolder;
                 configureViewHolder1(vh1, position);
@@ -57,7 +61,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 //  RecyclerViewSimpleTextViewHolder vh = (RecyclerViewSimpleTextViewHolder) viewHolder;
                 //  configureDefaultViewHolder(vh, position);
                 break;
-        }
+        }*/
 
 
     }
@@ -73,20 +77,21 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position) instanceof ObservationsCheckListDto) {
+        /*if (items.get(position) instanceof ObservationsCheckListDto) {
             return NEWS_LIST_ITEM;
-        }
-        return -1;
+        }*/
+        return position;
     }
     private void configureViewHolder1(final ChecklistAdapter.ViewHolder1 vh1, final int position) {
         final ObservationsCheckListDto model = (ObservationsCheckListDto) items.get(position);
         if (model != null) {
             vh1.getTitle().setText(model.getObservationItem());
             vh1.getSubtitle().setText(model.getPriority());
+            vh1.getaSwitch().setChecked(items.get(position).isChecked());
             vh1.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                    items.get(position).setChecked(isChecked);
                     clickListener.onCheckListSwitchSelected(model, position);
 
                 }

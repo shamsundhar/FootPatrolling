@@ -83,15 +83,15 @@ public class DepotSelectionFragment extends BaseFragment {
 
         Inspection inspection = new Inspection();
         String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-        inspection.setDeviceid(selectedImei);
+        inspection.setDeviceId(selectedImei);
         //   inspection.setDevice_seq_id();
-        inspection.setFacilityid(selectedDepotId);
+        inspection.setFacilityId(selectedDepotId);
         //   inspection.setInspection_by();
-        inspection.setInspectiontype(isScheduled);
+        inspection.setInspectionType(isScheduled);
         inspection.setSection(selectedSectionID);
-        inspection.setSeqid("null");
-        inspection.setDeviceseqid(fpStartTime);
-        inspection.setStarttime(fpStartTime);
+        inspection.setSeqId("null");
+        inspection.setDeviceSeqId(fpStartTime);
+        inspection.setStartTime(fpStartTime);
         NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
 
         ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
