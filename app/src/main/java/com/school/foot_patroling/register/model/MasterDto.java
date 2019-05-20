@@ -2,6 +2,8 @@
 package com.school.foot_patroling.register.model;
 
 
+import java.util.HashMap;
+
 public class MasterDto {
 
     private String appName;
@@ -40,7 +42,15 @@ public class MasterDto {
     private UpdatedResponseOheLocationDto updatedResponseOheLocationDto;
     private UpdatedResponseProductDto updatedResponseProductDto;
     private UpdatedResponseUserLoginDto updatedResponseUserLoginDto;
+    private HashMap<String, String> serverToAppFootPatrollingInspectionMap;
 
+    public HashMap<String, String> getServerToAppFootPatrollingInspectionMap() {
+        return serverToAppFootPatrollingInspectionMap;
+    }
+
+    public void setServerToAppFootPatrollingInspectionMap(HashMap<String, String> serverToAppFootPatrollingInspectionMap) {
+        this.serverToAppFootPatrollingInspectionMap = serverToAppFootPatrollingInspectionMap;
+    }
     public String getAppName() {
         return appName;
     }

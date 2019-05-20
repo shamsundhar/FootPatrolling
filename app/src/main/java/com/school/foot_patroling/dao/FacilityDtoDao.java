@@ -19,4 +19,7 @@ public interface FacilityDtoDao {
 
     @Query("SELECT * from facility")
     List<FacilityDto> getAllFacilityDtos();
+
+    @Query("SELECT * FROM facility WHERE depotType='OHE'")
+    List<FacilityDto> getOHEFacilityDtos();
 }

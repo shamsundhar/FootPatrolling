@@ -5,6 +5,7 @@
 
     <string name="text_please_wait">Please wait...</string>
     <string name="text_authenticating">Authenticating...</string>
+    <string name="text_alert">Alert</string>
 
     <string name="text_checklist">Check List</string>
     <string name="text_datasync">Data Sync</string>

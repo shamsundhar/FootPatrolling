@@ -383,32 +383,6 @@ public class RegisterActivity extends BaseActivity {
             String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
             preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_CURRENT_SYNC_TIME, currentTimeStamp);
 
-            String sql1 = " ";
-            String sql2 = " ";
-            String sql3 = " ";
-
-            String args[] = {};
-            Cursor c1 = null;
-            Cursor c2 = null;
-            Cursor c3 = null;
-
-            Response response = null;
-
-
-//                try {
-//
-//                    ResponseFacilityDto responseFacilityDto = dto.getCreatedResponseFacilityDto();
-//                    List<FacilityDto> facilityDtos = responseFacilityDto.getFacilityDtos();
-//                    Log.d(TAG,"flow order check here**");
-//                   /* for (FacilityDto facilityDto : facilityDtos) {
-//                        Log.d(TAG, ".if..facility..id.." + facilityDto.getFacilityId());
-//                    }*/
-//                    progressValue = progressValue + 2;
-//                    publishProgress(progressValue);
-//
-//                    if (dto != null) {
-//                        Log.d(TAG, "entering this block");
-//
             if (updateDatabase(masterDto, db)) {
 
                 result = "Success";
@@ -418,22 +392,6 @@ public class RegisterActivity extends BaseActivity {
                 result = "Failed";
 
             }
-//
-//
-//                        Log.d(TAG, "Value of result**" + result);
-//
-//
-//                    } else
-//
-//                    {
-//                        Log.d(TAG, "not coming");
-//                    }
-//
-//                } catch (Exception e) {
-//
-//                    e.printStackTrace();
-//                }
-
 
         } catch (Exception e) {
             e.printStackTrace();

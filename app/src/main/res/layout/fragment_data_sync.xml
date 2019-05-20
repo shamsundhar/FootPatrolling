@@ -15,7 +15,7 @@
             android:layout_gravity="center_horizontal"
             android:scaleType="center"
             android:layout_marginTop="30dp"
-            android:text="Data Sync Status : "
+            android:text="Data Sync Status : Not Started"
             android:textSize="16sp"
             />
 

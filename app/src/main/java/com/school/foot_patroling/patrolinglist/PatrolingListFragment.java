@@ -33,8 +33,10 @@ import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.depotselection.DepotsListAdapter;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.Inspection;
+import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.register.model.ObservationCategoriesDto;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
+import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
@@ -68,6 +70,10 @@ public class PatrolingListFragment extends BaseFragment {
     RelativeLayout categoryLayout;
     @BindView(R.id.categoryTV)
     TextView categoryTV;
+    @BindView(R.id.et_loc1)
+    EditText loc1;
+    @BindView(R.id.et_loc2)
+    EditText loc2;
     CategoryListAdapter categoryListAdapter;
     String selectedCategoryId;
     String selectedCategory;
@@ -82,13 +88,28 @@ public class PatrolingListFragment extends BaseFragment {
         preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.FALSE);
         String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
         Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(fpStartedTime);
-        //   List<Inspection> inspectionList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getAllInspectionDtos();
-
-
         //  String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
         inspection.setStopTime(fpStopTime);
         NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
+        ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
 
+    }
+    @OnClick(R.id.btn_submit)
+    public void submitButtonClick(){
+        if(validate()) {
+            //insert observation data.
+            String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+            String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+            String location = loc1.getText().toString()+"/"+loc2.getText().toString();
+            Observation observation = new Observation();
+            observation.setCreatedBy("");
+            observation.setCreatedDateTime(currentTimeStamp);
+            observation.setDeviceId(selectedImei);
+            observation.setDeviceSeqId(currentTimeStamp);
+            observation.setLocation(location);
+            observation.setSeqId("null");
+            NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+        }
     }
     private ChecklistAdapter checklistAdapter;
     SQLiteDatabase database;
@@ -151,7 +172,7 @@ public class PatrolingListFragment extends BaseFragment {
             public void onCheckListSwitchSelected(ObservationsCheckListDto model, int position) {
                 //display dialog with comments section
                 //   Toast.makeText(getActivity(), position+" clicked", Toast.LENGTH_LONG).show();
-               // displayCommentsPopup(model, position);
+                // displayCommentsPopup(model, position);
             }
         });
         checklistRecyclerView.setAdapter(checklistAdapter);
@@ -297,7 +318,7 @@ public class PatrolingListFragment extends BaseFragment {
         checkList.clear();
         List<ObservationsCheckListDto> observationsCheckListDtoList = NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos();
 
-                Collections.sort(observationsCheckListDtoList, new Comparator()
+        Collections.sort(observationsCheckListDtoList, new Comparator()
                 {
 
                     public int compare(Object o1, Object o2)
@@ -314,11 +335,26 @@ public class PatrolingListFragment extends BaseFragment {
                         // it can also return 0, and 1
                     }
                 }
-               );
-          checkList.addAll(observationsCheckListDtoList);
-          checklistAdapter.setItems(checkList);
-          checklistAdapter.notifyDataSetChanged();
+        );
+        checkList.addAll(observationsCheckListDtoList);
+        checklistAdapter.setItems(checkList);
+        checklistAdapter.notifyDataSetChanged();
 
+    }
+    public boolean validate() {
+        boolean valid = true;
+
+        String locvalue1 = loc1.getText().toString().trim();
+        String locvalue2 = loc2.getText().toString().trim();
+        if (locvalue1.isEmpty()) {
+            loc1.setError("Enter a valid location");
+            valid = false;
+        }
+        if(locvalue2.isEmpty()){
+            loc2.setError("Enter a valid location");
+            valid = false;
+        }
+        return valid;
     }
 
 }

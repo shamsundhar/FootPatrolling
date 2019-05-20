@@ -1,19 +1,33 @@
 package com.school.foot_patroling.login;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
+import com.school.foot_patroling.depotselection.SectionsListAdapter;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.Cursor;
@@ -22,6 +36,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,55 +49,42 @@ public class LoginFragment extends BaseFragment {
     DatabaseHelper dbhelper = null;
     PreferenceHelper preferenceHelper;
     SQLiteDatabase database;
-    @BindView(R.id.input_username)
-    EditText etUsername;
     @BindView(R.id.input_password)
     EditText etPassword;
+    @BindView(R.id.usernameLayout)
+    RelativeLayout usernameLayout;
+    @BindView(R.id.usernameTV)
+    TextView usernameTV;
+    @OnClick(R.id.usernameLayout)
+    public void usernameClick(){
+        displayUserNamePopup();
+    }
     String mUsername;
     String mPassword;
     String shaPassword;
+    UserLoginAdapter userLoginAdapter;
 
     @OnClick(R.id.btn_signin)
     public void clickOnLogin(){
-        mUsername = etUsername.getText().toString().trim();
         mPassword = etPassword.getText().toString().trim();
         if(validate(mUsername, mPassword)) {
             try {
                 if (database != null) {
                     Log.d(TAG, "fetching user id");
-//                     String sql = "select user_login_id,current_password from user_login";
-//                     String db_username = "";
-//                     String db_password = "";
-//                     Cursor cursor = database.rawQuery(sql, null);
-//                     if (cursor.moveToFirst()) {
-//                         while (!cursor.isAfterLast()) {
-//                             db_username = cursor.getString(0);
-//                             db_password = cursor.getString(1);
-//                             cursor.moveToNext();
-//                         }
-//                     }
-//                     cursor.close();
                     UserLoginDto userLoginDto = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getUserByUnamePassword(mUsername);
                     shaPassword = sha1(mPassword);
                     if(shaPassword.equals(userLoginDto.getCurrentPassword()))
                     {
                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
                         Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
-                        //hide keyboard here
-                      //  Common.hideKeyboardFrom();
                         if(fpStarted)
                             ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
                         else
                             ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
-//                         globals.setFacilityNameList(facility.getFacilityNameList());
-//                         globals.setFacilityIdList(facility.getFacilityIdList());
-//
-//                         Intent intent = new Intent(LoginActivity.this, AssetActivity.class);
-//                         intent.putExtra("username", username);
-//
-//                         //   Log.d(TAG, "facility - " +facility.getFacilityId());
-//                         startActivity(intent);
-//                         finish();
+                    }
+                    else{
+                        CustomAlertDialog dialog = new CustomAlertDialog();
+                        dialog.showAlert1(getActivity(), R.string.text_alert, "Invalid Username or Password");
                     }
                 }
             } catch (Exception e) {
@@ -158,8 +160,9 @@ public class LoginFragment extends BaseFragment {
     }
     private boolean validate(String mUsername, String mPassword){
         boolean validate = true;
-        if(mUsername.isEmpty()){
-            etUsername.setError("Enter Username");
+        if(mUsername== null || mUsername.isEmpty()){
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Username");
             validate = false;
         }
         else {
@@ -173,5 +176,41 @@ public class LoginFragment extends BaseFragment {
             }
         }
         return validate;
+    }
+    private void displayUserNamePopup()
+    {
+        final Dialog builder = new Dialog(getActivity());
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = builder.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        wlp.gravity = Gravity.CENTER;
+        window.setAttributes(wlp);
+        builder.setContentView(R.layout.popup_listview);
+
+        final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+        listView.setTextFilterEnabled(true);
+        //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
+        final List<UserLoginDto> userlists = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getAllUserLoginDtos();
+
+        if(userlists != null) {
+            userLoginAdapter = new UserLoginAdapter(userlists, getActivity().getBaseContext());
+            listView.setAdapter(userLoginAdapter);
+        }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                builder.dismiss();
+                UserLoginDto dataModel = userlists.get(position);
+                usernameTV.setText(dataModel.getUserLoginId());
+                mUsername = dataModel.getUserLoginId();
+               // selectedSectionID = dataModel.getSeqId();
+
+            }
+        });
+        builder.setCanceledOnTouchOutside(true);
+        builder.show();
     }
 }

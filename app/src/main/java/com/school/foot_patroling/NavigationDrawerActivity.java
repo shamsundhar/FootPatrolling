@@ -31,6 +31,7 @@ import com.school.foot_patroling.reload.ReloadFragment;
 import com.school.foot_patroling.reports.ReportsFragment;
 import com.school.foot_patroling.scheduleentry.ScheduleEntryFragment;
 import com.school.foot_patroling.terms.TermsFragment;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
 
 import javax.inject.Inject;
@@ -42,16 +43,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    ImageView profileAvatar;
-    TextView profileNameTV;
-    TextView profileClassTV;
-    TextView profileSubjectsTV;
-    MenuItem attendanceItem;
-    MenuItem notesItem;
 
+    PreferenceHelper preferenceHelper;
     Menu nav_Menu;
 
     public boolean isDISPLAY_LOGIN() {
@@ -81,6 +78,7 @@ public class NavigationDrawerActivity extends BaseActivity
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         mFPDatabase = Room.databaseBuilder(this,FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
         ActionBar actionBar = getSupportActionBar();
         mDtoWrapper = new DtoWrapper(mFPDatabase);
@@ -150,7 +148,14 @@ public class NavigationDrawerActivity extends BaseActivity
         } else if(id == R.id.nav_login){
             displayLoginFragment();
         }else if(id == R.id.nav_checklist){
-            displayCheckedListFragment();
+            Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
+            if(fpStarted){
+                displayCheckedListFragment();
+            }
+            else{
+                displayDepotSelectionFragment();
+            }
+
         }else if (id == R.id.nav_data) {
             setTitle(null);
             getSupportFragmentManager()

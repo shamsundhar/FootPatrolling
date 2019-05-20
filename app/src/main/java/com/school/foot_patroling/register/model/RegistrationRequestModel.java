@@ -5,6 +5,18 @@ public class RegistrationRequestModel {
     private String currentTimestamp;
     private String imeiNo;
     private String appName;
+    private AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto;
+    private AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto;
+
+    public AppToServerCreatedResponseObservationsDto getAppToServerCreatedResponseObservationsDto() {
+        return appToServerCreatedResponseObservationsDto;
+    }
+
+    public void setAppToServerCreatedResponseObservationsDto(AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto) {
+        this.appToServerCreatedResponseObservationsDto = appToServerCreatedResponseObservationsDto;
+    }
+
+
 
     public AppToServerCreatedFootPatrollingInspectionDto getAppToServerCreatedFootPatrollingInspectionDto() {
         return appToServerCreatedFootPatrollingInspectionDto;
@@ -13,10 +25,6 @@ public class RegistrationRequestModel {
     public void setAppToServerCreatedFootPatrollingInspectionDto(AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto) {
         this.appToServerCreatedFootPatrollingInspectionDto = appToServerCreatedFootPatrollingInspectionDto;
     }
-
-    private AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto;
-
-
     public String getPreviousTimestamp() {
         return previousTimestamp;
     }
@@ -48,6 +56,4 @@ public class RegistrationRequestModel {
     public void setAppName(String appName) {
         this.appName = appName;
     }
-
-
 }

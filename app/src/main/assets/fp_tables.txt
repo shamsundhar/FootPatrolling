@@ -249,14 +249,14 @@ CREATE TABLE foot_patrolling_inspection
   km TEXT,
   locatoion TEXT,
   location TEXT,
-  CONSTRAINT pk_foot_patrolling_inspection PRIMARY KEY (seq_id)
+  CONSTRAINT pk_foot_patrolling_inspection PRIMARY KEY (device_seq_id)
 );
 
 CREATE TABLE observations
 (
-  seq_id TEXT NOT NULL,
+  seq_id TEXT,
   device_id TEXT,
-  device_seq_id TEXT,
+  device_seq_id TEXT NOT NULL,
   inspection_seq_id TEXT,
   observation_category TEXT,
   observation_item TEXT,
@@ -271,10 +271,7 @@ CREATE TABLE observations
   created_stamp TEXT,
   created_tx_stamp TEXT,
   location TEXT,
-  CONSTRAINT pk_observations PRIMARY KEY (seq_id),
-  CONSTRAINT footpatrollinginspection FOREIGN KEY (inspection_seq_id)
-      REFERENCES foot_patrolling_inspection (seq_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT pk_observations PRIMARY KEY (device_seq_id)
 );
 
 

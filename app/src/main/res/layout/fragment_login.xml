@@ -19,18 +19,40 @@
             android:layout_gravity="center_horizontal" />
 
         <!-- Email Label -->
-        <android.support.design.widget.TextInputLayout
+        <!--<android.support.design.widget.TextInputLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginBottom="8dp">-->
+            <!--<EditText android:id="@+id/input_username"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="sse_ohe_ms"-->
+                <!--android:inputType="textEmailAddress"-->
+                <!--android:hint="Username" />-->
+        <!--</android.support.design.widget.TextInputLayout>-->
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_username"
-                android:layout_width="match_parent"
+            android:id="@+id/usernameLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sse_ohe_ms"
-                android:inputType="textEmailAddress"
-                android:hint="Username" />
-        </android.support.design.widget.TextInputLayout>
+                android:id="@+id/usernameTV"
+                android:layout_centerVertical="true"
+                android:text="Select Username"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
 
         <!-- Password Label -->
         <android.support.design.widget.TextInputLayout

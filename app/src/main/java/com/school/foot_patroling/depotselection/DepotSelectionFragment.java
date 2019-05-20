@@ -26,11 +26,13 @@ import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.Inspection;
+import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,16 +50,21 @@ public class DepotSelectionFragment extends BaseFragment {
     RelativeLayout depotLayout;
     @BindView(R.id.sectionLayout)
     RelativeLayout sectionLayout;
+    @BindView(R.id.scheduleLayout)
+    RelativeLayout scheduleLayout;
     @BindView(R.id.depotTV)
     TextView depotTV;
     @BindView(R.id.sectionTV)
     TextView sectionTV;
-    @BindView(R.id.scheduleSwitch)
-    Switch scheduleSwitch;
+    @BindView(R.id.scheduleTV)
+    TextView scheduleTV;
+
     DepotsListAdapter depotsListAdapter;
     SectionsListAdapter sectionsListAdapter;
+    ScheduleListAdapter scheduleListAdapter;
     String selectedDepotId;
     String selectedSectionID;
+    String selectedScheduleType;
     @OnClick(R.id.depotLayout)
     public void depotClick(){
         displayDepotPopup();
@@ -66,35 +73,32 @@ public class DepotSelectionFragment extends BaseFragment {
     public void sectionClick(){
         displaySectionsPopup();
     }
+    @OnClick(R.id.scheduleLayout)
+    public void scheduleClick(){
+        displaySchedulePopup();
+    }
     @OnClick(R.id.btn_startFP)
     public void startFPClick(){
-//get current timestamp, and save this info into inspection table. and navigate to checklist fragment
-        String fpStartTime =  DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-        String isScheduled;
-        Boolean scheduleStatus = scheduleSwitch.isChecked();
-        if(scheduleStatus){
-            isScheduled = "Yes";
-        }
-        else{
-            isScheduled = "No";
-        }
-        preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.TRUE);
-        preferenceHelper.setString(getActivity(), PREF_KEY_FP_STARTED_TIME, fpStartTime );
+        if(validate()) {
+            String fpStartTime = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+            preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.TRUE);
+            preferenceHelper.setString(getActivity(), PREF_KEY_FP_STARTED_TIME, fpStartTime);
 
-        Inspection inspection = new Inspection();
-        String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-        inspection.setDeviceId(selectedImei);
-        //   inspection.setDevice_seq_id();
-        inspection.setFacilityId(selectedDepotId);
-        //   inspection.setInspection_by();
-        inspection.setInspectionType(isScheduled);
-        inspection.setSection(selectedSectionID);
-        inspection.setSeqId("null");
-        inspection.setDeviceSeqId(fpStartTime);
-        inspection.setStartTime(fpStartTime);
-        NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
+            Inspection inspection = new Inspection();
+            String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+            inspection.setDeviceId(selectedImei);
+            //   inspection.setDevice_seq_id();
+            inspection.setFacilityId(selectedDepotId);
+            //   inspection.setInspection_by();
+            inspection.setInspectionType(selectedScheduleType);
+            inspection.setSection(selectedSectionID);
+            inspection.setSeqId("null");
+            inspection.setDeviceSeqId(fpStartTime);
+            inspection.setStartTime(fpStartTime);
+            NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
 
-        ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
+            ((NavigationDrawerActivity) getActivity()).displayCheckedListFragment();
+        }
     }
     public static DepotSelectionFragment newInstance() {
         DepotSelectionFragment fragment = new DepotSelectionFragment();
@@ -126,7 +130,7 @@ public class DepotSelectionFragment extends BaseFragment {
 
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
-        final List<FacilityDto> depotList = NavigationDrawerActivity.mFPDatabase.facilityDtoDao().getAllFacilityDtos();
+        final List<FacilityDto> depotList = NavigationDrawerActivity.mFPDatabase.facilityDtoDao().getOHEFacilityDtos();
         if(depotList != null) {
             depotsListAdapter = new DepotsListAdapter(depotList, getActivity().getBaseContext());
             listView.setAdapter(depotsListAdapter);
@@ -151,6 +155,49 @@ public class DepotSelectionFragment extends BaseFragment {
     }
     private void displaySectionsPopup()
     {
+        if(selectedDepotId != null) {
+            final Dialog builder = new Dialog(getActivity());
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Window window = builder.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            wlp.gravity = Gravity.CENTER;
+            window.setAttributes(wlp);
+            builder.setContentView(R.layout.popup_listview);
+
+            final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+            listView.setTextFilterEnabled(true);
+            //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
+            final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
+
+            if (sectionList != null) {
+                sectionsListAdapter = new SectionsListAdapter(sectionList, getActivity().getBaseContext());
+                listView.setAdapter(sectionsListAdapter);
+            }
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    // TODO Auto-generated method stub
+                    builder.dismiss();
+                    FootPatrollingSectionsDto dataModel = sectionList.get(position);
+                    sectionTV.setText(dataModel.getFpSection());
+                    selectedSectionID = dataModel.getFpSection();
+                    Snackbar.make(view, " " + dataModel.getFpSection() + " " + dataModel.getSeqId(), Snackbar.LENGTH_LONG)
+                            .setAction("No action", null).show();
+
+                }
+            });
+            builder.setCanceledOnTouchOutside(true);
+            builder.show();
+        }
+        else{
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Depot");
+        }
+    }
+    private void displaySchedulePopup()
+    {
         final Dialog builder = new Dialog(getActivity());
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Window window = builder.getWindow();
@@ -163,11 +210,12 @@ public class DepotSelectionFragment extends BaseFragment {
         final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
         listView.setTextFilterEnabled(true);
         //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
-        final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtos();
-
-        if(sectionList != null) {
-            sectionsListAdapter = new SectionsListAdapter(sectionList, getActivity().getBaseContext());
-            listView.setAdapter(sectionsListAdapter);
+        final List<String> scheduleList = new ArrayList<String>();
+        scheduleList.add("Scheduled");
+        scheduleList.add("UnScheduled");
+        if(scheduleList != null) {
+            scheduleListAdapter = new ScheduleListAdapter(scheduleList, getActivity().getBaseContext());
+            listView.setAdapter(scheduleListAdapter);
         }
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -175,16 +223,33 @@ public class DepotSelectionFragment extends BaseFragment {
                                     int position, long id) {
                 // TODO Auto-generated method stub
                 builder.dismiss();
-                FootPatrollingSectionsDto dataModel = sectionList.get(position);
-                sectionTV.setText(dataModel.getFpSection());
-                selectedSectionID = dataModel.getSeqId();
-                Snackbar.make(view, " " +dataModel.getFpSection()+" "+dataModel.getSeqId(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-
+                String dataModel = scheduleList.get(position);
+                scheduleTV.setText(dataModel);
+                selectedScheduleType = dataModel;
             }
         });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
+    }
+    private boolean validate(){
+        boolean validate = true;
+        if(selectedDepotId == null || selectedDepotId.isEmpty()){
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Depot");
+            validate = false;
+        }
+        else if(selectedSectionID == null || selectedSectionID.isEmpty()){
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Section");
+            validate = false;
+        }
+        else if(selectedScheduleType == null || selectedScheduleType.isEmpty()){
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Schedule Type");
+            validate = false;
+        }
+
+        return validate;
     }
 
 }
