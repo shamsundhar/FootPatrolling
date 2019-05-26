@@ -103,7 +103,8 @@ if(!isInspectionInProgress) {
         RegistrationRequestModel model = new RegistrationRequestModel();
         model.setAppName("TRD_FP");
         model.setCurrentTimestamp(syncStartTime);
-        model.setImeiNumber(selectedImei);
+        model.setImeiNumber("867520040587478");
+        //TODO model.setImeiNumber(selectedImei);
         model.setPreviousTimestamp(lastSyncDate);
         List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
         AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
@@ -315,6 +316,21 @@ else{
                     }
 
                 }
+
+                HashMap<String, String> serverToAppObservationMap = dto.getServerToAppObservationMap();
+                if(serverToAppObservationMap != null) {
+                    // serverToAppFootPatrollingInspectionMap.keySet();
+
+                    for ( String key : serverToAppObservationMap.keySet()) {
+                        String seqId = serverToAppObservationMap.get(key);
+                        String timestamp = key.split("_")[0];
+                        Observation observation = NavigationDrawerActivity.mFPDatabase.observationDao().getStartedObservation(timestamp);
+                        observation.setSeqId(seqId);
+                        NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+                    }
+
+                }
+
 
                 List<UserLoginDto> insertUserLoginDtos = dto.getCreatedResponseUserLoginDto().getUserLoginDtos();
 

@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,17 +101,46 @@ public class PatrolingListFragment extends BaseFragment {
     public void submitButtonClick(){
         if(validate()) {
             //insert observation data.
-            String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-            String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-            String location = loc1.getText().toString()+"/"+loc2.getText().toString();
-            Observation observation = new Observation();
-            observation.setCreatedBy("");
-            observation.setCreatedDateTime(currentTimeStamp);
-            observation.setDeviceId(selectedImei);
-            observation.setDeviceSeqId(currentTimeStamp);
-            observation.setLocation(location);
-            observation.setSeqId("null");
-            NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+            if(checkList != null && checkList.size()>0) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
+                        @Override
+                        public boolean test(ObservationsCheckListDto p) {
+                            return p.isChecked();
+                        }
+                    });
+                    final String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
+                    selectedCheckList.forEach(new Consumer<ObservationsCheckListDto>() {
+                        @Override
+                        public void accept(ObservationsCheckListDto p) {
+                            if(p.isChecked()) {
+                                String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+                                String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+                                String location = loc1.getText().toString() + "/" + loc2.getText().toString();
+                                Observation observation = new Observation();
+                                observation.setCreatedBy("");
+                                observation.setCreatedDateTime(currentTimeStamp);
+                                observation.setInspectionSeqId(fpStartedTime);
+                                observation.setDeviceId(selectedImei);
+                                observation.setDeviceSeqId(currentTimeStamp);
+                                observation.setObservationCategory(p.getObservationCategory());
+                                observation.setObservationItem(p.getObservationItem());
+                                observation.setObservation(p.getDescription());
+                                observation.setLocation(location);
+                                observation.setSeqId("null");
+                                NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+
+                            }
+                        }
+                    });
+                    displayNewsFromDB();
+                    checklistAdapter.notifyDataSetChanged();
+                    loc1.setText("");
+                    loc2.setText("");
+                }
+
+
+            }
         }
     }
     private ChecklistAdapter checklistAdapter;
