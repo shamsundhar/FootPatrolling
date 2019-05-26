@@ -4,6 +4,8 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+
+import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.Observation;
 
 import java.util.List;
@@ -18,7 +20,8 @@ public interface ObservationDao {
 
     @Query("SELECT * from observations")
     List<Observation> getAllObservationDtos();
-
+    @Query("SELECT * FROM observations WHERE device_seq_id=:fpStartedTime")
+    Observation getStartedObservation(String fpStartedTime);
     @Query("SELECT * FROM observations WHERE seq_id='null'")
     List<Observation> getNotSyncedObservation();
 }

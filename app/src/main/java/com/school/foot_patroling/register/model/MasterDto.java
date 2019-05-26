@@ -43,6 +43,15 @@ public class MasterDto {
     private UpdatedResponseProductDto updatedResponseProductDto;
     private UpdatedResponseUserLoginDto updatedResponseUserLoginDto;
     private HashMap<String, String> serverToAppFootPatrollingInspectionMap;
+    private HashMap<String, String> serverToAppObservationMap;
+
+    public HashMap<String, String> getServerToAppObservationMap() {
+        return serverToAppObservationMap;
+    }
+
+    public void setServerToAppObservationMap(HashMap<String, String> serverToAppObservationMap) {
+        this.serverToAppObservationMap = serverToAppObservationMap;
+    }
 
     public HashMap<String, String> getServerToAppFootPatrollingInspectionMap() {
         return serverToAppFootPatrollingInspectionMap;

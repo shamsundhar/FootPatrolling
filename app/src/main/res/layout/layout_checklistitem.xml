@@ -65,6 +65,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/edit_comments"
             android:hint="this is comments section.."/>
     </LinearLayout>
     <View android:layout_width="match_parent"
