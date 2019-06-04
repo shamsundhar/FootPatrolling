@@ -3,12 +3,16 @@ package com.school.foot_patroling.patrolinglist;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.SparseBooleanArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -88,6 +92,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             vh1.getTitle().setText(model.getObservationItem());
             vh1.getSubtitle().setText(model.getPriority());
             vh1.getaSwitch().setChecked(items.get(position).isChecked());
+            vh1.getEdit_Comments().setText(items.get(position).getDescription());
             vh1.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -112,6 +117,26 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     notifyItemChanged(position);
                 }
             });
+            vh1.getEdit_Comments().addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(s != null) {
+                        items.get(position).setDescription(s.toString());
+                    }else{
+                        items.get(position).setDescription("");
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
         }
     }
 
@@ -120,6 +145,16 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView title;
         private TextView subtitle;
         private Switch aSwitch;
+        private EditText edit_Comments;
+
+
+        public EditText getEdit_Comments() {
+            return edit_Comments;
+        }
+
+        public void setEdit_Comments(EditText edit_Comments) {
+            this.edit_Comments = edit_Comments;
+        }
 
         public LinearLayout getCommentsLayout() {
             return commentsLayout;
@@ -158,6 +193,7 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             aSwitch = (Switch)v.findViewById(R.id.switch1);
             commentsLayout = (LinearLayout) v.findViewById(R.id.commentsSection);
+            edit_Comments = (EditText) commentsLayout.findViewById(R.id.edit_comments);
             applyFonts(v);
         }
         private void applyFonts(View v){
