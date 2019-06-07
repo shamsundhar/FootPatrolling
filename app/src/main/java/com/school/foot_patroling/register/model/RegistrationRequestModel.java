@@ -7,6 +7,15 @@ public class RegistrationRequestModel {
     private String appName;
     private AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto;
     private AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto;
+    private AppToServerCreatedResponseCompliancesDto appToServerCreatedResponseCompliancesDto;
+
+    public AppToServerCreatedResponseCompliancesDto getAppToServerCreatedResponseCompliancesDto() {
+        return appToServerCreatedResponseCompliancesDto;
+    }
+
+    public void setAppToServerCreatedResponseCompliancesDto(AppToServerCreatedResponseCompliancesDto appToServerCreatedResponseCompliancesDto) {
+        this.appToServerCreatedResponseCompliancesDto = appToServerCreatedResponseCompliancesDto;
+    }
 
     public AppToServerCreatedResponseObservationsDto getAppToServerCreatedResponseObservationsDto() {
         return appToServerCreatedResponseObservationsDto;
@@ -15,8 +24,6 @@ public class RegistrationRequestModel {
     public void setAppToServerCreatedResponseObservationsDto(AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto) {
         this.appToServerCreatedResponseObservationsDto = appToServerCreatedResponseObservationsDto;
     }
-
-
 
     public AppToServerCreatedFootPatrollingInspectionDto getAppToServerCreatedFootPatrollingInspectionDto() {
         return appToServerCreatedFootPatrollingInspectionDto;

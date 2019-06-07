@@ -9,6 +9,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.support.annotation.NonNull;
 
+import com.school.foot_patroling.dao.ComplianceDao;
 import com.school.foot_patroling.dao.FacilityDtoDao;
 import com.school.foot_patroling.dao.FootPatrollingSectionsDao;
 import com.school.foot_patroling.dao.InspectionDao;
@@ -17,6 +18,7 @@ import com.school.foot_patroling.dao.ObservationDao;
 import com.school.foot_patroling.dao.ObservationsCheckListDtoDao;
 import com.school.foot_patroling.dao.ProductDtoDao;
 import com.school.foot_patroling.dao.UserLoginDtoDao;
+import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.Inspection;
@@ -29,7 +31,7 @@ import com.school.foot_patroling.register.model.UserLoginDto;
 
 @Database(entities = {UserLoginDto.class, ObservationsCheckListDto.class,
         FacilityDto.class, ProductDto.class, Inspection.class, FootPatrollingSectionsDto.class,
-        ObservationCategoriesDto.class, Observation.class}, version = 1)
+        ObservationCategoriesDto.class, Observation.class, Compliance.class}, version = 1)
 public abstract class FPDatabase extends RoomDatabase {
 
 
@@ -41,6 +43,18 @@ public abstract class FPDatabase extends RoomDatabase {
     public abstract FootPatrollingSectionsDao footPatrollingSectionsDao();
     public abstract ObservationCategoriesDtoDao observationCategoriesDtoDao();
     public abstract ObservationDao observationDao();
+    public abstract ComplianceDao complianceDao();
 
+    public void clearDBTables(){
+        userLoginDtoDao().deleteAll();
+        observationsCheckListDtoDao().deleteAll();
+        facilityDtoDao().deleteAll();
+        productDtoDao().deleteAll();
+        inspectionDao().deleteAll();
+        footPatrollingSectionsDao().deleteAll();
+        observationCategoriesDtoDao().deleteAll();
+        observationDao().deleteAll();
+        complianceDao().deleteAll();
+    }
 
 }

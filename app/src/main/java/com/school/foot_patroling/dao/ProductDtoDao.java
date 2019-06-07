@@ -20,4 +20,6 @@ public interface ProductDtoDao {
 
     @Query("SELECT * from product")
     List<ProductDto> getAllProductDtos();
+    @Query("SELECT COUNT(amountUomTypeId) FROM product")
+    int getCount();
 }

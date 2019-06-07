@@ -23,6 +23,8 @@
             android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".register.RegisterActivity"
             android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".AWFActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

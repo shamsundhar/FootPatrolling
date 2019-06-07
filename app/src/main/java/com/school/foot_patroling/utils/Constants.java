@@ -14,6 +14,7 @@ public class Constants {
     public static final String BUNDLE_KEY_CURRENT_SYNC_TIME = "BUNDLE_CURRENT_SYNC_TIME";
     public static final String FOOTPATROLLING_DATABASE = "FootPatrollingDB";
 
+public static final String INITIAL_TIME = "31-01-1990 17:26:15.613";
 
     public static final String BUNDLE_KEY_SHOP_NAME = "BUNDLE_SHOP_NAME";
     public static final String BUNDLE_KEY_SHOP_ID = "BUNDLE_SHOP_ID";
@@ -32,6 +33,13 @@ public class Constants {
 
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
+
+    public static final String BUNDLE_KEY_DISPLAY_FRAGMENT = "DISPLAY_FRAGMENT";
+    public static final String BUNDLE_KEY_SELECTED_COMPLIANCE = "SELECTED_COMPLIANCE";
+    public static final String BUNDLE_VALUE_COMPLIANCE = "COMPLIANCE";
+
+    public static final String DATE_FORMAT1 = "EEEE, d MMMM";
+    public static final String DATE_FORMAT2 = "MM-dd-yyyy";
 
 
     public static String USER_LOGIN_INSERT_SQL = "insert into user_login( user_login_id, current_password, password_hint, is_system, enabled, last_updated_stamp, last_updated_tx_stamp, " +

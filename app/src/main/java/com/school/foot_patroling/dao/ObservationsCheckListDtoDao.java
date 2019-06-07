@@ -23,4 +23,6 @@ public interface ObservationsCheckListDtoDao {
     List<ObservationsCheckListDto> getAllObservationsCheckListDtos();
     @Query("SELECT * FROM ObservationsCheckListDto WHERE observationCategory=:category")
     List<ObservationsCheckListDto> getAllObservationsCheckListDtosFromCategory(String category);
+    @Query("SELECT COUNT(observationCategory) FROM ObservationsCheckListDto")
+    int getCount();
 }

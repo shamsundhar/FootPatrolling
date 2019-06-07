@@ -44,6 +44,15 @@ public class MasterDto {
     private UpdatedResponseUserLoginDto updatedResponseUserLoginDto;
     private HashMap<String, String> serverToAppFootPatrollingInspectionMap;
     private HashMap<String, String> serverToAppObservationMap;
+    private HashMap<String, String> serverToAppCompliancesMap;
+
+    public HashMap<String, String> getServerToAppCompliancesMap() {
+        return serverToAppCompliancesMap;
+    }
+
+    public void setServerToAppCompliancesMap(HashMap<String, String> serverToAppCompliancesMap) {
+        this.serverToAppCompliancesMap = serverToAppCompliancesMap;
+    }
 
     public HashMap<String, String> getServerToAppObservationMap() {
         return serverToAppObservationMap;

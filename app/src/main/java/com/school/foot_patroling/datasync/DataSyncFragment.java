@@ -21,7 +21,9 @@ import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
 import com.school.foot_patroling.register.RegisterActivity;
 import com.school.foot_patroling.register.RegisterApi;
 import com.school.foot_patroling.register.model.AppToServerCreatedFootPatrollingInspectionDto;
+import com.school.foot_patroling.register.model.AppToServerCreatedResponseCompliancesDto;
 import com.school.foot_patroling.register.model.AppToServerCreatedResponseObservationsDto;
+import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
@@ -81,96 +83,103 @@ public class DataSyncFragment extends BaseFragment {
     @OnClick(R.id.btn_syncNow)
     public void clickSyncNow() {
         Boolean isInspectionInProgress = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
-if(!isInspectionInProgress) {
-    if (Common.isNetworkAvailable(getActivity())) {
-        //  String url = etUrl.getText().toString().trim();
-        String syncStartTime = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-        tvSyncStartTime.setText("Start Time : " + syncStartTime);
-        tvSyncStatus.setText("Data Sync Status : Started");
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setMessage(getString(R.string.text_please_wait));
-        progressDialog.show();
+        if(!isInspectionInProgress) {
+            if (Common.isNetworkAvailable(getActivity())) {
+                //  String url = etUrl.getText().toString().trim();
+                String syncStartTime = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+                tvSyncStartTime.setText("Start Time : " + syncStartTime);
+                tvSyncStatus.setText("Data Sync Status : Started");
+                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                        R.style.AppTheme_Dark_Dialog);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage(getString(R.string.text_please_wait));
+                progressDialog.show();
 
-        String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
-        //preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI1, imeiList.get(0));
-        // preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI2,imeiList.get(1));
-        String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-        String lastSyncDate = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
-        url = url + "/warehouse/fpApp/get-fp-data";
-        RegistrationRequestModel model = new RegistrationRequestModel();
-        model.setAppName("TRD_FP");
-        model.setCurrentTimestamp(syncStartTime);
-        model.setImeiNumber("867520040587478");
-        //TODO model.setImeiNumber(selectedImei);
-        model.setPreviousTimestamp(lastSyncDate);
-        List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
-        AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
-        appToServerCreatedFootPatrollingInspectionDto.setCount("" + inspectionDtoList.size());
-        appToServerCreatedFootPatrollingInspectionDto.setFootPatrollingInspectionDtos(inspectionDtoList);
+                String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
+                //preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI1, imeiList.get(0));
+                // preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI2,imeiList.get(1));
+                String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+                String lastSyncDate = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
+                url = url + "/warehouse/fpApp/get-fp-data";
+                RegistrationRequestModel model = new RegistrationRequestModel();
+                model.setAppName("TRD_FP");
+                model.setCurrentTimestamp(syncStartTime);
+                model.setImeiNumber("867520040587478");
+                //TODO model.setImeiNumber(selectedImei);
+                model.setPreviousTimestamp(lastSyncDate);
+                List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
+                AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
+                appToServerCreatedFootPatrollingInspectionDto.setCount("" + inspectionDtoList.size());
+                appToServerCreatedFootPatrollingInspectionDto.setFootPatrollingInspectionDtos(inspectionDtoList);
 
-        model.setAppToServerCreatedFootPatrollingInspectionDto(appToServerCreatedFootPatrollingInspectionDto);
+                model.setAppToServerCreatedFootPatrollingInspectionDto(appToServerCreatedFootPatrollingInspectionDto);
 
-        List<Observation> observationList = NavigationDrawerActivity.mFPDatabase.observationDao().getNotSyncedObservation();
-        AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto = new AppToServerCreatedResponseObservationsDto();
-        appToServerCreatedResponseObservationsDto.setCount("" + observationList.size());
-        appToServerCreatedResponseObservationsDto.setObservationsDtos(observationList);
+                List<Observation> observationList = NavigationDrawerActivity.mFPDatabase.observationDao().getNotSyncedObservation();
+                AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto = new AppToServerCreatedResponseObservationsDto();
+                appToServerCreatedResponseObservationsDto.setCount("" + observationList.size());
+                appToServerCreatedResponseObservationsDto.setObservationsDtos(observationList);
 
-        model.setAppToServerCreatedResponseObservationsDto(appToServerCreatedResponseObservationsDto);
+                model.setAppToServerCreatedResponseObservationsDto(appToServerCreatedResponseObservationsDto);
 
-        registerApi.register(url, model)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MasterDto>() {
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.println("error called::" + e.fillInStackTrace());
-                        progressDialog.dismiss();
-                        tvResult.setText("Result : Failed");
-                        tvSyncStatus.setText("Data Sync Status : Failed");
-                        String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-                        tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-                    }
+                List<Compliance> complianceList = NavigationDrawerActivity.mFPDatabase.complianceDao().getNotSyncedCompliance();
+                AppToServerCreatedResponseCompliancesDto appToServerCreatedResponseCompliancesDto = new AppToServerCreatedResponseCompliancesDto();
+                appToServerCreatedResponseCompliancesDto.setCompliancesDtos(complianceList);
+                appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
-                    @Override
-                    public void onComplete() {
-                        System.out.println("complete called");
-                    }
+                model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
 
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        System.out.println("onsubscribe called");
-                    }
-
-                    @Override
-                    public void onNext(MasterDto masterDto) {
-                        if (masterDto.getImeiAuth()) {
-                            progressDialog.dismiss();
-                            try {
-                                String result = syncMasterData(masterDto);
-                                tvResult.setText("Result : " + result);
-                                tvSyncStatus.setText("Data Sync Status : Completed");
-                                if (result.equals("Success")) {
-                                    String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-                                    preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
-                                    tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-                                } else {
-
-                                }
-                            } catch (Exception e) {
-
+                registerApi.register(url, model)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<MasterDto>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                System.out.println("error called::" + e.fillInStackTrace());
+                                progressDialog.dismiss();
+                                tvResult.setText("Result : Failed");
+                                tvSyncStatus.setText("Data Sync Status : Failed");
+                                String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+                                tvSyncEndTime.setText("Finish Time : " + syncEndTime);
                             }
-                        }
-                    }
-                });
-    }
-}
-else{
-    CustomAlertDialog dialog = new CustomAlertDialog();
-    dialog.showAlert1(getActivity(), R.string.text_alert, "Please sync after closing inspection");
-}
+
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
+                            }
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(MasterDto masterDto) {
+                                if (masterDto.getImeiAuth()) {
+                                    progressDialog.dismiss();
+                                    try {
+                                        String result = syncMasterData(masterDto);
+                                        tvResult.setText("Result : " + result);
+                                        tvSyncStatus.setText("Data Sync Status : Completed");
+                                        if (result.equals("Success")) {
+                                            String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+                                            preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
+                                            tvSyncEndTime.setText("Finish Time : " + syncEndTime);
+                                        } else {
+
+                                        }
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }
+                        });
+            }
+        }
+        else{
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Please sync after closing inspection");
+        }
 
     }
     /**
@@ -237,8 +246,6 @@ else{
             Log.d(TAG,"in update database method");
 
             try {
-//                DataUpdateDAO dataUpdateDAO = DataUpdateDAO.getInstance();
-
                 List<FacilityDto> insertFacilityDtos = dto.getCreatedResponseFacilityDto().getFacilityDtos();
 
                 if (insertFacilityDtos != null && insertFacilityDtos.size() > 0) {
@@ -313,6 +320,34 @@ else{
                         Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(timestamp);
                         inspection.setSeqId(seqId);
                         NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
+                    }
+
+                }
+
+                HashMap<String, String> serverToAppObservationMap = dto.getServerToAppObservationMap();
+                if(serverToAppObservationMap != null) {
+                    // serverToAppFootPatrollingInspectionMap.keySet();
+
+                    for ( String key : serverToAppObservationMap.keySet() ) {
+                        String seqId = serverToAppObservationMap.get(key);
+                        String timestamp = key.split("_")[0];
+                        Observation observation = NavigationDrawerActivity.mFPDatabase.observationDao().getStartedObservation(timestamp);
+                        observation.setSeqId(seqId);
+                        NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+                    }
+
+                }
+
+                HashMap<String, String> serverToAppCompliancesMap = dto.getServerToAppCompliancesMap();
+                if(serverToAppCompliancesMap != null) {
+                    // serverToAppFootPatrollingInspectionMap.keySet();
+
+                    for ( String key : serverToAppCompliancesMap.keySet() ) {
+                        String seqId = serverToAppCompliancesMap.get(key);
+                        String timestamp = key.split("_")[0];
+                        Compliance compliance = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(timestamp);
+                        compliance.setSeqId(seqId);
+                        NavigationDrawerActivity.mFPDatabase.complianceDao().insert(compliance);
                     }
 
                 }

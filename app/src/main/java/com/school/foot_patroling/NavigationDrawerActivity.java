@@ -1,9 +1,11 @@
 package com.school.foot_patroling;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 
 import android.arch.persistence.room.Room;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.school.foot_patroling.com.school.foot_patroling.compliance.ComplianceFragment;
 import com.school.foot_patroling.database.DtoWrapper;
 import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncFragment;
@@ -29,7 +32,6 @@ import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
 import com.school.foot_patroling.reload.ReloadFragment;
 import com.school.foot_patroling.reports.ReportsFragment;
-import com.school.foot_patroling.scheduleentry.ScheduleEntryFragment;
 import com.school.foot_patroling.terms.TermsFragment;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
@@ -65,6 +67,7 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String LOGIN_FRAGMENT_TAG = "LOGIN_FRAGMENT";
     private static final String CHECKEDLIST_FRAGMENT_TAG = "CHECKEDLIST_FRAGMENT";
     private static final String DEPOT_SELECTION_FRAGMENT_TAG = "DEPO_SELECTION_FRAGMENT";
+    private static final String COMPLIANCE_FRAGMENT_TAG = "COMPLIANCE_FRAGMENT";
     private static final String NOTES_FRAGMENT_TAG = "NOTES_FRAGMENT";
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
@@ -93,7 +96,6 @@ public class NavigationDrawerActivity extends BaseActivity
         nav_Menu = navigationView.getMenu();
 
 
-
         displayLoginFragment();
     }
 
@@ -106,10 +108,26 @@ public class NavigationDrawerActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            displayExitDialog();
         }
     }
-
+public void displayExitDialog(){
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setMessage("Are you sure you want to exit?")
+            .setCancelable(false)
+            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    NavigationDrawerActivity.this.finish();
+                }
+            })
+            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                }
+            });
+    AlertDialog alert = builder.create();
+    alert.show();
+}
     public void displayLoginFragment(){
         setTitle(null);
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
@@ -120,7 +138,7 @@ public class NavigationDrawerActivity extends BaseActivity
                 .commit();
     }
     public void displayCheckedListFragment(){
-        setTitle(null);
+        setTitle("TRD_AMS");
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -129,12 +147,21 @@ public class NavigationDrawerActivity extends BaseActivity
                 .commit();
     }
     public void displayDepotSelectionFragment(){
-        setTitle(null);
-      //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
-     //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        setTitle("TRD_AMS");
+        //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  DepotSelectionFragment.newInstance(), DEPOT_SELECTION_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayComplianceFragment(){
+        setTitle("TRD_AMS");
+        //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  ComplianceFragment.newInstance(), COMPLIANCE_FRAGMENT_TAG)
                 .commit();
     }
     @SuppressWarnings("StatementWithEmptyBody")
@@ -156,6 +183,8 @@ public class NavigationDrawerActivity extends BaseActivity
                 displayDepotSelectionFragment();
             }
 
+        }else if(id == R.id.nav_compliance) {
+            displayComplianceFragment();
         }else if (id == R.id.nav_data) {
             setTitle(null);
             getSupportFragmentManager()
@@ -167,13 +196,6 @@ public class NavigationDrawerActivity extends BaseActivity
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
-                    .commit();
-        }
-        else if (id == R.id.nav_schedule) {
-            setTitle(null);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container,  ScheduleEntryFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         }
         else if (id == R.id.nav_reload) {
@@ -195,21 +217,16 @@ public class NavigationDrawerActivity extends BaseActivity
                     .replace(R.id.container,  TermsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         }else if (id == R.id.nav_exit) {
-
+            displayExitDialog();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
     private void doLogout(){
-
+        displayLoginFragment();
     }
-    private void navigateToMainActivity(){
 
-    }
-    private void clearDB(){
-
-    }
     @Override
     public void onWindowFocusChanged(boolean hasFocus){
 
@@ -221,6 +238,7 @@ public class NavigationDrawerActivity extends BaseActivity
         logo.setX(offset);
 
     }
+
 }
 
 

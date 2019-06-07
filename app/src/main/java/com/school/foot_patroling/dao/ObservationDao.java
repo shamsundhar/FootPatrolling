@@ -24,4 +24,6 @@ public interface ObservationDao {
     Observation getStartedObservation(String fpStartedTime);
     @Query("SELECT * FROM observations WHERE seq_id='null'")
     List<Observation> getNotSyncedObservation();
+    @Query("SELECT COUNT(device_seq_id) FROM observations")
+    int getCount();
 }

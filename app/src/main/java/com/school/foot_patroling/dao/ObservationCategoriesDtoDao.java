@@ -18,4 +18,6 @@ public interface ObservationCategoriesDtoDao {
 
     @Query("SELECT * from observation_categories")
     List<ObservationCategoriesDto> getAllCategoryDtos();
+    @Query("SELECT COUNT(seq_id) FROM observation_categories")
+    int getCount();
 }

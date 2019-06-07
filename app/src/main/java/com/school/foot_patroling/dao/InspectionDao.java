@@ -24,4 +24,6 @@ public interface InspectionDao {
     Inspection getStartedInspection(String fpStartedTime);
     @Query("SELECT * FROM inspection WHERE seq_id='null'")
     List<Inspection> getNotSyncedInspection();
+    @Query("SELECT COUNT(device_seq_id) FROM inspection")
+    int getCount();
 }

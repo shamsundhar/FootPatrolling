@@ -22,4 +22,6 @@ public interface FacilityDtoDao {
 
     @Query("SELECT * FROM facility WHERE depotType='OHE'")
     List<FacilityDto> getOHEFacilityDtos();
+    @Query("SELECT COUNT(depotType) FROM facility")
+    int getCount();
 }

@@ -10,22 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.school.edsense_lite.events.EventsFragment;
-import com.school.edsense_lite.messages.MessageDetailsFragment;
-import com.school.edsense_lite.messages.NewMessageFragment;
-import com.school.edsense_lite.news.NewsFragment;
-import com.school.edsense_lite.notes.AddNotesFragment;
-import com.school.edsense_lite.today.TodayFragment;
+import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplianceFragment;
 
 import butterknife.ButterKnife;
 
-import static com.school.edsense_lite.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_ADD_NOTES;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_COMPOSE_MESSAGE;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EDIT_NOTES;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_EVENTS;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_MESSAGE_DETAILS;
-import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
 
 /*
  * AWF - Activity With Fragment. this activity will act as holder activity for fragment - which holds only one fragment.
@@ -33,7 +23,7 @@ import static com.school.edsense_lite.utils.Constants.BUNDLE_VALUE_NEWS;
  * */
 public class AWFActivity extends BaseActivity {
 
-    private static final String NEWS_FRAGMENT_TAG = "NEWS_FRAGMENT";
+    private static final String ADD_COMPLIANCE_FRAGMENT_TAG = "ADD_COMPLIANCE_FRAGMENT";
     private static final String COMPOSE_MESSAGE_FRAGMENT_TAG = "COMPOSE_MESSAGE_FRAGMENT";
     private static final String MESSAGE_DETAILS_FRAGMENT_TAG = "MESSAGE_DETAILS_FRAGMENT";
     private static final String EVENTS_FRAGMENT_TAG = "EVENST_FRAGMENT";
@@ -52,77 +42,38 @@ public class AWFActivity extends BaseActivity {
         if(bundle != null){
             String displayFragment = bundle.getString(BUNDLE_KEY_DISPLAY_FRAGMENT);
             switch (displayFragment){
-                case BUNDLE_VALUE_NEWS :
-                    displayNewsFragment();
-                    break;
-                case BUNDLE_VALUE_EVENTS :
-                    displayEventsFragment();
-                    break;
-                case BUNDLE_VALUE_COMPOSE_MESSAGE :
-                    displayComposeMessageFragment(bundle);
-                    break;
-                case BUNDLE_VALUE_MESSAGE_DETAILS:
-                    displayMessageDetailsFragment(bundle);
-                    break;
-                case BUNDLE_VALUE_ADD_NOTES:
-                    displayAddNotesFragment(bundle);
-                    break;
-                case BUNDLE_VALUE_EDIT_NOTES:
-                    displayAddNotesFragment(bundle);
+                case BUNDLE_VALUE_COMPLIANCE :
+                    displayAddComplianceFragment(bundle);
                     break;
             }
         }
 
     }
-    public void displayNewsFragment(){
-        setTitle(null);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container,  NewsFragment.newInstance(), NEWS_FRAGMENT_TAG)
-                .commit();
-    }
-    public void displayComposeMessageFragment(Bundle bundle){
+    public void displayAddComplianceFragment(Bundle bundle){
         setTitle(null);
 
-        NewMessageFragment nMF = NewMessageFragment.newInstance();
+        AddComplianceFragment fragment = AddComplianceFragment.newInstance();
         if(bundle != null){
-            nMF.setArguments(bundle);
+            fragment.setArguments(bundle);
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container,  nMF, COMPOSE_MESSAGE_FRAGMENT_TAG)
+                .replace(R.id.container,  fragment, ADD_COMPLIANCE_FRAGMENT_TAG)
                 .commit();
     }
+//    public void displayComposeMessageFragment(Bundle bundle){
+//        setTitle(null);
+//
+//        NewMessageFragment nMF = NewMessageFragment.newInstance();
+//        if(bundle != null){
+//            nMF.setArguments(bundle);
+//        }
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.container,  nMF, COMPOSE_MESSAGE_FRAGMENT_TAG)
+//                .commit();
+//    }
 
-    public void displayMessageDetailsFragment(Bundle bundle){
-        setTitle(null);
-        MessageDetailsFragment nMF = MessageDetailsFragment.newInstance();
-        if(bundle != null){
-            nMF.setArguments(bundle);
-        }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, nMF, MESSAGE_DETAILS_FRAGMENT_TAG)
-                .commit();
-    }
-    public void displayEventsFragment(){
-        setTitle(null);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container,  EventsFragment.newInstance(), EVENTS_FRAGMENT_TAG)
-                .commit();
-    }
-    public void displayAddNotesFragment(Bundle bundle){
-        setTitle(null);
-        AddNotesFragment aNF = AddNotesFragment.newInstance();
-        if(bundle != null){
-            aNF.setArguments(bundle);
-        }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container,  aNF, ADD_NOTES_FRAGMENT_TAG)
-                .commit();
-    }
     @Override
     public void onWindowFocusChanged(boolean hasFocus){
 

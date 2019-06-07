@@ -23,4 +23,6 @@ public interface UserLoginDtoDao {
 
     @Query("SELECT * from user_login WHERE user_login_id=:userName")
     UserLoginDto getUserByUnamePassword(String userName);
+    @Query("SELECT COUNT(user_login_id  ) FROM user_login")
+    int getCount();
 }

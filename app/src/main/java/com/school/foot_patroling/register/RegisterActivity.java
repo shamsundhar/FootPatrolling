@@ -106,6 +106,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
+import static com.school.foot_patroling.utils.Constants.INITIAL_TIME;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -151,7 +152,7 @@ public class RegisterActivity extends BaseActivity {
                     model.setCurrentTimestamp(DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S"));
                     model.setImeiNumber(selectedImei);
                     model.setImeiNumber("867520040587478");
-                    model.setPreviousTimestamp("31-01-1990 17:26:15.613");
+                    model.setPreviousTimestamp(INITIAL_TIME);
                     registerApi.register(url, model)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -487,34 +488,6 @@ public class RegisterActivity extends BaseActivity {
                     //  publishProgress(progressValue);
                 }
 
-
-              //  List<ProductDto> insertProductDtos = dto.getCreatedResponseProductDto().getProductDtos();
-
-//                if (insertProductDtos != null && insertProductDtos.size() > 0) {
-//
-//                    Log.d(TAG, "product insert records : " + insertProductDtos.size());
-//
-//                    for (ProductDto productDto : insertProductDtos) {
-//                        //dataUpdateDAO.insertProductData(productDto, db);
-//                        RegisterActivity.mFPDatabase.productDtoDao().insert(productDto);
-//                    }
-//                    progressValue = progressValue + 1;
-//                    //  publishProgress(progressValue);
-//                }
-//
-//                List<ProductDto_> updateProductDtos = dto.getUpdatedResponseProductDto().getProductDtos();
-//
-//                if (updateProductDtos != null && updateProductDtos.size() > 0) {
-//                    Log.d(TAG, "product update records : " + updateProductDtos.size());
-//
-//
-//                    for (ProductDto_ productDto : updateProductDtos) {
-//                       // dataUpdateDAO.updateProductData(productDto, db);
-//                        RegisterActivity.mDtoWrapper.updateProductData(productDto);
-//                    }
-//                    progressValue = progressValue + 1;
-//                    //   publishProgress(progressValue);
-//                }
                 List<UserLoginDto> insertUserLoginDtos = dto.getCreatedResponseUserLoginDto().getUserLoginDtos();
 
                 if (insertUserLoginDtos != null && insertUserLoginDtos.size() > 0) {

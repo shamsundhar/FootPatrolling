@@ -23,4 +23,6 @@ public interface FootPatrollingSectionsDao {
 
     @Query("SELECT * from foot_patrolling_sections WHERE facility_depot=:depotID")
     List<FootPatrollingSectionsDto> getAllFootPatrollingSectionDtosByDepot(String depotID);
+    @Query("SELECT COUNT(facility_depot) FROM foot_patrolling_sections")
+    int getCount();
 }
