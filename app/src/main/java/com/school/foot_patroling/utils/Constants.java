@@ -40,6 +40,7 @@ public static final String INITIAL_TIME = "31-01-1990 17:26:15.613";
 
     public static final String DATE_FORMAT1 = "EEEE, d MMMM";
     public static final String DATE_FORMAT2 = "MM-dd-yyyy";
+    public static final String DATE_FORMAT3 = "dd-MMMM-yyyy";
 
 
     public static String USER_LOGIN_INSERT_SQL = "insert into user_login( user_login_id, current_password, password_hint, is_system, enabled, last_updated_stamp, last_updated_tx_stamp, " +
