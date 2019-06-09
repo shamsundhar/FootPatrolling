@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -165,34 +166,36 @@ public class ComplianceFragment extends BaseFragment {
                     observationsList = new ArrayList<Observation>();
                     observationsList.addAll(filterdList);
                 }
+                List<Observation> filteredObservationsList = new ArrayList<Observation>();
+                for(Observation obs : observationsList){
+                    Calendar date1=Calendar.getInstance();
 
-                Stream<Observation> filteredObservationsList = (Stream<Observation>) observationsList.stream().filter(new Predicate<Observation>() {
-                    @Override
-                    public boolean test(Observation observation) {
-                        try {
-                            Date date1=new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").parse(observation.getCreatedDateTime());
+                    Calendar fromDateObj = Calendar.getInstance();
+                    Calendar toDateObj = Calendar.getInstance();
+                    try {
+                        SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
+                        SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                        SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                        date1.setTime(s1.parse(obs.getCreatedDateTime()));
+                        fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
 
-                            Date fromDate = new SimpleDateFormat(DATE_FORMAT3).parse(from_dateTv.getText().toString());
-                            Date toDate = new SimpleDateFormat(DATE_FORMAT3).parse(to_dateTV.getText().toString());
-                            if(fromDate.after(date1) && toDate.before(date1)){
-                                return true;
-                            }else{
-                                return false;
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return false;
+                        toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
+                        if(date1.after(fromDateObj) && date1.before(toDateObj)) {
+                            filteredObservationsList.add(obs);
                         }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                });
+
+
+                }
+
                 if(filteredObservationsList != null){
                     observationsList =  new ArrayList<Observation>();
-                    filteredObservationsList.forEach(new Consumer<Observation>() {
-                        @Override
-                        public void accept(Observation observation) {
-                            observationsList.add(observation);
-                        }
-                    });
+                    for(Observation observation : filteredObservationsList){
+                        observationsList.add(observation);
+                    }
+                    complianceListAdapter.setItems(observationsList);
                     complianceListAdapter.notifyDataSetChanged();
                 }
             }
