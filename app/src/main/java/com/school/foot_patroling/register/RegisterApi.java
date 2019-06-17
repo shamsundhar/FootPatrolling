@@ -4,6 +4,7 @@ import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.reports.ReportModel;
+import com.school.foot_patroling.reports.ReportResult;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
@@ -26,7 +27,7 @@ public interface RegisterApi {
 
  @POST
  @Headers({"Content-Type: application/json"})
- Observable<Object> executeReport(@Url String url, @Body ReportModel model);
+ Observable<ReportResult> executeReport(@Url String url, @Body ReportModel model);
 
 
 }
