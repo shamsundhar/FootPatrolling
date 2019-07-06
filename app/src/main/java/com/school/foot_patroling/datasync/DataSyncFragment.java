@@ -37,6 +37,7 @@ import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.register.model.UserLoginDto_;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.Constants;
 import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
@@ -101,7 +102,7 @@ public class DataSyncFragment extends BaseFragment {
                 // preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI2,imeiList.get(1));
                 String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
                 String lastSyncDate = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
-                url = url + "/warehouse/fpApp/get-fp-data";
+                url = url + Constants.REST_GET_FP_DATA;
                 RegistrationRequestModel model = new RegistrationRequestModel();
                 model.setAppName("TRD_FP");
                 model.setCurrentTimestamp(syncStartTime);

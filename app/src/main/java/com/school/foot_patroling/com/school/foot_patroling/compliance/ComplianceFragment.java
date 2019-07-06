@@ -233,10 +233,10 @@ public class ComplianceFragment extends BaseFragment {
         complianceListAdapter.setClickListener(new ClickListener() {
 
             @Override
-            public void onItemClick(Observation model, int position) {
+            public void onItemClick(Object model, int position) {
                 Intent in = new Intent(getActivity(), AWFActivity.class);
                 in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_COMPLIANCE);
-                in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, model.getDeviceSeqId());
+                in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, ((Observation)model).getDeviceSeqId());
                 getActivity().startActivity(in);
             }
         });
