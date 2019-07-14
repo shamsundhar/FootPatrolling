@@ -10,6 +10,8 @@ import com.school.foot_patroling.injection.scopes.PerFragment;
 import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
 import com.school.foot_patroling.reload.ReloadFragment;
 import com.school.foot_patroling.reports.ReportsFragment;
+import com.school.foot_patrolling.observations.EditObservationFragment;
+import com.school.foot_patrolling.observations.ObservationsFragment;
 
 import dagger.Component;
 
@@ -22,7 +24,8 @@ public interface FragmentComponent {
     void inject(AddComplianceFragment fragment);
     void inject(ReloadFragment fragment);
     void inject(ReportsFragment fragment);
-  //  void inject(ResetPasswordEnterMobileFragment fragment);
+    void inject(ObservationsFragment fragment);
+    void inject(EditObservationFragment fragment);
   //  void inject(ShopListFragment fragment);
   //  void inject(OrderHistoryFragment fragment);
 }

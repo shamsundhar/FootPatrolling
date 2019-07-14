@@ -170,26 +170,31 @@ public class DepotSelectionFragment extends BaseFragment {
             //  final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
             final List<FootPatrollingSectionsDto> sectionList = NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().getAllFootPatrollingSectionDtosByDepot(selectedDepotId);
 
-            if (sectionList != null) {
+            if (sectionList != null && sectionList.size() > 0) {
                 sectionsListAdapter = new SectionsListAdapter(sectionList, getActivity().getBaseContext());
                 listView.setAdapter(sectionsListAdapter);
-            }
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    // TODO Auto-generated method stub
-                    builder.dismiss();
-                    FootPatrollingSectionsDto dataModel = sectionList.get(position);
-                    sectionTV.setText(dataModel.getFpSection());
-                    selectedSectionID = dataModel.getFpSection();
-                    Snackbar.make(view, " " + dataModel.getFpSection() + " " + dataModel.getSeqId(), Snackbar.LENGTH_LONG)
-                            .setAction("No action", null).show();
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                        // TODO Auto-generated method stub
+                        builder.dismiss();
+                        FootPatrollingSectionsDto dataModel = sectionList.get(position);
+                        sectionTV.setText(dataModel.getFpSection());
+                        selectedSectionID = dataModel.getFpSection();
+                        Snackbar.make(view, " " + dataModel.getFpSection() + " " + dataModel.getSeqId(), Snackbar.LENGTH_LONG)
+                                .setAction("No action", null).show();
 
-                }
-            });
-            builder.setCanceledOnTouchOutside(true);
-            builder.show();
+                    }
+                });
+                builder.setCanceledOnTouchOutside(true);
+                builder.show();
+            }
+            else{
+                CustomAlertDialog dialog = new CustomAlertDialog();
+                dialog.showAlert1(getActivity(), R.string.text_alert, "No sections available for selected depot");
+            }
+
         }
         else{
             CustomAlertDialog dialog = new CustomAlertDialog();

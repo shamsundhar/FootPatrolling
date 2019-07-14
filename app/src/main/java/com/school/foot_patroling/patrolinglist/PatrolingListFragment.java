@@ -230,17 +230,6 @@ public class PatrolingListFragment extends BaseFragment {
                 String sql = "select priority, description from observations_check_list";
                 checkList = new ArrayList<>();
                 checkList.addAll(NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos());
-//                Cursor cursor = database.rawQuery(sql, null);
-//                if (cursor.moveToFirst()) {
-//                    while (!cursor.isAfterLast()) {
-//                        ObservationsCheckListDto dto = new ObservationsCheckListDto();
-//                        dto.setPriority( cursor.getString(0) );
-//                        dto.setDescription( cursor.getString(1) );
-//                        cursor.moveToNext();
-//                        checkList.add(dto);
-//                    }
-//                }
-//                cursor.close();
             }
         }catch(Exception e){
 

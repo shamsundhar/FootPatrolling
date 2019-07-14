@@ -34,6 +34,7 @@ import com.school.foot_patroling.reload.ReloadFragment;
 import com.school.foot_patroling.reports.ReportsFragment;
 import com.school.foot_patroling.terms.TermsFragment;
 import com.school.foot_patroling.utils.PreferenceHelper;
+import com.school.foot_patrolling.observations.ObservationsFragment;
 
 
 import javax.inject.Inject;
@@ -68,6 +69,7 @@ public class NavigationDrawerActivity extends BaseActivity
     private static final String CHECKEDLIST_FRAGMENT_TAG = "CHECKEDLIST_FRAGMENT";
     private static final String DEPOT_SELECTION_FRAGMENT_TAG = "DEPO_SELECTION_FRAGMENT";
     private static final String COMPLIANCE_FRAGMENT_TAG = "COMPLIANCE_FRAGMENT";
+    private static final String OBSERVATIONS_FRAGMENT_TAG = "OBSERVATIONS_FRAGMENT";
     private static final String NOTES_FRAGMENT_TAG = "NOTES_FRAGMENT";
     private static final String RECOMENDATION_FRAGMENT_TAG = "RECOMENDATION_FRAGMENT";
     private static final String MESSAGES_FRAGMENT_TAG = "MESSAGES_FRAGMENT";
@@ -164,6 +166,15 @@ public void displayExitDialog(){
                 .replace(R.id.container,  ComplianceFragment.newInstance(), COMPLIANCE_FRAGMENT_TAG)
                 .commit();
     }
+    public void displayObservationsFragment(){
+        setTitle("TRD_AMS");
+        //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  ObservationsFragment.newInstance(), OBSERVATIONS_FRAGMENT_TAG)
+                .commit();
+    }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -185,6 +196,8 @@ public void displayExitDialog(){
 
         }else if(id == R.id.nav_compliance) {
             displayComplianceFragment();
+        }else if(id == R.id.nav_observations) {
+            displayObservationsFragment();
         }else if (id == R.id.nav_data) {
             setTitle(null);
             getSupportFragmentManager()

@@ -107,7 +107,7 @@ public class DialogPDFViewer extends Dialog {
                 })
                 .onRender(new OnRenderListener() {
                     @Override
-                    public void onInitiallyRendered(int nbPages) {
+                    public void onInitiallyRendered(int nbPages, float pageWidth, float pageHeight) {
                         Log.d("","------onInitiallyRendered-----");
                     }
                 })

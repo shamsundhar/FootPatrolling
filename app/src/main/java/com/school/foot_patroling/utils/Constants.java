@@ -37,6 +37,8 @@ public class Constants {
     public static final String BUNDLE_KEY_DISPLAY_FRAGMENT = "DISPLAY_FRAGMENT";
     public static final String BUNDLE_KEY_SELECTED_COMPLIANCE = "SELECTED_COMPLIANCE";
     public static final String BUNDLE_VALUE_COMPLIANCE = "COMPLIANCE";
+    public static final String BUNDLE_VALUE_EDIT_OBSERVATION = "EDIT_OBSERVATION";
+    public static final String BUNDLE_KEY_SELECTED_OBSERVATION = "SELECTED_OBSERVATION";
 
     public static final String DATE_FORMAT1 = "EEEE, d MMMM";
     public static final String DATE_FORMAT2 = "MM-dd-yyyy";

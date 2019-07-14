@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/splash_image"
     tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="276dp"
-        android:text="Win Focus\nSplash Screen"
-        app:layout_constraintHorizontal_bias="0.501"
+        android:layout_height="0dp"
+        android:layout_marginTop="36dp"
+        android:text="Foot Patrolling"
+        app:layout_constraintHorizontal_bias="0.851"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -132,7 +132,9 @@
                 android:hint="Action Done"
                 android:text=""
                 android:inputType="textUri"
-                android:maxLines="1"
+                android:minLines="3"
+                android:maxLines="5"
+                android:scrollbars="vertical"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
 
