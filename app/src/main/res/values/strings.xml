@@ -25,6 +25,7 @@
     <string name="text_back">Back</string>
     <string name="text_stop">Stop</string>
     <string name="text_submit">Submit</string>
+    <string name="text_runreport">Run Report</string>
     <string name="text_sync_now">Sync Now</string>
     <string name="text_startFP">Start FP</string>
 

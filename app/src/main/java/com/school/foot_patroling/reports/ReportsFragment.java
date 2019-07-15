@@ -1,19 +1,29 @@
 package com.school.foot_patroling.reports;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,11 +33,14 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.ClickListener;
 import com.school.foot_patroling.database.DatabaseHelper;
+import com.school.foot_patroling.depotselection.SectionsListAdapter;
 import com.school.foot_patroling.register.RegisterActivity;
 import com.school.foot_patroling.register.RegisterApi;
+import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.Constants;
+import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -49,6 +62,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -69,16 +83,18 @@ public class ReportsFragment extends BaseFragment {
     @Inject
     RegisterApi registerApi;
     PreferenceHelper preferenceHelper;
-
-
-
-    @BindView(R.id.reportsRecyclerview)
-    RecyclerView reportsRecyclerView;
     @BindView(R.id.empty_view)
     TextView empty_view;
+    @BindView(R.id.reportTV)
+    TextView reportTV;
+    @OnClick(R.id.reportlistLayout)
+    public void clickOnReportListLayout(){
+        displayReportListPopup();
+    }
 
-    private List<Object> itemList;
-    private ReportsListAdapter reportsListAdapter;
+    private List<Object> reportList;
+    private String selectedReportID;
+    ReportsListAdapter reportsListAdapter;
 
 
     // TODO: Rename and change types and number of parameters
@@ -99,21 +115,10 @@ public class ReportsFragment extends BaseFragment {
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
-        reportsListAdapter = new ReportsListAdapter();
-        reportsListAdapter.setClickListener(new ClickListener() {
-            @Override
-            public void onItemClick(Object model, int position) {
-                downloadReport(model.toString());
-            }
-        });
-        reportsRecyclerView.setAdapter(reportsListAdapter);
-        reportsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-        displayReports();
+        getReportNames();
        // String samplePdf = "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PC9MZW5ndGggMTIxL0ZpbHRlci9GbGF0ZURlY29kZT4+c3RyZWFtCnicK+RyCuEyNlOwMDBRCEnhcg3hCuQyUvACiRoqGAAhiLQwMVAIyeXSdzNUMDRSCEnj0tAMyQKpRSgxUEjORdZkbGKsZ2muYG5poWdsDtdsAdIMUVKUzqXhl6/gkliSqOCWX5qXAjLSQCEdi7HRsUA6BewsABdnJDkKZW5kc3RyZWFtCmVuZG9iagoxIDAgb2JqCjw8L0dyb3VwPDwvVHlwZS9Hcm91cC9DUy9EZXZpY2VSR0IvUy9UcmFuc3BhcmVuY3k+Pi9QYXJlbnQgNCAwIFIvQ29udGVudHMgMyAwIFIvVHlwZS9QYWdlL1Jlc291cmNlczw8L1Byb2NTZXQgWy9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUldL0NvbG9yU3BhY2U8PC9DUy9EZXZpY2VSR0I+Pi9Gb250PDwvRjEgMiAwIFI+Pj4+L01lZGlhQm94WzAgMCA4MTAgODQwXT4+CmVuZG9iago1IDAgb2JqClsxIDAgUi9YWVogMCA4NTIgMF0KZW5kb2JqCjIgMCBvYmoKPDwvQmFzZUZvbnQvSGVsdmV0aWNhL1R5cGUvRm9udC9FbmNvZGluZy9XaW5BbnNpRW5jb2RpbmcvU3VidHlwZS9UeXBlMT4+CmVuZG9iago0IDAgb2JqCjw8L0lUWFQoMi4xLjcpL1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWzEgMCBSXT4+CmVuZG9iago2IDAgb2JqCjw8L05hbWVzWyhKUl9QQUdFX0FOQ0hPUl8wXzEpIDUgMCBSXT4+CmVuZG9iago3IDAgb2JqCjw8L0Rlc3RzIDYgMCBSPj4KZW5kb2JqCjggMCBvYmoKPDwvTmFtZXMgNyAwIFIvVHlwZS9DYXRhbG9nL1BhZ2VzIDQgMCBSPj4KZW5kb2JqCjkgMCBvYmoKPDwvQ3JlYXRvcihKYXNwZXJSZXBvcnRzIFwoMTMyS1ZDVEhZXCkpL1Byb2R1Y2VyKGlUZXh0IDIuMS43IGJ5IDFUM1hUKS9Nb2REYXRlKEQ6MjAxOTA2MTQxMDUyNTYrMDUnMzAnKS9DcmVhdGlvbkRhdGUoRDoyMDE5MDYxNDEwNTI1NiswNSczMCcpPj4KZW5kb2JqCnhyZWYKMCAxMAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAyMDMgMDAwMDAgbiAKMDAwMDAwMDQ3MiAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDA1NjAgMDAwMDAgbiAKMDAwMDAwMDQzNyAwMDAwMCBuIAowMDAwMDAwNjIzIDAwMDAwIG4gCjAwMDAwMDA2NzcgMDAwMDAgbiAKMDAwMDAwMDcwOSAwMDAwMCBuIAowMDAwMDAwNzY2IDAwMDAwIG4gCnRyYWlsZXIKPDwvUm9vdCA4IDAgUi9JRCBbPDZlN2UyNzc1MGRmMGQzY2I0YmJlMTUwMWVmMGNjYWU4Pjw1YTAzZDcyNDNlMjU2ODNlY2IwODE1ZmRlMTVkYWRlMD5dL0luZm8gOSAwIFIvU2l6ZSAxMD4+CnN0YXJ0eHJlZgo5MjUKJSVFT0YK";
        // displayPDF(samplePdf);
-
 
         return view;
     }
@@ -162,8 +167,8 @@ public class ReportsFragment extends BaseFragment {
 
     }
 
-    private void displayReports(){
-        itemList = new ArrayList<Object>();
+    private void getReportNames(){
+        reportList = new ArrayList<Object>();
         if(Common.isNetworkAvailable(getActivity())) {
                 final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
                         R.style.AppTheme_Dark_Dialog);
@@ -175,7 +180,6 @@ public class ReportsFragment extends BaseFragment {
                 //TODO call reports request API
                 String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
                 url = url + Constants.REST_GET_REPORT_NAMES;
-
 
                 registerApi.getReportNames(url)
                         .subscribeOn(Schedulers.io())
@@ -195,15 +199,14 @@ public class ReportsFragment extends BaseFragment {
                                         JSONObject jsonObject = new JSONObject(o.toString());
                                         JSONArray reportNamesArray = jsonObject.getJSONArray("reportNames");
                                         if(reportNamesArray != null && reportNamesArray.length()>0){
-                                            itemList = new ArrayList<Object>();
+                                            reportList = new ArrayList<Object>();
                                             for(int i=0;i<reportNamesArray.length();i++){
-                                                itemList.add(reportNamesArray.getString(i));
+                                                reportList.add(reportNamesArray.getString(i));
                                             }
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-                                    updateUI();
                                 }
                             }
 
@@ -226,20 +229,48 @@ public class ReportsFragment extends BaseFragment {
 
     }
 
-    private void updateUI(){
-        if(itemList != null && !itemList.isEmpty()){
-            empty_view.setVisibility(View.GONE);
-            reportsRecyclerView.setVisibility(View.VISIBLE);
+    private void displayReportListPopup()
+    {
 
-        }else{
-            empty_view.setText("Reports list is empty");
-            empty_view.setVisibility(View.VISIBLE);
-            reportsRecyclerView.setVisibility(View.GONE);
-        }
-        reportsListAdapter.setItems(itemList);
-        reportsListAdapter.notifyDataSetChanged();
+            final Dialog builder = new Dialog(getActivity());
+            builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            Window window = builder.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            wlp.gravity = Gravity.CENTER;
+            window.setAttributes(wlp);
+            builder.setContentView(R.layout.popup_listview);
+
+            final ListView listView = (ListView) builder.findViewById(R.id.popupListView);
+            listView.setTextFilterEnabled(true);
+
+            if (reportList != null && reportList.size() > 0) {
+                reportsListAdapter = new ReportsListAdapter(reportList, getActivity().getBaseContext());
+                listView.setAdapter(reportsListAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                        // TODO Auto-generated method stub
+                        builder.dismiss();
+                        FootPatrollingSectionsDto dataModel = sectionList.get(position);
+                        reportTV.setText(dataModel.getFpSection());
+                        selectedReportID = dataModel.getFpSection();
+                        Snackbar.make(view, " " + dataModel.getFpSection() + " " + dataModel.getSeqId(), Snackbar.LENGTH_LONG)
+                                .setAction("No action", null).show();
+
+                    }
+                });
+                builder.setCanceledOnTouchOutside(true);
+                builder.show();
+            }
+            else{
+                CustomAlertDialog dialog = new CustomAlertDialog();
+                dialog.showAlert1(getActivity(), R.string.text_alert, "No sections available for selected depot");
+            }
+
+
     }
-
     private void downloadReport(final String reportName){
 
         if(Common.isNetworkAvailable(getActivity())){

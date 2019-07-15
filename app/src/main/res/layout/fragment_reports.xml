@@ -1,21 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_centerInParent="true">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_marginTop="10dp"
-        android:layout_height="match_parent">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/reportsRecyclerview"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <include layout="@layout/empty_text"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:id="@+id/reportlistLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/reportTV"
+                android:layout_centerVertical="true"
+                android:text="Select Report"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/subdivisionLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/statusTV"
+                android:layout_centerVertical="true"
+                android:text="Select Sub Division"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/depotLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/depotTV"
+                android:layout_centerVertical="true"
+                android:text="Select Depot"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:weightSum="10"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/fromDateLayout"
+                android:padding="5dp"
+                android:background="@drawable/layout_corners_grey_border"
+                android:layout_weight="9">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fromDateTV"
+                    android:layout_centerVertical="true"
+                    android:text="From Date"/>
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:id="@+id/fromCalendar"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/calendar"/>
 
-</FrameLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:weightSum="10"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/toDateLayout"
+                android:padding="5dp"
+                android:background="@drawable/layout_corners_grey_border"
+                android:layout_weight="9">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toDateTV"
+                    android:layout_centerVertical="true"
+                    android:text="To Date"/>
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:id="@+id/toCalendar"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/calendar"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:background="@drawable/drawable_corners_primary_gradient"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:text="@string/text_runreport"/>
+
+    </LinearLayout>
+</ScrollView>

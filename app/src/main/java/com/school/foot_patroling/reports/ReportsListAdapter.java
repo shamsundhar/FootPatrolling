@@ -1,112 +1,99 @@
 package com.school.foot_patroling.reports;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.com.school.foot_patroling.compliance.ClickListener;
 
 import java.util.List;
 
-public class ReportsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<Object> items;
-    private ClickListener clickListener;
+public class ReportsListAdapter extends ArrayAdapter<Object> {
 
+    private List<Object> dataSet;
+    Context mContext;
 
-    public ReportsListAdapter(){
-
-    }
-    public void setClickListener(ClickListener listener){
-        this.clickListener = listener;
+    // View lookup cache
+    private static class ViewHolder {
+        TextView title;
     }
     public void setItems(List<Object> items) {
-        this.items = items;
+        this.dataSet = items;
     }
 
+    public ReportsListAdapter(List<Object> items, Context context) {
+        super(context, R.layout.layout_sectionitem);
+        this.mContext=context;
+        this.dataSet = items;
 
+    }
 
-    @NonNull
+    @Nullable
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        View v1 = inflater.inflate(R.layout.layout_reports_item, viewGroup, false);
-        viewHolder = new ReportsListAdapter.ViewHolder1(v1);
-
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ReportsListAdapter.ViewHolder1 vh1 = (ReportsListAdapter.ViewHolder1) holder;
-        configureViewHolder1(vh1, position);
-    }
-    private void configureViewHolder1(final ReportsListAdapter.ViewHolder1 vh1, final int position) {
-        final Object model = (Object) items.get(position);
-        if (model != null) {
-            vh1.getTitle().setText(model.toString());
-
-
-            vh1.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickListener.onItemClick(model.toString(), position);
-                }
-            });
-        }
-    }
-    @Override
-    public int getItemCount() {
-        if(items != null) {
-            return this.items.size();
-        }
-        else{
-            return 0;
-        }
+    public Object getItem(int position) {
+        return dataSet.get(position);
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return position;
+    public int getCount() {
+        return (dataSet == null) ? 0 : dataSet.size();
     }
+//    @Override
+//    public void onClick(View v) {
+//
+//        int position=(Integer) v.getTag();
+//        Object object= getItem(position);
+//        SectionResponse.Response dataModel=(SectionResponse.Response)object;
+//
+//        switch (v.getId())
+//        {
+//            case R.id.title:
+//                Snackbar.make(v, " " +dataModel.getCompositeTagName()+" "+dataModel.getCompositeTagId(), Snackbar.LENGTH_LONG)
+//                        .setAction("No action", null).show();
+//                break;
+//        }
+//    }
 
+    private int lastPosition = -1;
 
-    class ViewHolder1 extends RecyclerView.ViewHolder {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // Get the data item for this position
+        String reportName = (String)getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        ReportsListAdapter.ViewHolder viewHolder; // view lookup cache stored in tag
 
-        private TextView title;
+        final View result;
 
+        if (convertView == null) {
 
+            viewHolder = new ReportsListAdapter.ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.layout_sectionitem, parent, false);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.title);
+            result=convertView;
 
-        public TextView getTitle() {
-            return title;
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ReportsListAdapter.ViewHolder) convertView.getTag();
+            result=convertView;
         }
 
-        public void setTitle(TextView title) {
-            this.title = title;
-        }
+        //  Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+        //    result.startAnimation(animation);
+        lastPosition = position;
 
-
-
-        public ViewHolder1(View v) {
-            super(v);
-            title = (TextView) v.findViewById(R.id.title);
-
-            applyFonts(v);
-        }
-        private void applyFonts(View v){
-            // Font path
-            String fontPath = "fonts/bariol_bold-webfont.ttf";
-            String fontPath2 = "fonts/framd.ttf";
-            // Loading Font Face
-            Typeface tf = Typeface.createFromAsset(v.getContext().getAssets(), fontPath);
-            Typeface tf2 = Typeface.createFromAsset(v.getContext().getAssets(), fontPath2);
-            title.setTypeface(tf);
-
-        }
+        viewHolder.title.setText(reportName);
+        //   viewHolder.title.setOnClickListener(this);
+        viewHolder.title.setTag(position);
+        // Return the completed view to render on screen
+        return convertView;
     }
 }
