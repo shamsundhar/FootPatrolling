@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.school.foot_patroling.BaseFragment;
+import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DataUpdateDAO;
@@ -44,10 +47,16 @@ import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -129,7 +138,7 @@ public class DataSyncFragment extends BaseFragment {
                 appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
                 model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
-
+                uploadImages();
                 registerApi.register(url, model)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -162,6 +171,7 @@ public class DataSyncFragment extends BaseFragment {
                                         String result = syncMasterData(masterDto);
                                         tvResult.setText("Result : " + result);
                                         tvSyncStatus.setText("Data Sync Status : Completed");
+
                                         if (result.equals("Success")) {
                                             String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
                                             preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
@@ -183,6 +193,66 @@ public class DataSyncFragment extends BaseFragment {
         }
 
     }
+
+    private void uploadImages() {
+        String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
+        url = url + Constants.REST_POST_FILE_UPLOAD;
+        Map<String, byte[]> imagesMap = new HashMap<String, byte[]>();
+
+        final File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/pictures");
+
+        File[] files = directory.listFiles();
+        Log.d("Files", "Size: "+ files.length);
+        for (int i = 0; i < files.length; i++)
+        {
+            Log.d("Files", "FileName:" + files[i].getName());
+            int size = (int) files[i].length();
+            byte[] bytes = new byte[size];
+            try {
+                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(files[i]));
+                buf.read(bytes, 0, bytes.length);
+                buf.close();
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            imagesMap.put(files[i].getName(),bytes);
+        }
+
+
+        registerApi.fileUpload(url,imagesMap)
+                   .subscribeOn(Schedulers.io())
+                   .observeOn(AndroidSchedulers.mainThread())
+                   .subscribe(new Observer<Object>() {
+                       @Override
+                       public void onSubscribe(Disposable d) {
+
+                       }
+
+                       @Override
+                       public void onNext(Object o) {
+                            //TODO delete files
+                           directory.delete();
+                       }
+
+                       @Override
+                       public void onError(Throwable e) {
+
+                       }
+
+                       @Override
+                       public void onComplete() {
+
+                       }
+                   });
+
+
+
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -206,7 +276,7 @@ public class DataSyncFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-
+        //uploadImages();
         return view;
     }
 
