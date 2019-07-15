@@ -48,6 +48,7 @@ public class Constants {
     public static final String REST_GET_FP_DATA = "/warehouse/fpApp/get-fp-data";
     public static final String REST_GET_REPORT_NAMES = "/warehouse/fpApp/get-report-names";
     public static final String REST_REPORT_EXECUTION = "/warehouse/fpApp/report-execution";
+    public static final String REST_POST_FILE_UPLOAD = "/file-upload";
 
 
     public static String USER_LOGIN_INSERT_SQL = "insert into user_login( user_login_id, current_password, password_hint, is_system, enabled, last_updated_stamp, last_updated_tx_stamp, " +

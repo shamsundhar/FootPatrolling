@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.barteksc.pdfviewer.PDFView;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
