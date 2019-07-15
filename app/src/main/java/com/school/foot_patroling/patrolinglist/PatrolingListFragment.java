@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -69,6 +70,8 @@ public class PatrolingListFragment extends BaseFragment {
     TextView tv1;
     @BindView(R.id.radiogroup)
     RadioGroup radioGroup;
+    @BindView(R.id.rbpriority)
+    RadioButton radioButtonPriority;
     @BindView(R.id.categoryLayout)
     RelativeLayout categoryLayout;
     @BindView(R.id.categoryTV)
@@ -133,7 +136,9 @@ public class PatrolingListFragment extends BaseFragment {
                             }
                         }
                     });
-                    displayNewsFromDB();
+                    categoryTV.setText("Category");
+                    radioButtonPriority.setChecked(true);
+                    modifyCheckList_Priority();
                     checklistAdapter.notifyDataSetChanged();
                     loc1.setText("");
                     loc2.setText("");
@@ -189,6 +194,7 @@ public class PatrolingListFragment extends BaseFragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // find which radio button is selected
                 if(checkedId == R.id.rbcategory) {
+                    categoryTV.setText("Category");
                     categoryLayout.setVisibility(View.VISIBLE);
                 } else if(checkedId == R.id.rbpriority) {
                     modifyCheckList_Priority();

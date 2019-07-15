@@ -20,10 +20,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.florent37.camerafragment.CameraFragment;
-import com.github.florent37.camerafragment.PreviewActivity;
-import com.github.florent37.camerafragment.configuration.Configuration;
-import com.github.florent37.camerafragment.listeners.CameraFragmentResultListener;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -88,42 +84,43 @@ public class AWFActivity extends BaseActivity {
     public void displayEditObservationFragment(Bundle bundle){
         setTitle(null);
 
-//        EditObservationFragment fragment = EditObservationFragment.newInstance();
-//        if(bundle != null){
-//            fragment.setArguments(bundle);
+        EditObservationFragment fragment = EditObservationFragment.newInstance();
+        if(bundle != null){
+            fragment.setArguments(bundle);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  fragment, EDIT_OBSERVATION_FRAGMENT_TAG)
+                .commit();
+
+//        if (ActivityCompat.checkSelfPermission(AWFActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+//
+//
+////            CameraFragment cameraFragment = CameraFragment.newInstance(new Configuration.Builder().build());
+////            cameraFragment.takePhotoOrCaptureVideo(new CameraFragmentResultListener() {
+//////                @Override
+//////                public void onVideoRecorded(byte[] bytes, String filePath) {
+//////                    //called when the video record is finished and saved
+//////
+//////                  //  startActivityForResult(PreviewActivity.newIntentVideo(AWFActivity.this, filePath));
+//////                }
+////
+////                @Override
+////                public void onPhotoTaken(byte[] bytes, String filePath) {
+////                    //called when the photo is taken and saved
+////
+////                    startActivity(PreviewActivity.newIntentPhoto(AWFActivity.this, filePath));
+////                }
+////            });
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.container, cameraFragment, "camera tag")
+//                    .commit();
+//
 //        }
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.container,  fragment, EDIT_OBSERVATION_FRAGMENT_TAG)
-//                .commit();
-
-        if (ActivityCompat.checkSelfPermission(AWFActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
-
-            CameraFragment cameraFragment = CameraFragment.newInstance(new Configuration.Builder().build());
-//            cameraFragment.takePhotoOrCaptureVideo(new CameraFragmentResultListener() {
-//
-//                @Override
-//                public void onVideoRecorded(String filePath) {
-//
-//                }
-//
-//                @Override
-//                public void onPhotoTaken(byte[] bytes, String filePath) {
-//                    //called when the photo is taken and saved
-//
-//                    startActivity(PreviewActivity.newIntentPhoto(AWFActivity.this, filePath));
-//                }
-//            });
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container, cameraFragment, "camera tag")
-                    .commit();
-
-        }
-        else{
-            requestCameraPermission();
-        }
+//        else{
+//            requestCameraPermission();
+//        }
     }
     private void requestCameraPermission(){
         Dexter.withActivity(AWFActivity.this)

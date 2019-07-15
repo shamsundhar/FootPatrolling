@@ -1,7 +1,14 @@
 package com.school.foot_patrolling.observations;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,8 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.school.foot_patroling.AWFActivity;
 import com.school.foot_patroling.BaseFragment;
+import com.school.foot_patroling.CameraActivity;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.ClickListener;
@@ -71,6 +87,7 @@ public class ObservationsFragment extends BaseFragment {
                 in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_OBSERVATION);
                 in.putExtra(BUNDLE_KEY_SELECTED_OBSERVATION, ((Observation)model).getDeviceSeqId());
                 getActivity().startActivity(in);
+
             }
         });
         observationsRecyclerview.setAdapter(observationsListAdapter);
@@ -78,6 +95,7 @@ public class ObservationsFragment extends BaseFragment {
         displayObservationsFromDB();
         return view;
     }
+
     private void displayObservationsFromDB(){
 
         try {

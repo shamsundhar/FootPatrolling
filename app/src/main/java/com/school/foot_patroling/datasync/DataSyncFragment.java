@@ -75,6 +75,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
+import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 
 public class DataSyncFragment extends BaseFragment {
@@ -199,7 +200,7 @@ public class DataSyncFragment extends BaseFragment {
         url = url + Constants.REST_POST_FILE_UPLOAD;
         Map<String, byte[]> imagesMap = new HashMap<String, byte[]>();
 
-        final File directory = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/pictures");
+        final File directory = new File(Environment.getExternalStorageDirectory() + FP_PICS_FOLDER);
 
         File[] files = directory.listFiles();
         Log.d("Files", "Size: "+ files.length);
@@ -226,6 +227,7 @@ public class DataSyncFragment extends BaseFragment {
         registerApi.fileUpload(url,imagesMap)
                    .subscribeOn(Schedulers.io())
                    .observeOn(AndroidSchedulers.mainThread())
+
                    .subscribe(new Observer<Object>() {
                        @Override
                        public void onSubscribe(Disposable d) {

@@ -3,6 +3,8 @@ import com.school.foot_patroling.BuildConfig;
 import com.school.foot_patroling.injection.scopes.PerApplication;
 import com.school.foot_patroling.register.RegisterApi;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
@@ -56,6 +58,9 @@ public class NetModule {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClientBuilder.addInterceptor(loggingInterceptor);
         }
+        httpClientBuilder.connectTimeout(1, TimeUnit.MINUTES);
+        httpClientBuilder.readTimeout(1, TimeUnit.MINUTES);
+        httpClientBuilder.writeTimeout(1, TimeUnit.MINUTES);
         return httpClientBuilder;
     }
 

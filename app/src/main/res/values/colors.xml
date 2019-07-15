@@ -35,6 +35,8 @@
     <color name="light_grey2">#7F7D7E</color>
     <color name="dark_grey">#4D4D4D</color>
 
+    <color name="black_overlay">#66000000</color>
+
     <!--&lt;!&ndash; Indigo 500 &ndash;&gt;-->
     <!--<color name="primary_500">#3F51B5</color>-->
     <!--&lt;!&ndash; Indigo 700 &ndash;&gt;-->

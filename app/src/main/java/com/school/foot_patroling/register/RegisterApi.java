@@ -34,6 +34,6 @@ public interface RegisterApi {
 
  @POST
  @Headers({"Content-Type: application/json"})
- Observable<Object> fileUpload(@Url String url, Map<String, byte[]> fileMap);
+ Observable<Object> fileUpload(@Url String url, @Body Map<String, byte[]> fileMap);
 
 }
