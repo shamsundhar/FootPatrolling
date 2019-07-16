@@ -197,8 +197,9 @@ public class ReportsFragment extends BaseFragment {
             @Override
             public void onDateSet(DatePicker view, int i, int i1, int i2) {
                 String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
+                selectedFromDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT4);
                 strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
-                selectedFromDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT1, DATE_FORMAT4);
+
                 fromDateTV.setText(strDate);
             }
         });
@@ -224,8 +225,9 @@ public class ReportsFragment extends BaseFragment {
             @Override
             public void onDateSet(DatePicker view, int i, int i1, int i2) {
                 String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
+                selectedToDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT4);
                 strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
-                selectedToDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT1, DATE_FORMAT4);
+
                 toDateTV.setText(strDate);
             }
         });

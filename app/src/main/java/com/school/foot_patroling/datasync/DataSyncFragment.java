@@ -226,6 +226,7 @@ public class DataSyncFragment extends BaseFragment {
         }
 
         JSONObject jsonObject = new JSONObject(imagesMap);
+       // String output = MapUtil.mapToString(imagesMap);
 
         registerApi.fileUpload(url,jsonObject.toString())
                    .subscribeOn(Schedulers.io())
