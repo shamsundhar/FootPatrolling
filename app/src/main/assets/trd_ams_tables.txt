@@ -62,6 +62,9 @@ CREATE TABLE facility
  reserve_order_enum_id TEXT,
   facility_size  TEXT,
    facility_size_uom_id TEXT,
+   parent_depot character varying(100),
+   division character varying(100),
+   sub_division character varying(100),
    default_dimension_uom_id TEXT,
      skip_pack_inv_check TEXT,
      manuf_alloc_enable TEXT

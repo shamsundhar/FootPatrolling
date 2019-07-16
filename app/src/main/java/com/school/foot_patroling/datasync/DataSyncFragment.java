@@ -47,6 +47,8 @@ import com.school.foot_patroling.utils.PreferenceHelper;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -223,8 +225,9 @@ public class DataSyncFragment extends BaseFragment {
             imagesMap.put(files[i].getName(),bytes);
         }
 
+        JSONObject jsonObject = new JSONObject(imagesMap);
 
-        registerApi.fileUpload(url,imagesMap)
+        registerApi.fileUpload(url,jsonObject.toString())
                    .subscribeOn(Schedulers.io())
                    .observeOn(AndroidSchedulers.mainThread())
 

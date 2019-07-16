@@ -24,4 +24,8 @@ public interface FacilityDtoDao {
     List<FacilityDto> getOHEFacilityDtos();
     @Query("SELECT COUNT(depotType) FROM facility")
     int getCount();
+    @Query("SELECT DISTINCT(sub_division) FROM facility")
+    List<String> getSubDivisions();
+    @Query("SELECT * FROM facility WHERE depotType='OHE' AND sub_division=:subDivision")
+    List<FacilityDto> getDepotsFromSubDivision(String subDivision);
 }

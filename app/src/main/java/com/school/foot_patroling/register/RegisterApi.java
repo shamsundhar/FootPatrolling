@@ -6,6 +6,8 @@ import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.reports.ReportModel;
 import com.school.foot_patroling.reports.ReportResult;
 
+import org.json.JSONObject;
+
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -34,6 +36,6 @@ public interface RegisterApi {
 
  @POST
  @Headers({"Content-Type: application/json"})
- Observable<Object> fileUpload(@Url String url, @Body Map<String, byte[]> fileMap);
+ Observable<Object> fileUpload(@Url String url, @Body String fileMap);
 
 }
