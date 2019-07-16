@@ -25,6 +25,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
@@ -63,7 +64,11 @@ public class EditObservationFragment extends BaseFragment{
     TextInputEditText etComments;
     @OnClick(R.id.btn_submit)
     public void clickOnSave() {
-
+        String updatedComments = etComments.getText().toString().trim();
+        observationModel.setObservation(updatedComments);
+        NavigationDrawerActivity.mFPDatabase.observationDao().insert(observationModel);
+        Toast.makeText(getActivity(), "Comments updated successfully", Toast.LENGTH_LONG).show();
+        getActivity().finish();
     }
     @OnClick(R.id.launchCamera)
     public void clickOnCamera(){
