@@ -4,16 +4,25 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +49,11 @@ import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.utils.DatePickerFragment;
 import com.school.foot_patroling.utils.DateTimeUtils;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -49,9 +62,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_PICNAME;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
+import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
 public class EditObservationFragment extends BaseFragment{
     Observation observationModel;
@@ -62,6 +77,12 @@ public class EditObservationFragment extends BaseFragment{
     TextView tvLocation;
     @BindView(R.id.et_comments)
     TextInputEditText etComments;
+    private int CAMERA_PIC_REQUEST = 100;
+    private int currentCounter;
+    private Uri outputImgUri;
+    PreferenceHelper preferenceHelper;
+    // Save the camera taken picture in this folder.
+    private File pictureSaveFolderPath;
     @OnClick(R.id.btn_submit)
     public void clickOnSave() {
         String updatedComments = etComments.getText().toString().trim();
@@ -74,9 +95,23 @@ public class EditObservationFragment extends BaseFragment{
     public void clickOnCamera(){
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    Intent in = new Intent(getActivity(), CameraActivity.class);
-                    in.putExtra(BUNDLE_KEY_PICNAME, picname);
-                    getActivity().startActivity(in);
+
+
+            picname = "O"+observationModel.getDeviceSeqId()+observationModel.getDeviceId()+getImageCounter()+".jpg";
+
+            pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
+            if(!pictureSaveFolderPath.exists()){
+                pictureSaveFolderPath.mkdirs();
+            }
+
+            File picToBeSaved = new File(pictureSaveFolderPath, picname);
+            if(picToBeSaved.exists()){
+                picToBeSaved.delete();
+            }
+            outputImgUri = getImageFileUriByOsVersion(picToBeSaved);
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputImgUri);
+            startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
         }
         else{
             requestPermission();
@@ -104,17 +139,43 @@ public class EditObservationFragment extends BaseFragment{
         View view = inflater.inflate(R.layout.fragment_edit_observation, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
-        // preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         String deviceSequenceId = getArguments().getString(BUNDLE_KEY_SELECTED_OBSERVATION);
+        currentCounter = preferenceHelper.getInteger(getActivity(), "counter_"+deviceSequenceId,0);
         observationModel = NavigationDrawerActivity.mFPDatabase.observationDao().getStartedObservation(deviceSequenceId);
         tvCheckListItem.setText(observationModel.getObservationItem());
-       // tvObservation.setText(observationModel.getObservation());
         tvLocation.setText(observationModel.getLocation());
         etComments.setText(observationModel.getObservation());
-        picname = "O"+observationModel.getDeviceSeqId()+observationModel.getDeviceId()+".jpg";
+
 
         return view;
+    }
+    private String getImageCounter(){
+        currentCounter++;
+
+        return "_"+currentCounter;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+            // Process result for camera activity.
+            if (requestCode == CAMERA_PIC_REQUEST) {
+
+                // If camera take picture success.
+                if (resultCode == RESULT_OK) {
+                      Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
+                    preferenceHelper.setInteger(getActivity(), "counter_"+observationModel.getDeviceSeqId(), currentCounter);
+                    Log.i("Camera pic location:", ""+outputImgUri);
+//                    // Get content resolver.
+//                    ContentResolver contentResolver = getActivity().getContentResolver();
+//                    // Use the content resolver to open camera taken image input stream through image uri.
+//                    InputStream inputStream = contentResolver.openInputStream(outputImgUri);
+//                    // Decode the image input stream to a bitmap use BitmapFactory.
+//                    Bitmap pictureBitmap = BitmapFactory.decodeStream(inputStream);
+////                    // Set the camera taken image bitmap in the image view component to display.
+////                    takePictureImageView.setImageBitmap(pictureBitmap);
+                }
+            }
     }
 
     private void requestPermission(){
@@ -159,5 +220,37 @@ public class EditObservationFragment extends BaseFragment{
         Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
         intent.setData(uri);
         startActivityForResult(intent, 101);
+    }
+    private Uri getImageFileUriByOsVersion(File file)
+    {
+        Uri ret = null;
+
+        // Get output image unique resource identifier. This uri is used by camera app to save taken picture temporary.
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            // /sdcard/ folder link to /storage/41B7-12F1 folder
+            // so below code return /storage/41B7-12F1
+            File externalStorageRootDir = Environment.getExternalStorageDirectory();
+
+            // contextRootDir = /data/user/0/com.dev2qa.example/files in my Huawei mate 8.
+            File contextRootDir = getActivity().getFilesDir();
+
+            // contextCacheDir = /data/user/0/com.dev2qa.example/cache in my Huawei mate 8.
+            File contextCacheDir = getActivity().getCacheDir();
+
+            // For android os version bigger than or equal to 7.0 use FileProvider class.
+            // Otherwise android os will throw FileUriExposedException.
+            // Because the system considers it is unsafe to use local real path uri directly.
+            Context ctx = getActivity().getApplicationContext();
+            ret = FileProvider.getUriForFile(ctx, "com.win.focus.footpatroling.fileprovider", file);
+
+        }else
+        {
+            // For android os version less than 7.0 there are no safety issue,
+            // So we can get the output image uri by file real local path directly.
+            ret = Uri.fromFile(file);
+        }
+
+        return ret;
     }
 }

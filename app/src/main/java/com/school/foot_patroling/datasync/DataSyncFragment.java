@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
@@ -44,7 +46,7 @@ import com.school.foot_patroling.utils.Constants;
 import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
-
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.json.JSONObject;
@@ -225,10 +227,19 @@ public class DataSyncFragment extends BaseFragment {
             imagesMap.put(files[i].getName(),bytes);
         }
 
-        JSONObject jsonObject = new JSONObject(imagesMap);
+       // JSONObject jsonObject = new JSONObject(imagesMap);
        // String output = MapUtil.mapToString(imagesMap);
+        ObjectMapper objMapper = new ObjectMapper();
+        String json = null;
+        try {
+            json = objMapper.writeValueAsString(imagesMap);
+           // System.out.println("imagesMap object json::: ::: :::::"+json);
+            } catch (JsonProcessingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        registerApi.fileUpload(url,jsonObject.toString())
+        registerApi.fileUpload(url, json)
                    .subscribeOn(Schedulers.io())
                    .observeOn(AndroidSchedulers.mainThread())
 
@@ -282,7 +293,6 @@ public class DataSyncFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-        //uploadImages();
         return view;
     }
 
@@ -332,7 +342,7 @@ public class DataSyncFragment extends BaseFragment {
                     for (FacilityDto facilityDto : insertFacilityDtos) {
 
                         //dataUpdateDAO.insertFacilityData(facilityDto, db);
-                        RegisterActivity.mFPDatabase.facilityDtoDao().insert(facilityDto);
+                        NavigationDrawerActivity.mFPDatabase.facilityDtoDao().insert(facilityDto);
 
                     }
 
@@ -346,7 +356,7 @@ public class DataSyncFragment extends BaseFragment {
                     for (FacilityDto_ facilityDto : updateFacilityDtos) {
 
                         //dataUpdateDAO.updateFacilityData(facilityDto, db);
-                        RegisterActivity.mDtoWrapper.updateFacilityData(facilityDto);
+                        NavigationDrawerActivity.mDtoWrapper.updateFacilityData(facilityDto);
                     }
                 }
 
@@ -354,14 +364,14 @@ public class DataSyncFragment extends BaseFragment {
                 if(insertFootPatrolingSectionsDtos != null && insertFootPatrolingSectionsDtos.size() > 0){
                     Log.d(TAG, "foot patroling section insert records : " + insertFootPatrolingSectionsDtos.size());
                     for(FootPatrollingSectionsDto sectionsDto : insertFootPatrolingSectionsDtos){
-                        RegisterActivity.mFPDatabase.footPatrollingSectionsDao().insert(sectionsDto);
+                        NavigationDrawerActivity.mFPDatabase.footPatrollingSectionsDao().insert(sectionsDto);
                     }
                 }
                 List<FootPatrollingSectionsDto_> updateFootPatrolingSectionsDtos =  dto.getUpdatedFootPatrollingSectionsDto().getFootPatrollingSectionsDtos();
                 if(updateFootPatrolingSectionsDtos != null && updateFootPatrolingSectionsDtos.size() > 0){
                     Log.d(TAG, "foot patroling section insert records : " + insertFootPatrolingSectionsDtos.size());
                     for(FootPatrollingSectionsDto_ sectionsDto : updateFootPatrolingSectionsDtos){
-                        RegisterActivity.mDtoWrapper.updateSections(sectionsDto);
+                        NavigationDrawerActivity.mDtoWrapper.updateSections(sectionsDto);
                     }
                 }
 
@@ -373,7 +383,7 @@ public class DataSyncFragment extends BaseFragment {
 
                     for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
                         //dataUpdateDAO.insertChecklistData(checkListDto, db);
-                        RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
+                        NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
                     }
                 }
 
