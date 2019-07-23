@@ -5,7 +5,7 @@ public class ReportResult {
     private String facilityId;
     private String fromDate;
     private String reportId;
-    private String reportResult;
+    private Object reportResult;
     private String thruDate;
     private String subDivision;
 
@@ -33,11 +33,11 @@ public class ReportResult {
         this.reportId = reportId;
     }
 
-    public String getReportResult() {
+    public Object getReportResult() {
         return reportResult;
     }
 
-    public void setReportResult(String reportResult) {
+    public void setReportResult(Object reportResult) {
         this.reportResult = reportResult;
     }
 

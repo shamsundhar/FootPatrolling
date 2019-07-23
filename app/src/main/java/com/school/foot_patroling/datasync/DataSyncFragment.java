@@ -52,6 +52,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -206,6 +207,27 @@ public class DataSyncFragment extends BaseFragment {
 
         final File directory = new File(Environment.getExternalStorageDirectory() + FP_PICS_FOLDER);
 
+//        File[] files = directory.listFiles();
+//        Log.d("Files", "Size: "+ files.length);
+//        for (int i = 0; i < files.length; i++)
+//        {
+//            Log.d("Files", "FileName:" + files[i].getName());
+//            int size = (int) files[i].length();
+//            byte[] bytes = new byte[size];
+//            try {
+//                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(files[i]));
+//                buf.read(bytes, 0, bytes.length);
+//                buf.close();
+//            } catch (FileNotFoundException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//            imagesMap.put(files[i].getName(),bytes);
+//        }
+
         File[] files = directory.listFiles();
         Log.d("Files", "Size: "+ files.length);
         for (int i = 0; i < files.length; i++)
@@ -213,9 +235,16 @@ public class DataSyncFragment extends BaseFragment {
             Log.d("Files", "FileName:" + files[i].getName());
             int size = (int) files[i].length();
             byte[] bytes = new byte[size];
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            int len;
             try {
                 BufferedInputStream buf = new BufferedInputStream(new FileInputStream(files[i]));
-                buf.read(bytes, 0, bytes.length);
+               // buf.read(bytes, 0, bytes.length);
+                while((len = buf.read(bytes)) != -1){
+                    bo.write(bytes, 0, len);
+                    bo.close();
+                }
+
                 buf.close();
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
@@ -224,7 +253,7 @@ public class DataSyncFragment extends BaseFragment {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            imagesMap.put(files[i].getName(),bytes);
+            imagesMap.put(files[i].getName(), bo.toByteArray());
         }
 
        // JSONObject jsonObject = new JSONObject(imagesMap);

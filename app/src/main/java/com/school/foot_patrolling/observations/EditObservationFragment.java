@@ -1,18 +1,14 @@
 package com.school.foot_patrolling.observations;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,16 +19,9 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,31 +29,26 @@ import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.school.foot_patroling.BaseFragment;
-import com.school.foot_patroling.CameraActivity;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplianceFragment;
-import com.school.foot_patroling.depotselection.ScheduleListAdapter;
-import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.Observation;
-import com.school.foot_patroling.utils.DatePickerFragment;
-import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_PICNAME;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
+import static android.support.constraint.Constraints.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
@@ -78,6 +62,7 @@ public class EditObservationFragment extends BaseFragment{
     @BindView(R.id.et_comments)
     TextInputEditText etComments;
     private int CAMERA_PIC_REQUEST = 100;
+    private int GALLERY_PIC_REQUEST = 101;
     private int currentCounter;
     private Uri outputImgUri;
     PreferenceHelper preferenceHelper;
@@ -116,6 +101,13 @@ public class EditObservationFragment extends BaseFragment{
         else{
             requestPermission();
         }
+    }
+    @OnClick(R.id.launchGallery)
+    public void launchGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY_PIC_REQUEST);
     }
     /**
      * Use this factory method to create a new instance of
@@ -176,6 +168,77 @@ public class EditObservationFragment extends BaseFragment{
 ////                    takePictureImageView.setImageBitmap(pictureBitmap);
                 }
             }
+            else if(requestCode == GALLERY_PIC_REQUEST){
+                if(resultCode == RESULT_OK){
+                    Log.i("gallery pic location", ""+data.getData());
+                    picname = "O"+observationModel.getDeviceSeqId()+observationModel.getDeviceId()+getImageCounter()+".jpg";
+
+                    pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
+                    if(!pictureSaveFolderPath.exists()){
+                        pictureSaveFolderPath.mkdirs();
+                    }
+
+                    File picToBeSaved = new File(pictureSaveFolderPath, picname);
+                    if(picToBeSaved.exists()){
+                        picToBeSaved.delete();
+                    }
+
+
+                        try {
+                            picToBeSaved.createNewFile();
+                            ContentResolver contentResolver = getActivity().getContentResolver();
+
+                    File inputFile = new File(data.getData().getPath());
+                                    copyFile2(inputFile, picToBeSaved);
+                           // copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                }
+                else if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.e("EditObservationFragment", "Selecting picture cancelled");
+                }
+            }
+    }
+    private void copyFile2(File inputFile, File outputFile) {
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+
+            //create output directory if it doesn't exist
+         //   File dir = new File (outputPath);
+            if (!outputFile.exists())
+            {
+                outputFile.mkdirs();
+            }
+
+
+            in = new FileInputStream(inputFile);
+            out = new FileOutputStream(outputFile);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            in = null;
+
+            // write the output file (You have now copied the file)
+            out.flush();
+            out.close();
+            out = null;
+
+        }  catch (FileNotFoundException fnfe1) {
+            Log.e("tag", fnfe1.getMessage());
+        }
+        catch (Exception e) {
+            Log.e("tag", e.getMessage());
+        }
+
     }
 
     private void requestPermission(){
@@ -252,5 +315,39 @@ public class EditObservationFragment extends BaseFragment{
         }
 
         return ret;
+    }
+    private void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!sourceFile.exists()) {
+            return;
+        }
+
+        FileChannel source = null;
+        FileChannel destination = null;
+        source = new FileInputStream(sourceFile).getChannel();
+        destination = new FileOutputStream(destFile).getChannel();
+        if (destination != null && source != null) {
+            destination.transferFrom(source, 0, source.size());
+        }
+        if (source != null) {
+            source.close();
+        }
+        if (destination != null) {
+            destination.close();
+        }
+
+
+    }
+
+
+    public String getRealPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
     }
 }

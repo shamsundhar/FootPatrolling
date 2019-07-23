@@ -21,12 +21,25 @@
             android:text=""
             android:textSize="18sp"
             />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/launchCamera"
+        android:layout_weight="1"
+        android:src="@drawable/ic_camera_grey"/>
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/launchGallery"
+        android:visibility="gone"
+        android:layout_weight="1"
+        android:src="@drawable/ic_camera_grey"/>
+</LinearLayout>
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/launchCamera"
-            android:src="@drawable/ic_camera_grey"/>
 
         <TextView
             android:id="@+id/tvLocation"

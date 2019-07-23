@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itextpdf.text.pdf.PdfWriter;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
@@ -56,10 +57,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,6 +84,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT4;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 
 public class ReportsFragment extends BaseFragment {
     /**
@@ -198,7 +202,7 @@ public class ReportsFragment extends BaseFragment {
             public void onDateSet(DatePicker view, int i, int i1, int i2) {
                 String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
                 selectedFromDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT4);
-                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
+                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
 
                 fromDateTV.setText(strDate);
             }
@@ -226,7 +230,7 @@ public class ReportsFragment extends BaseFragment {
             public void onDateSet(DatePicker view, int i, int i1, int i2) {
                 String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
                 selectedToDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT4);
-                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
+                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
 
                 toDateTV.setText(strDate);
             }
@@ -253,7 +257,7 @@ public class ReportsFragment extends BaseFragment {
         }
     }
 
-    private void displayPDF(ReportModel reportModel, String reportData){
+    private void displayPDF(ReportModel reportModel, Object reportData){
 //        final DialogPDFViewer dialogPDFViewer = new DialogPDFViewer(getContext(),reportData, new DialogPDFViewer.OnDialogPdfViewerListener() {
 //            @Override
 //            public void onAgreeClick(DialogPDFViewer dialogFullEula) {
@@ -270,15 +274,44 @@ public class ReportsFragment extends BaseFragment {
         try {
             final File dwldsPath = new File(Environment.getExternalStorageDirectory()+"/"+reportModel.getReportId() + ".pdf");
             if(!dwldsPath.exists()){
-                if(reportData != null && reportData.length()>0){
-                    byte[] pdfAsBytes = Base64.decode(reportData, 0);
+                if(reportData != null){
+
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(bos);
+                    oos.writeObject((Object) reportData);
+                    oos.flush();
+                    byte [] data = bos.toByteArray();
+
+                    byte[] pdfAsBytes = data;//Base64.decode(reportData, 0);
                     FileOutputStream os;
 
                     os = getContext().openFileOutput(reportModel.getReportId() + ".pdf", Context.MODE_PRIVATE);
 
                     os.write(pdfAsBytes);
+//                    os.flush();
+//                    os.close();
+
+
+
+                    com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+
+                    PdfWriter.getInstance(document,os);
+
                     os.flush();
                     os.close();
+                   // Object obj = dto.getReportProgress();
+                  //  Log.d(TAG,"acquired--" +obj);
+
+
+
+//                    FileOutputStream outValue = new FileOutputStream(FILE);
+//                    outValue.write(data);
+//                    outValue.close();
+//                    Log.d(TAG,"written--"+data);
+
+
+
+
                 }
             }
             Uri photoURI = GenericFileProvider.getUriForFile(getActivity().getApplicationContext(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", dwldsPath);
@@ -287,11 +320,19 @@ public class ReportsFragment extends BaseFragment {
             intent.setDataAndType(photoURI, "application/pdf");
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+//            Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+//            pdfIntent.setDataAndType(path, "application/pdf");
+//            pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
             startActivity(intent);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }catch(Exception e){
             e.printStackTrace();
         }
 
@@ -518,8 +559,8 @@ public class ReportsFragment extends BaseFragment {
                             if (reportResult != null) {
 //                                    String s = o.toString().replace("/","//");
 //                                    JSONObject jsonObject = new JSONObject(s);
-                                    String reportData = reportResult.getReportResult();//jsonObject.getString("reportResult");
-                                    if(reportData != null && reportData.length()>0){
+                                    Object reportData = reportResult.getReportResult();//jsonObject.getString("reportResult");
+                                    if(reportData != null){
 
                                         displayPDF(reportModel, reportData);
 //                                        decodedPDFString = Base64.decode(reportData.toString(), Base64.DEFAULT);
