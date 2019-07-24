@@ -20,6 +20,7 @@
     <string name="text_logout">Logout</string>
     <string name="text_exit">Exit</string>
     <string name="text_register">Register</string>
+    <string name="text_signin">Sign In</string>
     <string name="text_apply">Apply</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_back">Back</string>

@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
@@ -76,7 +77,8 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         compliance.setSeqId("null");
         compliance.setCompliedDateTime("");
         NavigationDrawerActivity.mFPDatabase.complianceDao().insert(compliance);
-        List<Compliance> list = NavigationDrawerActivity.mFPDatabase.complianceDao().getAllCompliancesDtos();
+        Toast.makeText(getActivity(), "Compliance saved successfully", Toast.LENGTH_SHORT).show();
+        //List<Compliance> list = NavigationDrawerActivity.mFPDatabase.complianceDao().getAllCompliancesDtos();
     }
     /**
      * Use this factory method to create a new instance of

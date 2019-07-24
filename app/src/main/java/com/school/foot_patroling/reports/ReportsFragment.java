@@ -129,15 +129,20 @@ public class ReportsFragment extends BaseFragment {
     }
     @OnClick(R.id.btn_submit)
     public void clickOnSubmit(){
+        if(!selectedReportID.isEmpty()) {
+            ReportModel reportModel = new ReportModel();
+            reportModel.setReportId(selectedReportID);
+            reportModel.setFacilityId(selectedDepotId);
 
-        ReportModel reportModel = new ReportModel();
-        reportModel.setReportId(selectedReportID);
-        reportModel.setFacilityId(selectedDepotId);
-
-        reportModel.setSubDivision(selectedSubDivisionID);
-        reportModel.setFromDate(selectedFromDate);
-        reportModel.setThruDate(selectedToDate);
-        downloadReport(reportModel);
+            reportModel.setSubDivision(selectedSubDivisionID);
+            reportModel.setFromDate(selectedFromDate);
+            reportModel.setThruDate(selectedToDate);
+            downloadReport(reportModel);
+        }
+        else{
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Select Report");
+        }
     }
 
     private List<Object> reportList;
