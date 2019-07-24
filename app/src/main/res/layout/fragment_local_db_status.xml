@@ -6,17 +6,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="Local DB Status"
-        android:textSize="30dp"
-        android:textColor="#4a4397"/>
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

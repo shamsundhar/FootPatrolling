@@ -85,7 +85,7 @@ public class NavigationDrawerActivity extends BaseActivity
         setSupportActionBar(toolbar);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         mFPDatabase = Room.databaseBuilder(this,FPDatabase.class, FOOTPATROLLING_DATABASE).allowMainThreadQueries().build();
-        ActionBar actionBar = getSupportActionBar();
+       // ActionBar actionBar = getSupportActionBar();
         mDtoWrapper = new DtoWrapper(mFPDatabase);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -102,7 +102,8 @@ public class NavigationDrawerActivity extends BaseActivity
     }
 
     private void setTitle(String title){
-        getSupportActionBar().setTitle(title);
+        //getSupportActionBar().setTitle(title);
+        ((TextView) findViewById(R.id.toolbar_title)).setText(title);
     }
     @Override
     public void onBackPressed() {
@@ -131,7 +132,7 @@ public void displayExitDialog(){
     alert.show();
 }
     public void displayLoginFragment(){
-        setTitle(null);
+        setTitle("Login");
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(false);
         getSupportFragmentManager()
@@ -140,7 +141,7 @@ public void displayExitDialog(){
                 .commit();
     }
     public void displayCheckedListFragment(){
-        setTitle("TRD_AMS");
+        setTitle("Check List");
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -149,7 +150,7 @@ public void displayExitDialog(){
                 .commit();
     }
     public void displayDepotSelectionFragment(){
-        setTitle("TRD_AMS");
+        setTitle("Depot Selection");
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -158,7 +159,7 @@ public void displayExitDialog(){
                 .commit();
     }
     public void displayComplianceFragment(){
-        setTitle("TRD_AMS");
+        setTitle("Compliance");
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -167,7 +168,7 @@ public void displayExitDialog(){
                 .commit();
     }
     public void displayObservationsFragment(){
-        setTitle("TRD_AMS");
+        setTitle("Observations");
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -199,32 +200,32 @@ public void displayExitDialog(){
         }else if(id == R.id.nav_observations) {
             displayObservationsFragment();
         }else if (id == R.id.nav_data) {
-            setTitle(null);
+            setTitle("Data Sync");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  DataSyncFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_reports) {
-            setTitle(null);
+            setTitle("Reports");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         }
         else if (id == R.id.nav_reload) {
-            setTitle(null);
+            setTitle("Reload");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  ReloadFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         }else if (id == R.id.nav_local_db_status) {
-            setTitle(null);
+            setTitle("Local DB status");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  LocalDBStatusFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_terms) {
-            setTitle(null);
+            setTitle("Terms");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  TermsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
@@ -245,10 +246,10 @@ public void displayExitDialog(){
 
         // set toolbar logo to center programmatically
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ImageView logo = (ImageView) findViewById(R.id.logo);
-        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
-        // set
-        logo.setX(offset);
+//        ImageView logo = (ImageView) findViewById(R.id.logo);
+//        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
+//        // set
+//        logo.setX(offset);
 
     }
 
