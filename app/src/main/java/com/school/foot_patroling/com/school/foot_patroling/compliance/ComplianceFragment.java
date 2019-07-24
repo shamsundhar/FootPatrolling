@@ -60,21 +60,21 @@ public class ComplianceFragment extends BaseFragment {
     @BindView(R.id.empty_view)
     TextView empty_view;
 
-    @BindView(R.id.dateTo)
+    @BindView(R.id.toDateTV)
     TextView to_dateTV;
 
-    @BindView(R.id.dateFrom)
+    @BindView(R.id.fromDateTV)
     TextView from_dateTv;
 
     @BindView(R.id.et_loc1)
     EditText loc1;
 
-    @OnClick(R.id.calendar_fromdate)
+    @OnClick(R.id.fromCalendar)
     public void clickOnCalendarFromDate(){
         displayFromDateDialog();
     }
 
-    @OnClick(R.id.calendar_todate)
+    @OnClick(R.id.toCalendar)
     public void clickOnCalendarToDate(){
         displayToDateDialog();
     }
