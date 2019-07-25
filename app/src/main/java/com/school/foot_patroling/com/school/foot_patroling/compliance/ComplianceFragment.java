@@ -68,7 +68,10 @@ public class ComplianceFragment extends BaseFragment {
 
     @BindView(R.id.et_loc1)
     EditText loc1;
-
+    @OnClick(R.id.btn_apply)
+    public void clickOnApply(){
+       // display list based on only location or only dates or both
+    }
     @OnClick(R.id.fromCalendar)
     public void clickOnCalendarFromDate(){
         displayFromDateDialog();
