@@ -59,6 +59,8 @@ import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
 
 public class PatrolingListFragment extends BaseFragment {
     PreferenceHelper preferenceHelper;
@@ -91,7 +93,10 @@ public class PatrolingListFragment extends BaseFragment {
     public void stopButtonClick(){
 //close inspection
         String fpStopTime =  DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-        preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED,Boolean.FALSE);
+        preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
+        preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_DEPOT, "");
+        preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_SECTION, "");
+
         String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
         Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(fpStartedTime);
         //  String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
@@ -142,6 +147,9 @@ public class PatrolingListFragment extends BaseFragment {
                     checklistAdapter.notifyDataSetChanged();
                     loc1.setText("");
                     loc2.setText("");
+                    View view = getView().getRootView();
+                    Common.hideKeyboardFrom(getActivity(), view);
+                    Toast.makeText(getActivity(), "Details saved successfully", Toast.LENGTH_SHORT).show();
                 }
 
 

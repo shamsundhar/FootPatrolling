@@ -7,6 +7,16 @@
     android:layout_margin="10dp"
     android:id="@+id/dataSync">
 
+        <TextView
+            android:id="@+id/tvLastDataSyncDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="center"
+            android:layout_marginTop="30dp"
+            android:text="Last sync Date : "
+            android:textSize="16sp"
+            />
 
         <TextView
             android:id="@+id/tvDataSyncStatus"

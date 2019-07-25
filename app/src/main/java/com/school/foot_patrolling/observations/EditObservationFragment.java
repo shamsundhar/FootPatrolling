@@ -32,6 +32,7 @@ import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.register.model.Observation;
+import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import java.io.File;
@@ -73,7 +74,11 @@ public class EditObservationFragment extends BaseFragment{
         String updatedComments = etComments.getText().toString().trim();
         observationModel.setObservation(updatedComments);
         NavigationDrawerActivity.mFPDatabase.observationDao().insert(observationModel);
-        Toast.makeText(getActivity(), "Comments updated successfully", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Observation updated successfully", Toast.LENGTH_LONG).show();
+        View view = getView().getRootView();
+        Common.hideKeyboardFrom(getActivity(), view);
+        Intent resultIntent = new Intent();
+        getActivity().setResult(Activity.RESULT_OK, resultIntent);
         getActivity().finish();
     }
     @OnClick(R.id.launchCamera)

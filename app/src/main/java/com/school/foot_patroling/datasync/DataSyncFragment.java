@@ -92,6 +92,8 @@ public class DataSyncFragment extends BaseFragment {
     TextView tvSyncStartTime;
     @BindView(R.id.tvDataSyncFinishTime)
     TextView tvSyncEndTime;
+    @BindView(R.id.tvLastDataSyncDate)
+    TextView tvLastSyncDate;
     @BindView(R.id.tvDataSyncResult)
     TextView tvResult;
     @BindView(R.id.tvDataSyncStatus)
@@ -117,13 +119,14 @@ public class DataSyncFragment extends BaseFragment {
                 // preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI2,imeiList.get(1));
                 String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
                 String lastSyncDate = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
+
                 url = url + Constants.REST_GET_FP_DATA;
                 RegistrationRequestModel model = new RegistrationRequestModel();
                 model.setAppName("TRD_FP");
                 model.setCurrentTimestamp(syncStartTime);
                 model.setImeiNumber("867520040587478");
                 //TODO model.setImeiNumber(selectedImei);
-                model.setPreviousTimestamp(lastSyncDate);
+                model.setPreviousTimestamp("Last sync Date : "+lastSyncDate);
                 List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
                 AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
                 appToServerCreatedFootPatrollingInspectionDto.setCount("" + inspectionDtoList.size());
@@ -322,6 +325,9 @@ public class DataSyncFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+
+
+        tvLastSyncDate.setText("Last sync Date : "+preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, ""));
         return view;
     }
 

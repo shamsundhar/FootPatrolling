@@ -44,6 +44,8 @@ import butterknife.OnClick;
 
 import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class LoginFragment extends BaseFragment {
     DatabaseHelper dbhelper = null;
@@ -77,6 +79,7 @@ public class LoginFragment extends BaseFragment {
                     {
                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
                         Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
+                        preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_USER, mUsername);
                         if(fpStarted)
                             ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
                         else

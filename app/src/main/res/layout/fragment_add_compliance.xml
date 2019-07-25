@@ -10,17 +10,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
-
+        <TextView
+            android:id="@+id/tvComplianceProvided"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="right"
+            android:textColor="@color/primary"
+            android:scaleType="center"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            />
         <TextView
             android:id="@+id/tvChecklistItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:scaleType="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text=""
             android:textSize="18sp"
             />
+
 
         <TextView
             android:id="@+id/tvObservation"
@@ -57,13 +68,33 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/cameraLayout"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/launchCamera"
+                android:layout_weight="1"
+                android:src="@drawable/ic_camera_grey"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/launchGallery"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:src="@drawable/ic_camera_grey"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:weightSum="10"
             android:orientation="horizontal">
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/sectionLayout"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:background="@drawable/layout_corners_grey_border"
                 android:layout_weight="9">
                 <TextView

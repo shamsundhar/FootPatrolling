@@ -43,6 +43,8 @@ import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
 
 public class DepotSelectionFragment extends BaseFragment {
     PreferenceHelper preferenceHelper;
@@ -63,6 +65,8 @@ public class DepotSelectionFragment extends BaseFragment {
     SectionsListAdapter sectionsListAdapter;
     ScheduleListAdapter scheduleListAdapter;
     String selectedDepotId;
+    String selectedDepotName;
+    String selectedSectionName;
     String selectedSectionID;
     String selectedScheduleType;
     @OnClick(R.id.depotLayout)
@@ -82,6 +86,8 @@ public class DepotSelectionFragment extends BaseFragment {
         if(validate()) {
             String fpStartTime = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
             preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.TRUE);
+            preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_DEPOT, selectedDepotName);
+            preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_SECTION, selectedSectionName);
             preferenceHelper.setString(getActivity(), PREF_KEY_FP_STARTED_TIME, fpStartTime);
 
             Inspection inspection = new Inspection();
@@ -143,6 +149,7 @@ public class DepotSelectionFragment extends BaseFragment {
                 builder.dismiss();
                 FacilityDto dataModel = depotList.get(position);
                 depotTV.setText(dataModel.getFacilityName());
+                selectedDepotName = dataModel.getFacilityName();
                 selectedDepotId = dataModel.getFacilityId();
                 Snackbar.make(view, " " +dataModel.getFacilityName()+" "+dataModel.getFacilityId(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
@@ -181,6 +188,7 @@ public class DepotSelectionFragment extends BaseFragment {
                         builder.dismiss();
                         FootPatrollingSectionsDto dataModel = sectionList.get(position);
                         sectionTV.setText(dataModel.getFpSection());
+                        selectedSectionName = dataModel.getFpSection();
                         selectedSectionID = dataModel.getFpSection();
                         Snackbar.make(view, " " + dataModel.getFpSection() + " " + dataModel.getSeqId(), Snackbar.LENGTH_LONG)
                                 .setAction("No action", null).show();

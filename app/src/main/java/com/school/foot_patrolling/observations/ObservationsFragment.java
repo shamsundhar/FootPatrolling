@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.school.foot_patroling.AWFActivity;
 import com.school.foot_patroling.BaseFragment;
@@ -23,6 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
@@ -35,6 +37,7 @@ public class ObservationsFragment extends BaseFragment {
     @BindView(R.id.empty_view)
     TextView empty_view;
     ObservationsListAdapter observationsListAdapter;
+    public static int EDIT_OBSERVATION_CODE = 200;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -67,7 +70,7 @@ public class ObservationsFragment extends BaseFragment {
                 Intent in = new Intent(getActivity(), AWFActivity.class);
                 in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_OBSERVATION);
                 in.putExtra(BUNDLE_KEY_SELECTED_OBSERVATION, ((Observation)model).getDeviceSeqId());
-                getActivity().startActivity(in);
+                startActivityForResult(in, EDIT_OBSERVATION_CODE);
 
             }
         });
@@ -75,6 +78,17 @@ public class ObservationsFragment extends BaseFragment {
         observationsRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         displayObservationsFromDB();
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EDIT_OBSERVATION_CODE){
+           if(resultCode == RESULT_OK){
+             //  Toast.makeText(getActivity(), "from observation edit", Toast.LENGTH_SHORT).show();
+               displayObservationsFromDB();
+           }
+        }
     }
 
     private void displayObservationsFromDB(){

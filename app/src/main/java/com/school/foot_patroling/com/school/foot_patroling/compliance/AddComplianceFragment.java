@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +43,18 @@ import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 public class AddComplianceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     ScheduleListAdapter scheduleListAdapter;
     Observation observationModel;
+    Compliance complianceModel;
     String selectedStatusType;
+    @BindView(R.id.tvComplianceProvided)
+    TextView complianceProvidedStatus;
     @BindView(R.id.statusTV)
     TextView statusTV;
     @OnClick(R.id.statusLayout)
     public void clickOnStatus(){
         displayStatusPopup();
     }
+    @BindView(R.id.cameraLayout)
+    LinearLayout cameraLayout;
     @BindView(R.id.dateTV)
     TextView dateTv;
     @BindView(R.id.tvChecklistItem)
@@ -79,6 +85,15 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         NavigationDrawerActivity.mFPDatabase.complianceDao().insert(compliance);
         Toast.makeText(getActivity(), "Compliance saved successfully", Toast.LENGTH_SHORT).show();
         //List<Compliance> list = NavigationDrawerActivity.mFPDatabase.complianceDao().getAllCompliancesDtos();
+        complianceModel = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(observationModel.getDeviceSeqId());
+        if(complianceModel != null){
+            cameraLayout.setVisibility(View.VISIBLE);
+            complianceProvidedStatus.setVisibility(View.VISIBLE);
+            complianceProvidedStatus.setText("Compliance already provided");
+        }else{
+            cameraLayout.setVisibility(View.GONE);
+            complianceProvidedStatus.setVisibility(View.GONE);
+        }
     }
     /**
      * Use this factory method to create a new instance of
@@ -109,7 +124,16 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         tvCheckListItem.setText(observationModel.getObservationItem());
         tvObservation.setText(observationModel.getObservation());
         tvLocation.setText(observationModel.getLocation());
-        // tvDepot.setText(model.get);
+
+        complianceModel = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(deviceSequenceId);
+        if(complianceModel != null){
+            cameraLayout.setVisibility(View.VISIBLE);
+            complianceProvidedStatus.setVisibility(View.VISIBLE);
+            complianceProvidedStatus.setText("Compliance already provided");
+        }else{
+            cameraLayout.setVisibility(View.GONE);
+            complianceProvidedStatus.setVisibility(View.GONE);
+        }
 
         return view;
     }

@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.school.foot_patroling.com.school.foot_patroling.compliance.ComplianceFragment;
@@ -39,6 +40,7 @@ import com.school.foot_patrolling.observations.ObservationsFragment;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -47,12 +49,23 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class NavigationDrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     PreferenceHelper preferenceHelper;
     Menu nav_Menu;
+    @BindView(R.id.userDetails)
+    RelativeLayout userDetailsView;
+    @BindView(R.id.toolbarDepot)
+    TextView toolbarDepot;
+    @BindView(R.id.toolbarSection)
+    TextView toolbarSection;
+    @BindView(R.id.toolbarUser)
+    TextView toolbarUser;
 
     public boolean isDISPLAY_LOGIN() {
         return DISPLAY_LOGIN;
@@ -133,6 +146,7 @@ public void displayExitDialog(){
 }
     public void displayLoginFragment(){
         setTitle("Login");
+        displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(false);
         getSupportFragmentManager()
@@ -142,6 +156,7 @@ public void displayExitDialog(){
     }
     public void displayCheckedListFragment(){
         setTitle("Check List");
+        displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -151,6 +166,7 @@ public void displayExitDialog(){
     }
     public void displayDepotSelectionFragment(){
         setTitle("Depot Selection");
+        displayHeaderDetails();
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -160,6 +176,7 @@ public void displayExitDialog(){
     }
     public void displayComplianceFragment(){
         setTitle("Compliance");
+        displayHeaderDetails();
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -169,6 +186,7 @@ public void displayExitDialog(){
     }
     public void displayObservationsFragment(){
         setTitle("Observations");
+        displayHeaderDetails();
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         getSupportFragmentManager()
@@ -187,6 +205,7 @@ public void displayExitDialog(){
         } else if(id == R.id.nav_login){
             displayLoginFragment();
         }else if(id == R.id.nav_checklist){
+            displayHeaderDetails();
             Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
             if(fpStarted){
                 displayCheckedListFragment();
@@ -201,12 +220,14 @@ public void displayExitDialog(){
             displayObservationsFragment();
         }else if (id == R.id.nav_data) {
             setTitle("Data Sync");
+            displayHeaderDetails();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  DataSyncFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_reports) {
             setTitle("Reports");
+            displayHeaderDetails();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
@@ -214,18 +235,21 @@ public void displayExitDialog(){
         }
         else if (id == R.id.nav_reload) {
             setTitle("Reload");
+            displayHeaderDetails();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  ReloadFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         }else if (id == R.id.nav_local_db_status) {
             setTitle("Local DB status");
+            displayHeaderDetails();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  LocalDBStatusFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                     .commit();
         } else if (id == R.id.nav_terms) {
             setTitle("Terms");
+            displayHeaderDetails();
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container,  TermsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
@@ -245,12 +269,23 @@ public void displayExitDialog(){
     public void onWindowFocusChanged(boolean hasFocus){
 
         // set toolbar logo to center programmatically
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+ //       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        ImageView logo = (ImageView) findViewById(R.id.logo);
 //        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
 //        // set
 //        logo.setX(offset);
 
+    }
+    private void displayHeaderDetails(){
+        Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
+        if(fpStarted){
+            userDetailsView.setVisibility(View.VISIBLE);
+            toolbarDepot.setText("Depot: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_DEPOT, ""));
+            toolbarSection.setText("Section: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_SECTION, ""));
+            toolbarUser.setText("User: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, ""));
+        }else{
+            userDetailsView.setVisibility(View.GONE);
+        }
     }
 
 }

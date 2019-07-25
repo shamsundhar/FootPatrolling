@@ -18,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
@@ -28,13 +29,19 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplianceFragment;
 import com.school.foot_patroling.register.RegisterActivity;
+import com.school.foot_patroling.utils.PreferenceHelper;
 import com.school.foot_patrolling.observations.EditObservationFragment;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_EDIT_OBSERVATION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 /*
  * AWF - Activity With Fragment. this activity will act as holder activity for fragment - which holds only one fragment.
@@ -44,7 +51,15 @@ public class AWFActivity extends BaseActivity {
 
     private static final String ADD_COMPLIANCE_FRAGMENT_TAG = "ADD_COMPLIANCE_FRAGMENT";
     private static final String EDIT_OBSERVATION_FRAGMENT_TAG = "EDIT_OBSERVATION_FRAGMENT";
-
+    @BindView(R.id.userDetails)
+    RelativeLayout userDetailsView;
+    @BindView(R.id.toolbarDepot)
+    TextView toolbarDepot;
+    @BindView(R.id.toolbarSection)
+    TextView toolbarSection;
+    @BindView(R.id.toolbarUser)
+    TextView toolbarUser;
+    PreferenceHelper preferenceHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +70,11 @@ public class AWFActivity extends BaseActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
             String displayFragment = bundle.getString(BUNDLE_KEY_DISPLAY_FRAGMENT);
+            displayHeaderDetails();
             switch (displayFragment){
                 case BUNDLE_VALUE_COMPLIANCE :
                     displayAddComplianceFragment(bundle);
@@ -70,7 +87,7 @@ public class AWFActivity extends BaseActivity {
 
     }
     public void displayAddComplianceFragment(Bundle bundle){
-        setTitle(null);
+        setTitle("Add Compliance");
 
         AddComplianceFragment fragment = AddComplianceFragment.newInstance();
         if(bundle != null){
@@ -82,7 +99,7 @@ public class AWFActivity extends BaseActivity {
                 .commit();
     }
     public void displayEditObservationFragment(Bundle bundle){
-        setTitle(null);
+        setTitle("Edit Observation");
 
         EditObservationFragment fragment = EditObservationFragment.newInstance();
         if(bundle != null){
@@ -176,11 +193,26 @@ public class AWFActivity extends BaseActivity {
     public void onWindowFocusChanged(boolean hasFocus){
 
         // set toolbar logo to center programmatically
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ImageView logo = (ImageView) findViewById(R.id.logo);
-        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
-        // set
-        logo.setX(offset);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        ImageView logo = (ImageView) findViewById(R.id.logo);
+//        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
+//        // set
+//        logo.setX(offset);
 
+    }
+    private void displayHeaderDetails(){
+        Boolean fpStarted = preferenceHelper.getBoolean(AWFActivity.this, PREF_KEY_FP_STARTED, false);
+        if(fpStarted){
+            userDetailsView.setVisibility(View.VISIBLE);
+            toolbarDepot.setText("Depot: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_DEPOT, ""));
+            toolbarSection.setText("Section: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_SECTION, ""));
+            toolbarUser.setText("User: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_USER, ""));
+        }else{
+            userDetailsView.setVisibility(View.GONE);
+        }
+    }
+    private void setTitle(String title){
+        //getSupportActionBar().setTitle(title);
+        ((TextView) findViewById(R.id.toolbar_title)).setText(title);
     }
 }

@@ -30,6 +30,9 @@ public class Constants {
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";
     public static final String PREF_KEY_FP_STARTED = "KEY_FP_STARTED";
     public static final String PREF_KEY_FP_STARTED_TIME = "KEY_FP_STARTED_TIME";
+    public static final String PREF_KEY_SELECTED_DEPOT = "KEY_FP_SELECTED_DEPOT";
+    public static final String PREF_KEY_SELECTED_SECTION = "KEY_FP_SELECTED_SECTION";
+    public static final String PREF_KEY_SELECTED_USER = "KEY_FP_SELECTED_USER";
 
     public static final String CONST_CUSTOMER_USER_TYPE = "1";
     public static final String BUNDLE_KEY_OTP_VERIFIED_MESSAGE = "OTP_VERIFIED_MESSAGE";
