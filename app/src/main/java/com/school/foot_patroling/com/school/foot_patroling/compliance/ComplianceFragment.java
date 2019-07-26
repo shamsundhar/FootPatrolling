@@ -101,7 +101,7 @@ public class ComplianceFragment extends BaseFragment {
                 String strDate = padding(month+1)+"-"+padding(dayOfMonth)+"-"+padding(year);
                 strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
                 from_dateTv.setText(strDate);
-                validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
+                //validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
             }
         });
         date.setArguments(args);
@@ -129,7 +129,7 @@ public class ComplianceFragment extends BaseFragment {
                 String strDate = padding(month+1)+"-"+padding(dayOfMonth)+"-"+padding(year);
                 strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
                 to_dateTV.setText(strDate);
-                validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
+                //validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
             }
         });
         date.setArguments(args);
