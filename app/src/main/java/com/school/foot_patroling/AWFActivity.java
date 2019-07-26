@@ -51,14 +51,9 @@ public class AWFActivity extends BaseActivity {
 
     private static final String ADD_COMPLIANCE_FRAGMENT_TAG = "ADD_COMPLIANCE_FRAGMENT";
     private static final String EDIT_OBSERVATION_FRAGMENT_TAG = "EDIT_OBSERVATION_FRAGMENT";
-    @BindView(R.id.userDetails)
-    RelativeLayout userDetailsView;
-    @BindView(R.id.toolbarDepot)
-    TextView toolbarDepot;
-    @BindView(R.id.toolbarSection)
-    TextView toolbarSection;
-    @BindView(R.id.toolbarUser)
-    TextView toolbarUser;
+    @BindView(R.id.toolbarDetails)
+    TextView toolbarDetails;
+
     PreferenceHelper preferenceHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,26 +184,17 @@ public class AWFActivity extends BaseActivity {
         intent.setData(uri);
         startActivityForResult(intent, 101);
     }
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus){
-
-        // set toolbar logo to center programmatically
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        ImageView logo = (ImageView) findViewById(R.id.logo);
-//        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
-//        // set
-//        logo.setX(offset);
-
-    }
     private void displayHeaderDetails(){
         Boolean fpStarted = preferenceHelper.getBoolean(AWFActivity.this, PREF_KEY_FP_STARTED, false);
         if(fpStarted){
-            userDetailsView.setVisibility(View.VISIBLE);
-            toolbarDepot.setText("Depot: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_DEPOT, ""));
-            toolbarSection.setText("Section: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_SECTION, ""));
-            toolbarUser.setText("User: "+preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_USER, ""));
+            toolbarDetails.setVisibility(View.VISIBLE);
+            toolbarDetails.setText(preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_DEPOT, "")+
+                    "/"+
+                    preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_SECTION, "")+
+                    "/"+
+                    preferenceHelper.getString(AWFActivity.this, PREF_KEY_SELECTED_USER, ""));
         }else{
-            userDetailsView.setVisibility(View.GONE);
+            toolbarDetails.setVisibility(View.GONE);
         }
     }
     private void setTitle(String title){

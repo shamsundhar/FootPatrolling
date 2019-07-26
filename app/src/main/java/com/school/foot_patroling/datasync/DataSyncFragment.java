@@ -80,6 +80,10 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT7;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 
@@ -325,9 +329,10 @@ public class DataSyncFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-
-
-        tvLastSyncDate.setText("Last sync Date : "+preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, ""));
+        String date = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
+        if(!date.isEmpty()) {
+            tvLastSyncDate.setText("Last sync Date : " + DateTimeUtils.parseDateTime(date, DATE_FORMAT6, DATE_FORMAT7));
+        }
         return view;
     }
 

@@ -58,14 +58,8 @@ public class NavigationDrawerActivity extends BaseActivity
 
     PreferenceHelper preferenceHelper;
     Menu nav_Menu;
-    @BindView(R.id.userDetails)
-    RelativeLayout userDetailsView;
-    @BindView(R.id.toolbarDepot)
-    TextView toolbarDepot;
-    @BindView(R.id.toolbarSection)
-    TextView toolbarSection;
-    @BindView(R.id.toolbarUser)
-    TextView toolbarUser;
+    @BindView(R.id.toolbarDetails)
+    TextView toolbarDetails;
 
     public boolean isDISPLAY_LOGIN() {
         return DISPLAY_LOGIN;
@@ -165,7 +159,7 @@ public void displayExitDialog(){
                 .commit();
     }
     public void displayDepotSelectionFragment(){
-        setTitle("Depot Selection");
+        setTitle("FP Inspection");
         displayHeaderDetails();
         //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
         //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
@@ -265,26 +259,17 @@ public void displayExitDialog(){
         displayLoginFragment();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus){
-
-        // set toolbar logo to center programmatically
- //       Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        ImageView logo = (ImageView) findViewById(R.id.logo);
-//        int offset = (toolbar.getWidth() / 2) - (logo.getWidth() / 2);
-//        // set
-//        logo.setX(offset);
-
-    }
     private void displayHeaderDetails(){
         Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
         if(fpStarted){
-            userDetailsView.setVisibility(View.VISIBLE);
-            toolbarDepot.setText("Depot: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_DEPOT, ""));
-            toolbarSection.setText("Section: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_SECTION, ""));
-            toolbarUser.setText("User: "+preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, ""));
+            toolbarDetails.setVisibility(View.VISIBLE);
+            toolbarDetails.setText(preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_DEPOT, "")+
+                    "/"+
+                    preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_SECTION, "")+
+                    "/"+
+                    preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, ""));
         }else{
-            userDetailsView.setVisibility(View.GONE);
+            toolbarDetails.setVisibility(View.GONE);
         }
     }
 

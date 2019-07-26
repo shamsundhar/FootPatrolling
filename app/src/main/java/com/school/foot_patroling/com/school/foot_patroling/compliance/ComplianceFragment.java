@@ -51,6 +51,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT3;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 
 public class ComplianceFragment extends BaseFragment {
     private ComplianceListAdapter complianceListAdapter;
@@ -97,7 +98,7 @@ public class ComplianceFragment extends BaseFragment {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String strDate = padding(month+1)+"-"+padding(dayOfMonth)+"-"+padding(year);
-                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT3);
+                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
                 from_dateTv.setText(strDate);
                 validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
             }
@@ -125,7 +126,7 @@ public class ComplianceFragment extends BaseFragment {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String strDate = padding(month+1)+"-"+padding(dayOfMonth)+"-"+padding(year);
-                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT3);
+                strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
                 to_dateTV.setText(strDate);
                 validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
             }

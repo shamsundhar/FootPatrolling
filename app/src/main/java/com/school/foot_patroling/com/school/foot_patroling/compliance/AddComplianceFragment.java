@@ -60,6 +60,7 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMP
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
 public class AddComplianceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
@@ -223,7 +224,8 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
-        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT1);
+        strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
+
         dateTv.setText(strDate);
 
     }

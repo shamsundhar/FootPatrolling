@@ -55,6 +55,8 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT7;
 import static com.school.foot_patroling.utils.Constants.INITIAL_TIME;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 
@@ -71,6 +73,8 @@ public class ReloadFragment extends BaseFragment {
     TextView tvSyncEndTime;
     @BindView(R.id.tvDataSyncResult)
     TextView tvResult;
+    @BindView(R.id.tvLastDataSyncDate)
+    TextView tvLastSyncDate;
     @BindView(R.id.tvDataSyncStatus)
     TextView tvSyncStatus;
     @OnClick(R.id.btn_syncNow)
@@ -201,7 +205,10 @@ public class ReloadFragment extends BaseFragment {
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
         reloadBtn.setText("Reload");
-
+        String date = preferenceHelper.getString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, "");
+        if(!date.isEmpty()) {
+            tvLastSyncDate.setText("Last sync Date : " + DateTimeUtils.parseDateTime(date, DATE_FORMAT6, DATE_FORMAT7));
+        }
         return view;
     }
     private String syncMasterData(MasterDto masterDto) {
