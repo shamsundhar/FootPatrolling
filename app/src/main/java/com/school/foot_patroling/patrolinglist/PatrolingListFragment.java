@@ -243,12 +243,30 @@ public class PatrolingListFragment extends BaseFragment {
                 Log.d(TAG, "fetching user id");
                 String sql = "select priority, description from observations_check_list";
                 checkList = new ArrayList<>();
-                checkList.addAll(NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos());
+                List<ObservationsCheckListDto> observationsCheckListDtoList = NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos();
+                Collections.sort(observationsCheckListDtoList, new Comparator()
+                        {
+
+                            public int compare(Object o1, Object o2)
+                            {
+                                ObservationsCheckListDto sa = (ObservationsCheckListDto)o1;
+                                ObservationsCheckListDto sb = (ObservationsCheckListDto)o2;
+                                int a = sa.getPriorityValue();
+                                int b = sb.getPriorityValue();
+
+                                int v = b-a;
+
+                                return v;
+
+                                // it can also return 0, and 1
+                            }
+                        }
+                );
+                checkList.addAll(observationsCheckListDtoList);
             }
         }catch(Exception e){
 
         }
-
 
         if(checkList != null && !checkList.isEmpty()){
             empty_view.setVisibility(View.GONE);
@@ -345,14 +363,32 @@ public class PatrolingListFragment extends BaseFragment {
     }
     private void modifyCheckListData_Category(){
         checkList.clear();
-        checkList.addAll(NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtosFromCategory(selectedCategory));
+        List<ObservationsCheckListDto> observationsCheckListDtoList = NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtosFromCategory(selectedCategory);
+        Collections.sort(observationsCheckListDtoList, new Comparator()
+                {
+
+                    public int compare(Object o1, Object o2)
+                    {
+                        ObservationsCheckListDto sa = (ObservationsCheckListDto)o1;
+                        ObservationsCheckListDto sb = (ObservationsCheckListDto)o2;
+                        int a = sa.getPriorityValue();
+                        int b = sb.getPriorityValue();
+
+                        int v = b-a;
+
+                        return v;
+
+                        // it can also return 0, and 1
+                    }
+                }
+        );
+        checkList.addAll(observationsCheckListDtoList);
         checklistAdapter.setItems(checkList);
         checklistAdapter.notifyDataSetChanged();
     }
     private void modifyCheckList_Priority(){
         checkList.clear();
         List<ObservationsCheckListDto> observationsCheckListDtoList = NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos();
-
         Collections.sort(observationsCheckListDtoList, new Comparator()
                 {
 
