@@ -17,8 +17,12 @@ import com.school.foot_patroling.R;
 
 import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
+import com.school.foot_patroling.utils.DateTimeUtils;
 
 import java.util.List;
+
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT7;
 
 public class ComplianceListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Observation> items;
@@ -86,7 +90,7 @@ public class ComplianceListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             vh1.getTitle().setText(model.getObservationItem());
             vh1.getSubtitle().setText(model.getObservation());
             vh1.getLocation().setText(model.getLocation());
-            vh1.getDate().setText(model.getCreatedDateTime());
+            vh1.getDate().setText(DateTimeUtils.parseDateTime(model.getCreatedDateTime(), DATE_FORMAT6, DATE_FORMAT7));
 
             vh1.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
