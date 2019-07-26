@@ -72,6 +72,7 @@ public class ComplianceFragment extends BaseFragment {
     @OnClick(R.id.btn_apply)
     public void clickOnApply(){
        // display list based on only location or only dates or both
+        validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
     }
     @OnClick(R.id.fromCalendar)
     public void clickOnCalendarFromDate(){
@@ -163,7 +164,7 @@ public class ComplianceFragment extends BaseFragment {
                 if(loc1.getText() != null && ! loc1.getText().toString().isEmpty()){
 
                     for(Observation o : observationsList){
-                        if(loc1.getText().toString().equalsIgnoreCase(o.getLocation())){
+                        if(o.getLocation() != null && o.getLocation().contains(loc1.getText().toString())){
                             filterdList.add(o);
                         }
                     }
