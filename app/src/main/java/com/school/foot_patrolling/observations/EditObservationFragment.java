@@ -87,7 +87,7 @@ public class EditObservationFragment extends BaseFragment{
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
 
-            picname = "O"+observationModel.getDeviceSeqId()+observationModel.getDeviceId()+getImageCounter()+".jpg";
+            picname = "O_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+"_"+getImageCounter()+".jpg";
 
             pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
             if(!pictureSaveFolderPath.exists()){
@@ -149,7 +149,6 @@ public class EditObservationFragment extends BaseFragment{
     }
     private String getImageCounter(){
         currentCounter++;
-
         return "_"+currentCounter;
     }
     @Override

@@ -1,11 +1,24 @@
 package com.school.foot_patroling.com.school.foot_patroling.compliance;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +32,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
@@ -27,7 +43,10 @@ import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.utils.DatePickerFragment;
 import com.school.foot_patroling.utils.DateTimeUtils;
+import com.school.foot_patroling.utils.PreferenceHelper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -36,14 +55,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
+import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
 public class AddComplianceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     ScheduleListAdapter scheduleListAdapter;
+    private String picname;
+    private int currentCounter;
+    private Uri outputImgUri;
+    private File pictureSaveFolderPath;
     Observation observationModel;
     Compliance complianceModel;
+    private int CAMERA_PIC_REQUEST = 100;
+    PreferenceHelper preferenceHelper;
     String selectedStatusType;
     @BindView(R.id.tvComplianceProvided)
     TextView complianceProvidedStatus;
@@ -63,6 +91,32 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     TextView tvObservation;
     @BindView(R.id.tvLocation)
     TextView tvLocation;
+    @OnClick(R.id.launchCamera)
+    public void clickOnCamera(){
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+
+            picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+"_"+getImageCounter()+".jpg";
+
+            pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
+            if(!pictureSaveFolderPath.exists()){
+                pictureSaveFolderPath.mkdirs();
+            }
+
+            File picToBeSaved = new File(pictureSaveFolderPath, picname);
+            if(picToBeSaved.exists()){
+                picToBeSaved.delete();
+            }
+            outputImgUri = getImageFileUriByOsVersion(picToBeSaved);
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputImgUri);
+            startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+        }
+        else{
+            requestPermission();
+        }
+    }
     @OnClick(R.id.calendar)
     public void clickOnCalendar(){
         displayDateDialog();
@@ -90,10 +144,19 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
             cameraLayout.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setText("Compliance already provided");
+            initCounter();
         }else{
             cameraLayout.setVisibility(View.GONE);
             complianceProvidedStatus.setVisibility(View.GONE);
         }
+    }
+    private void initCounter(){
+        String deviceSequenceId = observationModel.getDeviceSeqId();
+        currentCounter = preferenceHelper.getInteger(getActivity(), "Ccounter_"+deviceSequenceId,0);
+    }
+    private String getImageCounter(){
+        currentCounter++;
+        return "_"+currentCounter;
     }
     /**
      * Use this factory method to create a new instance of
@@ -117,7 +180,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         View view = inflater.inflate(R.layout.fragment_add_compliance, container, false);
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
-        // preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
+         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
 
         String deviceSequenceId = getArguments().getString(BUNDLE_KEY_SELECTED_COMPLIANCE);
         observationModel = NavigationDrawerActivity.mFPDatabase.observationDao().getStartedObservation(deviceSequenceId);
@@ -130,6 +193,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
             cameraLayout.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setText("Compliance already provided");
+            initCounter();
         }else{
             cameraLayout.setVisibility(View.GONE);
             complianceProvidedStatus.setVisibility(View.GONE);
@@ -206,5 +270,67 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         });
         builder.setCanceledOnTouchOutside(true);
         builder.show();
+    }
+    private void requestPermission(){
+        MultiplePermissionsListener dialogMultiplePermissionsListener =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                        .withContext(getActivity())
+                        .withTitle("Camera & Storage permission")
+                        .withMessage("Both camera and storage permission are needed to store pictures")
+                        .withButtonText(android.R.string.ok)
+                        .withIcon(R.drawable.ic_launcher)
+                        .build();
+
+        Dexter.withActivity(getActivity())
+                .withPermissions(Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(dialogMultiplePermissionsListener).check();
+
+    }
+    private Uri getImageFileUriByOsVersion(File file)
+    {
+        Uri ret = null;
+
+        // Get output image unique resource identifier. This uri is used by camera app to save taken picture temporary.
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            // /sdcard/ folder link to /storage/41B7-12F1 folder
+            // so below code return /storage/41B7-12F1
+            File externalStorageRootDir = Environment.getExternalStorageDirectory();
+
+            // contextRootDir = /data/user/0/com.dev2qa.example/files in my Huawei mate 8.
+            File contextRootDir = getActivity().getFilesDir();
+
+            // contextCacheDir = /data/user/0/com.dev2qa.example/cache in my Huawei mate 8.
+            File contextCacheDir = getActivity().getCacheDir();
+
+            // For android os version bigger than or equal to 7.0 use FileProvider class.
+            // Otherwise android os will throw FileUriExposedException.
+            // Because the system considers it is unsafe to use local real path uri directly.
+            Context ctx = getActivity().getApplicationContext();
+            ret = FileProvider.getUriForFile(ctx, "com.win.focus.footpatroling.fileprovider", file);
+
+        }else
+        {
+            // For android os version less than 7.0 there are no safety issue,
+            // So we can get the output image uri by file real local path directly.
+            ret = Uri.fromFile(file);
+        }
+
+        return ret;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Process result for camera activity.
+        if (requestCode == CAMERA_PIC_REQUEST) {
+
+            // If camera take picture success.
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
+                preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
+                Log.i("Camera pic location:", ""+outputImgUri);
+            }
+        }
     }
 }
