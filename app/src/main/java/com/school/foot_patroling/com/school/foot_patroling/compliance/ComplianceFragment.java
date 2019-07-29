@@ -159,6 +159,11 @@ public class ComplianceFragment extends BaseFragment {
 //            return;
 //        }else{
             //observationsList = Collections.sort(observationsList,new DateFilterComparator());
+        //displayObservationsFromDB();
+
+        observationsList = new ArrayList<>();
+        observationsList.addAll(NavigationDrawerActivity.mFPDatabase.observationDao().getAllObservationDtos());
+
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 List<Observation> filterdList = new ArrayList<Observation>();
                 if(loc1.getText() != null && !loc1.getText().toString().isEmpty()){
@@ -171,7 +176,7 @@ public class ComplianceFragment extends BaseFragment {
                     observationsList = new ArrayList<Observation>();
                     observationsList.addAll(filterdList);
                 }
-                if(to_dateTV.getText() != null && !to_dateTV.getText().toString().isEmpty()){
+                if(to_dateTV.getText() != null && !to_dateTV.getText().toString().isEmpty() && !to_dateTV.getText().toString().equalsIgnoreCase("To Date")){
                     List<Observation> filteredObservationsList = new ArrayList<Observation>();
                     for(Observation obs : observationsList){
                         Calendar date1=Calendar.getInstance();
@@ -179,14 +184,14 @@ public class ComplianceFragment extends BaseFragment {
                         //Calendar fromDateObj = Calendar.getInstance();
                         Calendar toDateObj = Calendar.getInstance();
                         try {
-                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
-                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
-                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.US);
+                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
+                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
                             date1.setTime(s1.parse(obs.getCreatedDateTime()));
                             //fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
 
                             toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
-                            if(date1.before(toDateObj)) {
+                            if(date1.before(toDateObj) || (date1.get(Calendar.YEAR)==toDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH)==toDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH)==toDateObj.get(Calendar.MONTH))) {
                                 filteredObservationsList.add(obs);
                             }
                         } catch (ParseException e) {
@@ -201,28 +206,25 @@ public class ComplianceFragment extends BaseFragment {
                         for(Observation observation : filteredObservationsList){
                             observationsList.add(observation);
                         }
-                        complianceListAdapter.setItems(observationsList);
-                        complianceListAdapter.notifyDataSetChanged();
                     }
                 }
 
-                if(from_dateTv.getText() != null && !from_dateTv.getText().toString().isEmpty()){
+                if(from_dateTv.getText() != null && !from_dateTv.getText().toString().isEmpty() && !from_dateTv.getText().toString().equalsIgnoreCase("From Date")){
                     List<Observation> filteredObservationsList2 = new ArrayList<Observation>();
                     for(Observation obs : observationsList){
                         Calendar date1=Calendar.getInstance();
 
                         Calendar fromDateObj = Calendar.getInstance();
-                        //Calendar toDateObj = Calendar.getInstance();
                         try {
-                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
-                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
-                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.US);
+                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
+                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
                             date1.setTime(s1.parse(obs.getCreatedDateTime()));
                             fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
 
-                            //toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
-                            if(date1.after(fromDateObj)) {
-                                filteredObservationsList2.add(obs);
+                            if(date1.before(fromDateObj) || (date1.get(Calendar.YEAR)==fromDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH)==fromDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH)==fromDateObj.get(Calendar.MONTH))) {
+
+                                    filteredObservationsList2.add(obs);
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -236,13 +238,14 @@ public class ComplianceFragment extends BaseFragment {
                         for(Observation observation : filteredObservationsList2){
                             observationsList.add(observation);
                         }
-                        complianceListAdapter.setItems(observationsList);
-                        complianceListAdapter.notifyDataSetChanged();
+
                     }
                 }
 
 
             }
+        complianceListAdapter.setItems(observationsList);
+        complianceListAdapter.notifyDataSetChanged();
 
 
 //        }
