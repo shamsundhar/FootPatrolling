@@ -48,7 +48,7 @@ public class Constants {
 
     public static final String DATE_FORMAT1 = "EEEE, d MMMM";
     public static final String DATE_FORMAT2 = "MM-dd-yyyy";
-    public static final String DATE_FORMAT3 = "dd-MMMM-yyyy";
+    public static final String DATE_FORMAT3 = "dd-MM-yyyy";
     public static final String DATE_FORMAT4 = "yyyy-MM-dd";
     public static final String DATE_FORMAT5 = "dd-MM-yyyy";
     public static final String DATE_FORMAT6 = "dd-MM-yyyy HH:mm:ss.S";
