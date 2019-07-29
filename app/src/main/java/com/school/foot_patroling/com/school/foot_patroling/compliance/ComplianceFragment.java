@@ -148,20 +148,20 @@ public class ComplianceFragment extends BaseFragment {
     }
 
     private void validateDateFilters(String fromDate, String toDate){
-        if(fromDate == null || fromDate.isEmpty()){
-            Toast.makeText(this.getContext(), "Please select valid From Date ",Toast.LENGTH_LONG).show();
-            return;
-        }else if(toDate == null || toDate.isEmpty()){
-            Toast.makeText(this.getContext(), "Please select valid To Date ",Toast.LENGTH_LONG).show();
-            return;
-        }else if(fromDate.equalsIgnoreCase(toDate)){
-            Toast.makeText(this.getContext(), "Dates should not be equal ",Toast.LENGTH_LONG).show();
-            return;
-        }else{
+//        if(fromDate == null || fromDate.isEmpty()){
+//            Toast.makeText(this.getContext(), "Please select valid From Date ",Toast.LENGTH_LONG).show();
+//            return;
+//        }else if(toDate == null || toDate.isEmpty()){
+//            Toast.makeText(this.getContext(), "Please select valid To Date ",Toast.LENGTH_LONG).show();
+//            return;
+//        }else if(fromDate.equalsIgnoreCase(toDate)){
+//            Toast.makeText(this.getContext(), "Dates should not be equal ",Toast.LENGTH_LONG).show();
+//            return;
+//        }else{
             //observationsList = Collections.sort(observationsList,new DateFilterComparator());
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 List<Observation> filterdList = new ArrayList<Observation>();
-                if(loc1.getText() != null && ! loc1.getText().toString().isEmpty()){
+                if(loc1.getText() != null && !loc1.getText().toString().isEmpty()){
 
                     for(Observation o : observationsList){
                         if(o.getLocation() != null && o.getLocation().contains(loc1.getText().toString())){
@@ -171,42 +171,81 @@ public class ComplianceFragment extends BaseFragment {
                     observationsList = new ArrayList<Observation>();
                     observationsList.addAll(filterdList);
                 }
-                List<Observation> filteredObservationsList = new ArrayList<Observation>();
-                for(Observation obs : observationsList){
-                    Calendar date1=Calendar.getInstance();
+                if(to_dateTV.getText() != null && !to_dateTV.getText().toString().isEmpty()){
+                    List<Observation> filteredObservationsList = new ArrayList<Observation>();
+                    for(Observation obs : observationsList){
+                        Calendar date1=Calendar.getInstance();
 
-                    Calendar fromDateObj = Calendar.getInstance();
-                    Calendar toDateObj = Calendar.getInstance();
-                    try {
-                        SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
-                        SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
-                        SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
-                        date1.setTime(s1.parse(obs.getCreatedDateTime()));
-                        fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
+                        //Calendar fromDateObj = Calendar.getInstance();
+                        Calendar toDateObj = Calendar.getInstance();
+                        try {
+                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
+                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            date1.setTime(s1.parse(obs.getCreatedDateTime()));
+                            //fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
 
-                        toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
-                        if(date1.after(fromDateObj) && date1.before(toDateObj)) {
-                            filteredObservationsList.add(obs);
+                            toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
+                            if(date1.before(toDateObj)) {
+                                filteredObservationsList.add(obs);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+
+
                     }
 
-
-                }
-
-                if(filteredObservationsList != null){
-                    observationsList =  new ArrayList<Observation>();
-                    for(Observation observation : filteredObservationsList){
-                        observationsList.add(observation);
+                    if(filteredObservationsList != null){
+                        observationsList =  new ArrayList<Observation>();
+                        for(Observation observation : filteredObservationsList){
+                            observationsList.add(observation);
+                        }
+                        complianceListAdapter.setItems(observationsList);
+                        complianceListAdapter.notifyDataSetChanged();
                     }
-                    complianceListAdapter.setItems(observationsList);
-                    complianceListAdapter.notifyDataSetChanged();
                 }
+
+                if(from_dateTv.getText() != null && !from_dateTv.getText().toString().isEmpty()){
+                    List<Observation> filteredObservationsList2 = new ArrayList<Observation>();
+                    for(Observation obs : observationsList){
+                        Calendar date1=Calendar.getInstance();
+
+                        Calendar fromDateObj = Calendar.getInstance();
+                        //Calendar toDateObj = Calendar.getInstance();
+                        try {
+                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.ENGLISH);
+                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.ENGLISH);
+                            date1.setTime(s1.parse(obs.getCreatedDateTime()));
+                            fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
+
+                            //toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
+                            if(date1.after(fromDateObj)) {
+                                filteredObservationsList2.add(obs);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                    if(filteredObservationsList2 != null){
+                        observationsList =  new ArrayList<Observation>();
+                        for(Observation observation : filteredObservationsList2){
+                            observationsList.add(observation);
+                        }
+                        complianceListAdapter.setItems(observationsList);
+                        complianceListAdapter.notifyDataSetChanged();
+                    }
+                }
+
+
             }
 
 
-        }
+//        }
     }
 
 
