@@ -130,7 +130,7 @@ public class DataSyncFragment extends BaseFragment {
                 model.setCurrentTimestamp(syncStartTime);
                 model.setImeiNumber("867520040587478");
                 //TODO model.setImeiNumber(selectedImei);
-                model.setPreviousTimestamp("Last sync Date : "+lastSyncDate);
+                model.setPreviousTimestamp(lastSyncDate);
                 List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
                 AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
                 appToServerCreatedFootPatrollingInspectionDto.setCount("" + inspectionDtoList.size());
@@ -151,7 +151,7 @@ public class DataSyncFragment extends BaseFragment {
                 appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
                 model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
-                uploadImages();
+               // uploadImages();
                 registerApi.register(url, model)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
