@@ -79,6 +79,22 @@ public class ReloadFragment extends BaseFragment {
     TextView tvSyncStatus;
     @OnClick(R.id.btn_syncNow)
     public void clickSyncNow() {
+
+        final CustomAlertDialog confirmDialog = new CustomAlertDialog();
+        confirmDialog.showAlert2(getActivity(), R.string.text_alert, "Please confirm?", new CustomAlertDialog.Callback() {
+            @Override
+            public void onSucess(int t) {
+                if(t == 0){
+                    confirmDialog.dismissAlert();
+                    syncNow();
+                }
+                else{
+                    confirmDialog.dismissAlert();
+                }
+            }
+        });
+    }
+    private void syncNow(){
         Boolean isInspectionInProgress = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
         if(!isInspectionInProgress) {
             if (Common.isNetworkAvailable(getActivity())) {
@@ -103,7 +119,7 @@ public class ReloadFragment extends BaseFragment {
                 RegistrationRequestModel model = new RegistrationRequestModel();
                 model.setAppName("TRD_FP");
                 model.setCurrentTimestamp(syncStartTime);
-               // model.setImeiNumber("867520040587478");
+                // model.setImeiNumber("867520040587478");
                 model.setImeiNumber(selectedImei);
                 model.setPreviousTimestamp(lastSyncDate);
                 List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
@@ -178,7 +194,6 @@ public class ReloadFragment extends BaseFragment {
             CustomAlertDialog dialog = new CustomAlertDialog();
             dialog.showAlert1(getActivity(), R.string.text_alert, "Please reload after syncing.");
         }
-
     }
     /**
      * Use this factory method to create a new instance of

@@ -128,8 +128,9 @@ public class DataSyncFragment extends BaseFragment {
                 RegistrationRequestModel model = new RegistrationRequestModel();
                 model.setAppName("TRD_FP");
                 model.setCurrentTimestamp(syncStartTime);
-                model.setImeiNumber("867520040587478");
-                //TODO model.setImeiNumber(selectedImei);
+               // model.setImeiNumber("867520040587478");
+                //TODO
+            model.setImeiNumber(selectedImei);
                 model.setPreviousTimestamp(lastSyncDate);
                 List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
                 AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
