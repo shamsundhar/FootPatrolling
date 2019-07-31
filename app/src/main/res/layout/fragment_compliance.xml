@@ -105,10 +105,22 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/drawable_corners_primary_gradient"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:text="@string/text_apply"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/btn_reset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/drawable_corners_primary_gradient"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="Reset"/>
         </LinearLayout>
     </LinearLayout>
 

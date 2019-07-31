@@ -91,8 +91,8 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (model != null) {
             vh1.getTitle().setText(model.getObservationItem());
             vh1.getSubtitle().setText(model.getPriority());
-            vh1.getaSwitch().setChecked(items.get(position).isChecked());
-            vh1.getEdit_Comments().setText(items.get(position).getDescription());
+            vh1.getaSwitch().setChecked(model.isChecked());
+            vh1.getEdit_Comments().setText(model.getComments());
             vh1.getaSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -126,9 +126,9 @@ public class ChecklistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if(s != null) {
-                        items.get(position).setDescription(s.toString());
+                        items.get(position).setComments(s.toString());
                     }else{
-                        items.get(position).setDescription("");
+                        items.get(position).setComments("");
                     }
                 }
 

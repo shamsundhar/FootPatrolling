@@ -74,6 +74,12 @@ public class ComplianceFragment extends BaseFragment {
        // display list based on only location or only dates or both
         validateDateFilters(from_dateTv.getText().toString(), to_dateTV.getText().toString());
     }
+    @OnClick(R.id.btn_reset)
+    public void clickOnReset(){
+        loc1.setText("");
+        from_dateTv.setText("From Date");
+        to_dateTV.setText("To Date");
+    }
     @OnClick(R.id.fromCalendar)
     public void clickOnCalendarFromDate(){
         displayFromDateDialog();

@@ -37,6 +37,16 @@ public class ObservationsCheckListDto{
     @ColumnInfo(name = "thruDate")
     private String thruDate;
 
+    private String comments;
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
     public String getDescription() {
         return description;
     }

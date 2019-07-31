@@ -133,7 +133,7 @@ public class PatrolingListFragment extends BaseFragment {
                                 observation.setDeviceSeqId(currentTimeStamp);
                                 observation.setObservationCategory(p.getObservationCategory());
                                 observation.setObservationItem(p.getObservationItem());
-                                observation.setObservation(p.getDescription());
+                                observation.setObservation(p.getComments());
                                 observation.setLocation(location);
                                 observation.setSeqId("null");
                                 NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
