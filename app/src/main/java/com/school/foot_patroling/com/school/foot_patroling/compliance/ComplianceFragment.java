@@ -154,18 +154,6 @@ public class ComplianceFragment extends BaseFragment {
     }
 
     private void validateDateFilters(String fromDate, String toDate){
-//        if(fromDate == null || fromDate.isEmpty()){
-//            Toast.makeText(this.getContext(), "Please select valid From Date ",Toast.LENGTH_LONG).show();
-//            return;
-//        }else if(toDate == null || toDate.isEmpty()){
-//            Toast.makeText(this.getContext(), "Please select valid To Date ",Toast.LENGTH_LONG).show();
-//            return;
-//        }else if(fromDate.equalsIgnoreCase(toDate)){
-//            Toast.makeText(this.getContext(), "Dates should not be equal ",Toast.LENGTH_LONG).show();
-//            return;
-//        }else{
-            //observationsList = Collections.sort(observationsList,new DateFilterComparator());
-        //displayObservationsFromDB();
 
         observationsList = new ArrayList<>();
         observationsList.addAll(NavigationDrawerActivity.mFPDatabase.observationDao().getAllObservationDtos());
@@ -182,23 +170,64 @@ public class ComplianceFragment extends BaseFragment {
                     observationsList = new ArrayList<Observation>();
                     observationsList.addAll(filterdList);
                 }
+
+                // ----- dates filtering
+                Calendar toDateObj = Calendar.getInstance();
+                Calendar fromDateObj = Calendar.getInstance();
+
+
+
+
+                // TODATE creation
+
                 if(to_dateTV.getText() != null && !to_dateTV.getText().toString().isEmpty() && !to_dateTV.getText().toString().equalsIgnoreCase("To Date")){
+                    SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
+                    try {
+                        toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
+                    } catch (ParseException e) {
+                        toDateObj = null;
+                        e.printStackTrace();
+                    }
+
+                }else{
+                    toDateObj = null;
+                }
+
+                //FROMDATE creation
+
+                if(from_dateTv.getText() != null && !from_dateTv.getText().toString().isEmpty() && !from_dateTv.getText().toString().equalsIgnoreCase("From Date")) {
+                    SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
+                    try {
+                        fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
+                    } catch (ParseException e) {
+                        fromDateObj = null;
+                        e.printStackTrace();
+                    }
+                }else{
+                    fromDateObj = null;
+                }
+                    if(to_dateTV.getText() != null && !to_dateTV.getText().toString().isEmpty() && !to_dateTV.getText().toString().equalsIgnoreCase("To Date")){
                     List<Observation> filteredObservationsList = new ArrayList<Observation>();
                     for(Observation obs : observationsList){
-                        Calendar date1=Calendar.getInstance();
-
-                        //Calendar fromDateObj = Calendar.getInstance();
-                        Calendar toDateObj = Calendar.getInstance();
                         try {
+                            Calendar date1=Calendar.getInstance();
                             SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.US);
                             SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
-                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
-                            date1.setTime(s1.parse(obs.getCreatedDateTime()));
-                            //fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
 
-                            toDateObj.setTime(s3.parse(to_dateTV.getText().toString()));
-                            if(date1.before(toDateObj) || (date1.get(Calendar.YEAR)==toDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH)==toDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH)==toDateObj.get(Calendar.MONTH))) {
-                                filteredObservationsList.add(obs);
+                            date1.setTime(s1.parse(obs.getCreatedDateTime()));
+
+                            if(toDateObj != null && fromDateObj != null) {
+                                if ((date1.before(toDateObj) || (date1.get(Calendar.YEAR) == toDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH) == toDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH) == toDateObj.get(Calendar.MONTH))) || (date1.before(fromDateObj) || (date1.get(Calendar.YEAR) == fromDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH) == fromDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH) == fromDateObj.get(Calendar.MONTH)))) {
+                                    filteredObservationsList.add(obs);
+                                }
+                            }else if(toDateObj != null){
+                                if ((date1.before(toDateObj) || (date1.get(Calendar.YEAR) == toDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH) == toDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH) == toDateObj.get(Calendar.MONTH)))) {
+                                    filteredObservationsList.add(obs);
+                                }
+                            }else if(fromDateObj != null){
+                                if ((date1.before(fromDateObj) || (date1.get(Calendar.YEAR) == fromDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH) == fromDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH) == fromDateObj.get(Calendar.MONTH)))) {
+                                    filteredObservationsList.add(obs);
+                                }
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -214,41 +243,6 @@ public class ComplianceFragment extends BaseFragment {
                         }
                     }
                 }
-
-                if(from_dateTv.getText() != null && !from_dateTv.getText().toString().isEmpty() && !from_dateTv.getText().toString().equalsIgnoreCase("From Date")){
-                    List<Observation> filteredObservationsList2 = new ArrayList<Observation>();
-                    for(Observation obs : observationsList){
-                        Calendar date1=Calendar.getInstance();
-
-                        Calendar fromDateObj = Calendar.getInstance();
-                        try {
-                            SimpleDateFormat s1 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S",Locale.US);
-                            SimpleDateFormat s2 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
-                            SimpleDateFormat s3 = new SimpleDateFormat(DATE_FORMAT3,Locale.US);
-                            date1.setTime(s1.parse(obs.getCreatedDateTime()));
-                            fromDateObj.setTime(s2.parse(from_dateTv.getText().toString()));
-
-                            if(date1.before(fromDateObj) || (date1.get(Calendar.YEAR)==fromDateObj.get(Calendar.YEAR) && date1.get(Calendar.DAY_OF_MONTH)==fromDateObj.get(Calendar.DAY_OF_MONTH) && date1.get(Calendar.MONTH)==fromDateObj.get(Calendar.MONTH))) {
-
-                                    filteredObservationsList2.add(obs);
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-                    if(filteredObservationsList2 != null){
-                        observationsList =  new ArrayList<Observation>();
-                        for(Observation observation : filteredObservationsList2){
-                            observationsList.add(observation);
-                        }
-
-                    }
-                }
-
-
             }
         complianceListAdapter.setItems(observationsList);
         complianceListAdapter.notifyDataSetChanged();
