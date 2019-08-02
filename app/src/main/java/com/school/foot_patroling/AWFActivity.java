@@ -31,6 +31,7 @@ import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplia
 import com.school.foot_patroling.register.RegisterActivity;
 import com.school.foot_patroling.utils.PreferenceHelper;
 import com.school.foot_patrolling.observations.EditObservationFragment;
+import com.school.foot_patrolling.observations.ViewObservationFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_EDIT_OBSERVATION;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
@@ -51,6 +53,7 @@ public class AWFActivity extends BaseActivity {
 
     private static final String ADD_COMPLIANCE_FRAGMENT_TAG = "ADD_COMPLIANCE_FRAGMENT";
     private static final String EDIT_OBSERVATION_FRAGMENT_TAG = "EDIT_OBSERVATION_FRAGMENT";
+    private static final String VIEW_OBSERVATION_FRAGMENT_TAG = "VIEW_OBSERVATION_FRAGMENT";
     @BindView(R.id.toolbarDetails)
     TextView toolbarDetails;
 
@@ -77,6 +80,9 @@ public class AWFActivity extends BaseActivity {
                 case BUNDLE_VALUE_EDIT_OBSERVATION :
                     displayEditObservationFragment(bundle);
                     break;
+                case BUNDLE_VALUE_VIEW_OBSERVATION :
+                    displayViewObservationFragment(bundle);
+                    break;
             }
         }
 
@@ -91,6 +97,17 @@ public class AWFActivity extends BaseActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  fragment, ADD_COMPLIANCE_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayViewObservationFragment(Bundle bundle){
+        setTitle("View Observation");
+        ViewObservationFragment fragment = ViewObservationFragment.newInstance();
+        if(bundle != null){
+            fragment.setArguments(bundle);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  fragment, VIEW_OBSERVATION_FRAGMENT_TAG)
                 .commit();
     }
     public void displayEditObservationFragment(Bundle bundle){

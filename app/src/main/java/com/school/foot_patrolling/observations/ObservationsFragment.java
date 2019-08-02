@@ -29,6 +29,7 @@ import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_EDIT_OBSERVATION;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_OBSERVATION;
 
 public class ObservationsFragment extends BaseFragment {
     @BindView(R.id.observationsRecyclerview)
@@ -38,6 +39,7 @@ public class ObservationsFragment extends BaseFragment {
     TextView empty_view;
     ObservationsListAdapter observationsListAdapter;
     public static int EDIT_OBSERVATION_CODE = 200;
+    public static int VIEW_OBSERVATION_CODE = 201;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -67,10 +69,19 @@ public class ObservationsFragment extends BaseFragment {
 
             @Override
             public void onItemClick(Object model, int position) {
-                Intent in = new Intent(getActivity(), AWFActivity.class);
-                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_OBSERVATION);
-                in.putExtra(BUNDLE_KEY_SELECTED_OBSERVATION, ((Observation)model).getDeviceSeqId());
-                startActivityForResult(in, EDIT_OBSERVATION_CODE);
+               if(((Observation)model).getSeqId().equals("null")){
+                   Intent in = new Intent(getActivity(), AWFActivity.class);
+                   in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_EDIT_OBSERVATION);
+                   in.putExtra(BUNDLE_KEY_SELECTED_OBSERVATION, ((Observation)model).getDeviceSeqId());
+                   startActivityForResult(in, EDIT_OBSERVATION_CODE);
+               }
+               else{
+                   Intent in = new Intent(getActivity(), AWFActivity.class);
+                   in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_VIEW_OBSERVATION);
+                   in.putExtra(BUNDLE_KEY_SELECTED_OBSERVATION, ((Observation)model).getDeviceSeqId());
+                   startActivityForResult(in, VIEW_OBSERVATION_CODE);
+               }
+
 
             }
         });

@@ -61,6 +61,7 @@ import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class PatrolingListFragment extends BaseFragment {
     PreferenceHelper preferenceHelper;
@@ -126,7 +127,7 @@ public class PatrolingListFragment extends BaseFragment {
                                 String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
                                 String location = loc1.getText().toString() + "/" + loc2.getText().toString();
                                 Observation observation = new Observation();
-                                observation.setCreatedBy("");
+                                observation.setCreatedBy(preferenceHelper.getString(getActivity(), PREF_KEY_SELECTED_USER, ""));
                                 observation.setCreatedDateTime(currentTimeStamp);
                                 observation.setInspectionSeqId(fpStartedTime);
                                 observation.setDeviceId(selectedImei);

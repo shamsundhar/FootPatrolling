@@ -27,6 +27,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,11 +62,13 @@ import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSE
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
+import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
 public class AddComplianceFragment extends BaseFragment implements DatePickerDialog.OnDateSetListener{
     ScheduleListAdapter scheduleListAdapter;
     private String picname;
+    private String selectedDate;
     private int currentCounter;
     private Uri outputImgUri;
     private File pictureSaveFolderPath;
@@ -76,6 +79,10 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     String selectedStatusType;
     @BindView(R.id.tvComplianceProvided)
     TextView complianceProvidedStatus;
+    @BindView(R.id.et_actionBy)
+    EditText actionBy;
+    @BindView(R.id.et_actionDone)
+    EditText actionDone;
     @BindView(R.id.statusTV)
     TextView statusTV;
     @OnClick(R.id.statusLayout)
@@ -124,11 +131,11 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     }
     @OnClick(R.id.btn_submit)
     public void clickOnSubmit(){
-        observationModel.setActionBy("");
-        observationModel.setAction("");
+       // observationModel.setActionBy("");
+      //  observationModel.setAction("");
         Compliance compliance = new Compliance();
-        compliance.setAction(observationModel.getAction());
-        compliance.setComplianceBy("");
+        compliance.setAction(actionDone.getText().toString().trim());
+        compliance.setComplianceBy(actionBy.getText().toString().trim());
         compliance.setCreatedStamp(observationModel.getCreatedStamp());
         compliance.setDescription(observationModel.getDescription());
         compliance.setDeviceId(observationModel.getDeviceId());
@@ -136,7 +143,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         compliance.setObeservationSeqId(observationModel.getDeviceSeqId());
         compliance.setStatus(selectedStatusType);
         compliance.setSeqId("null");
-        compliance.setCompliedDateTime("");
+        compliance.setCompliedDateTime(selectedDate);
         NavigationDrawerActivity.mFPDatabase.complianceDao().insert(compliance);
         Toast.makeText(getActivity(), "Compliance saved successfully", Toast.LENGTH_SHORT).show();
         //List<Compliance> list = NavigationDrawerActivity.mFPDatabase.complianceDao().getAllCompliancesDtos();
@@ -212,6 +219,14 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         args.putInt("year", calender.get(Calendar.YEAR));
         args.putInt("month", calender.get(Calendar.MONTH));
         args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        String observationCreatedTime = observationModel.getCreatedDateTime();
+        try {
+            Calendar minDateCalendar = DateTimeUtils.getCalendarObject(observationCreatedTime, DATE_FORMAT6);
+            //minDateCalendar.add(Calendar.DATE, 1);
+            args.putLong("mindate", minDateCalendar.getTimeInMillis());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         args.putLong("maxdate", calender.getTimeInMillis());
         date.setListener(AddComplianceFragment.this);
         date.setArguments(args);
@@ -224,6 +239,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     @Override
     public void onDateSet(DatePicker view, int i, int i1, int i2) {
         String strDate = padding(i1+1)+"-"+padding(i2)+"-"+padding(i);
+        selectedDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT6);
         strDate = DateTimeUtils.parseDateTime(strDate, DATE_FORMAT2, DATE_FORMAT5);
 
         dateTv.setText(strDate);

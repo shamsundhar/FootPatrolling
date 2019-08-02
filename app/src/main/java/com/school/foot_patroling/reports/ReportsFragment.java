@@ -65,6 +65,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -178,6 +179,7 @@ public class ReportsFragment extends BaseFragment {
 
         getReportNames();
         getSubDivisions();
+        getDepots();
        // String samplePdf = "JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PC9MZW5ndGggMTIxL0ZpbHRlci9GbGF0ZURlY29kZT4+c3RyZWFtCnicK+RyCuEyNlOwMDBRCEnhcg3hCuQyUvACiRoqGAAhiLQwMVAIyeXSdzNUMDRSCEnj0tAMyQKpRSgxUEjORdZkbGKsZ2muYG5poWdsDtdsAdIMUVKUzqXhl6/gkliSqOCWX5qXAjLSQCEdi7HRsUA6BewsABdnJDkKZW5kc3RyZWFtCmVuZG9iagoxIDAgb2JqCjw8L0dyb3VwPDwvVHlwZS9Hcm91cC9DUy9EZXZpY2VSR0IvUy9UcmFuc3BhcmVuY3k+Pi9QYXJlbnQgNCAwIFIvQ29udGVudHMgMyAwIFIvVHlwZS9QYWdlL1Jlc291cmNlczw8L1Byb2NTZXQgWy9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUldL0NvbG9yU3BhY2U8PC9DUy9EZXZpY2VSR0I+Pi9Gb250PDwvRjEgMiAwIFI+Pj4+L01lZGlhQm94WzAgMCA4MTAgODQwXT4+CmVuZG9iago1IDAgb2JqClsxIDAgUi9YWVogMCA4NTIgMF0KZW5kb2JqCjIgMCBvYmoKPDwvQmFzZUZvbnQvSGVsdmV0aWNhL1R5cGUvRm9udC9FbmNvZGluZy9XaW5BbnNpRW5jb2RpbmcvU3VidHlwZS9UeXBlMT4+CmVuZG9iago0IDAgb2JqCjw8L0lUWFQoMi4xLjcpL1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWzEgMCBSXT4+CmVuZG9iago2IDAgb2JqCjw8L05hbWVzWyhKUl9QQUdFX0FOQ0hPUl8wXzEpIDUgMCBSXT4+CmVuZG9iago3IDAgb2JqCjw8L0Rlc3RzIDYgMCBSPj4KZW5kb2JqCjggMCBvYmoKPDwvTmFtZXMgNyAwIFIvVHlwZS9DYXRhbG9nL1BhZ2VzIDQgMCBSPj4KZW5kb2JqCjkgMCBvYmoKPDwvQ3JlYXRvcihKYXNwZXJSZXBvcnRzIFwoMTMyS1ZDVEhZXCkpL1Byb2R1Y2VyKGlUZXh0IDIuMS43IGJ5IDFUM1hUKS9Nb2REYXRlKEQ6MjAxOTA2MTQxMDUyNTYrMDUnMzAnKS9DcmVhdGlvbkRhdGUoRDoyMDE5MDYxNDEwNTI1NiswNSczMCcpPj4KZW5kb2JqCnhyZWYKMCAxMAowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAyMDMgMDAwMDAgbiAKMDAwMDAwMDQ3MiAwMDAwMCBuIAowMDAwMDAwMDE1IDAwMDAwIG4gCjAwMDAwMDA1NjAgMDAwMDAgbiAKMDAwMDAwMDQzNyAwMDAwMCBuIAowMDAwMDAwNjIzIDAwMDAwIG4gCjAwMDAwMDA2NzcgMDAwMDAgbiAKMDAwMDAwMDcwOSAwMDAwMCBuIAowMDAwMDAwNzY2IDAwMDAwIG4gCnRyYWlsZXIKPDwvUm9vdCA4IDAgUi9JRCBbPDZlN2UyNzc1MGRmMGQzY2I0YmJlMTUwMWVmMGNjYWU4Pjw1YTAzZDcyNDNlMjU2ODNlY2IwODE1ZmRlMTVkYWRlMD5dL0luZm8gOSAwIFIvU2l6ZSAxMD4+CnN0YXJ0eHJlZgo5MjUKJSVFT0YK";
        // displayPDF(samplePdf);
 
@@ -248,6 +250,7 @@ public class ReportsFragment extends BaseFragment {
     }
     private void getSubDivisions(){
         subdivisionsList = NavigationDrawerActivity.mFPDatabase.facilityDtoDao().getSubDivisions();
+        subdivisionsList.removeAll(Arrays.asList("", null));
         if(subdivisionsList.size() == 1){
             if(subdivisionsList.get(0) == null || subdivisionsList.get(0).trim().length()==0){
                 subdivisionsList.clear();
@@ -255,6 +258,9 @@ public class ReportsFragment extends BaseFragment {
         }
     }
     private void getDepots(){
+        if(depotList != null)
+        depotList.clear();
+
         if(selectedSubDivisionID != null && !selectedSubDivisionID.isEmpty()) {
             depotList = NavigationDrawerActivity.mFPDatabase.facilityDtoDao().getDepotsFromSubDivision(selectedSubDivisionID);
         }else{
@@ -471,7 +477,7 @@ public class ReportsFragment extends BaseFragment {
                     String dataModel = (String)subdivisionsList.get(position);
                     subDivisionTV.setText(dataModel);
                     selectedSubDivisionID = dataModel;
-
+                    getDepots();
 
                 }
             });

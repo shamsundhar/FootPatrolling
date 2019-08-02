@@ -44,4 +44,11 @@ public class DateTimeUtils {
             return "";
         }
     }
+    public static Calendar getCalendarObject(String dateString, String dateStringFormat) throws ParseException{
+        SimpleDateFormat sdf = new SimpleDateFormat(dateStringFormat);
+        Date date = sdf.parse(dateString);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
 }

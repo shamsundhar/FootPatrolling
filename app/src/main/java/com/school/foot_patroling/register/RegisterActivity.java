@@ -255,7 +255,7 @@ public class RegisterActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 builder.dismiss();
                 selectedImei = imeiList.get(position);
-                selectedImei = "867520040587478";
+              //  selectedImei = "867520040587478";
                 imeiTV.setText( imeiList.get(position));
             }
         });

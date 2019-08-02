@@ -25,6 +25,7 @@ import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.depotselection.SectionsListAdapter;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
+import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.CustomAlertDialog;
@@ -44,11 +45,13 @@ import butterknife.OnClick;
 
 import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class LoginFragment extends BaseFragment {
     DatabaseHelper dbhelper = null;
+    private String previousInspectionUser = "";
     PreferenceHelper preferenceHelper;
     SQLiteDatabase database;
     @BindView(R.id.input_password)
@@ -69,6 +72,12 @@ public class LoginFragment extends BaseFragment {
     @OnClick(R.id.btn_signin)
     public void clickOnLogin(){
         mPassword = etPassword.getText().toString().trim();
+        String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
+        if(!fpStartedTime.trim().isEmpty()){
+            Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(fpStartedTime);
+            previousInspectionUser = inspection.getInspectionBy();
+        }
+
         if(validate(mUsername, mPassword)) {
             try {
                 if (database != null) {
@@ -177,6 +186,21 @@ public class LoginFragment extends BaseFragment {
                 etPassword.setError(null);
                 validate = true;
             }
+        }
+        Boolean isInspectionInProgress = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
+        if(isInspectionInProgress) {
+            if (previousInspectionUser != null && !previousInspectionUser.isEmpty()) {
+                if (previousInspectionUser.equals(mUsername)) {
+                    validate = true;
+                } else {
+                    CustomAlertDialog dialog = new CustomAlertDialog();
+                    dialog.showAlert1(getActivity(), R.string.text_alert, "Inspection is in progress by " + previousInspectionUser + ", Please stop and try again.");
+                    validate = false;
+                }
+            }
+        }
+        else{
+            validate = true;
         }
         return validate;
     }

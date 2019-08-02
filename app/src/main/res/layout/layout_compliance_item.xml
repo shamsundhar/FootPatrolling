@@ -12,18 +12,30 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/syncDoneImage"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/sync_done"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/location"
-            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/syncDoneImage"
             android:text="location"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:id="@+id/date"
             android:text="22-05-2019"/>
+
 
     </RelativeLayout>
     <TextView

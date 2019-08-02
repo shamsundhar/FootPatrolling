@@ -81,7 +81,7 @@ public class ReloadFragment extends BaseFragment {
     public void clickSyncNow() {
 
         final CustomAlertDialog confirmDialog = new CustomAlertDialog();
-        confirmDialog.showAlert2(getActivity(), R.string.text_alert, "Please confirm?", new CustomAlertDialog.Callback() {
+        confirmDialog.showAlert2(getActivity(), R.string.text_alert, "Any un-sync data will lost please confirm?", new CustomAlertDialog.Callback() {
             @Override
             public void onSucess(int t) {
                 if(t == 0){

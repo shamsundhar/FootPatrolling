@@ -143,6 +143,8 @@ public void displayExitDialog(){
         displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(false);
+        nav_Menu.findItem(R.id.nav_compliance).setVisible(false);
+        nav_Menu.findItem(R.id.nav_observations).setVisible(false);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  LoginFragment.newInstance(), LOGIN_FRAGMENT_TAG)
@@ -153,6 +155,8 @@ public void displayExitDialog(){
         displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        nav_Menu.findItem(R.id.nav_observations).setVisible(true);
+        nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
@@ -161,8 +165,8 @@ public void displayExitDialog(){
     public void displayDepotSelectionFragment(){
         setTitle("FP Inspection");
         displayHeaderDetails();
-        //  nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        //   nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        nav_Menu.findItem(R.id.nav_observations).setVisible(true);
+        nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  DepotSelectionFragment.newInstance(), DEPOT_SELECTION_FRAGMENT_TAG)

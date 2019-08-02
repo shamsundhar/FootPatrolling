@@ -33,6 +33,33 @@ public class FacilityDto_ {
     private String reserveOrderEnumId;
     private String skipPackInvCheck;
     private String squareFootage;
+    private String parentDepot;
+    private String division;
+    private String subDivision;
+
+    public String getParentDepot() {
+        return parentDepot;
+    }
+
+    public void setParentDepot(String parentDepot) {
+        this.parentDepot = parentDepot;
+    }
+
+    public String getDivision() {
+        return division;
+    }
+
+    public void setDivision(String division) {
+        this.division = division;
+    }
+
+    public String getSubDivision() {
+        return subDivision;
+    }
+
+    public void setSubDivision(String subDivision) {
+        this.subDivision = subDivision;
+    }
 
     public String getClosedDate() {
         return closedDate;

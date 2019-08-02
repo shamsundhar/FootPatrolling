@@ -52,6 +52,9 @@ public class DtoWrapper {
         facilityDto1.setReserveOrderEnumId(facilityDto.getReserveOrderEnumId());
         facilityDto1.setSkipPackInvCheck(facilityDto.getSkipPackInvCheck());
         facilityDto1.setSquareFootage(facilityDto.getSquareFootage());
+        facilityDto1.setParentDepot(facilityDto.getParentDepot());
+        facilityDto1.setDivision(facilityDto.getDivision());
+        facilityDto1.setSubDivision(facilityDto.getSubDivision());
 
         if(fpDatabase != null){
             fpDatabase.facilityDtoDao().insert(facilityDto1);
@@ -105,6 +108,7 @@ public class DtoWrapper {
         footPatrollingSectionsDto.setRemarks(sectionsDto.getRemarks());
         footPatrollingSectionsDto.setToLocation(sectionsDto.getToLocation());
         footPatrollingSectionsDto.setToDate(sectionsDto.getToDate());
+        footPatrollingSectionsDto.setSeqId(sectionsDto.getSeqId());
 
         fpDatabase.footPatrollingSectionsDao().insert(footPatrollingSectionsDto);
     }

@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:text="123456"
+                android:text=""
                 android:hint="Password"/>
         </android.support.design.widget.TextInputLayout>
 

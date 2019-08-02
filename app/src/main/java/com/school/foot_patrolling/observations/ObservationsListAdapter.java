@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.school.foot_patroling.R;
@@ -84,6 +85,12 @@ public class ObservationsListAdapter extends RecyclerView.Adapter<RecyclerView.V
             vh1.getSubtitle().setText(model.getObservation());
             vh1.getLocation().setText(model.getLocation());
             vh1.getDate().setText(DateTimeUtils.parseDateTime(model.getCreatedDateTime(), DATE_FORMAT6, DATE_FORMAT7));
+            if(model.getSeqId().equals("null")){
+                vh1.getImageView().setVisibility(View.GONE);
+            }
+            else{
+                vh1.getImageView().setVisibility(View.VISIBLE);
+            }
 
             vh1.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +107,15 @@ public class ObservationsListAdapter extends RecyclerView.Adapter<RecyclerView.V
         private TextView subtitle;
         private TextView location;
         private TextView date;
+        private ImageView imageView;
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public void setImageView(ImageView imageView) {
+            this.imageView = imageView;
+        }
 
         public TextView getLocation() {
             return location;
@@ -138,6 +154,7 @@ public class ObservationsListAdapter extends RecyclerView.Adapter<RecyclerView.V
             subtitle = (TextView) v.findViewById(R.id.subtitle);
             location = (TextView)v.findViewById(R.id.location);
             date = (TextView)v.findViewById(R.id.date);
+            imageView = (ImageView)v.findViewById(R.id.syncDoneImage);
             applyFonts(v);
         }
         private void applyFonts(View v){

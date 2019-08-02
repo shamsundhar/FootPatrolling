@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -244,7 +245,6 @@ public class EditObservationFragment extends BaseFragment{
         }
 
     }
-
     private void requestPermission(){
         MultiplePermissionsListener dialogMultiplePermissionsListener =
                 DialogOnAnyDeniedMultiplePermissionsListener.Builder

@@ -100,6 +100,9 @@ public class ObservationsCheckListDto{
     }
 
     public void setPriority(String priority) {
+        if(priority.equals("null") || priority.equals("")){
+            priority="Low";
+        }
         this.priority = priority;
     }
 

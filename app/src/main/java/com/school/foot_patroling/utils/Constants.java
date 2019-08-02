@@ -41,6 +41,7 @@ public class Constants {
     public static final String BUNDLE_KEY_SELECTED_COMPLIANCE = "SELECTED_COMPLIANCE";
     public static final String BUNDLE_VALUE_COMPLIANCE = "COMPLIANCE";
     public static final String BUNDLE_VALUE_EDIT_OBSERVATION = "EDIT_OBSERVATION";
+    public static final String BUNDLE_VALUE_VIEW_OBSERVATION = "VIEW_OBSERVATION";
     public static final String BUNDLE_KEY_SELECTED_OBSERVATION = "SELECTED_OBSERVATION";
     public static final String BUNDLE_KEY_PICNAME = "PICNAME";
 

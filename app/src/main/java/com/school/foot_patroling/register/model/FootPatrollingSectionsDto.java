@@ -8,8 +8,7 @@ import android.support.annotation.NonNull;
 
 @Entity(tableName = "foot_patrolling_sections")
 public class FootPatrollingSectionsDto {
-    @PrimaryKey
-    @NonNull
+
     @ColumnInfo(name = "facility_depot")
     private String facilityDepot;
     @ColumnInfo(name = "fp_section")
@@ -20,6 +19,8 @@ public class FootPatrollingSectionsDto {
     private String fromLocation;
     @ColumnInfo(name = "remarks")
     private String remarks;
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "seq_id")
     private String seqId;
     @ColumnInfo(name = "to_date")

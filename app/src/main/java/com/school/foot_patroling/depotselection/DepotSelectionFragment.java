@@ -45,6 +45,7 @@ import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
+import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class DepotSelectionFragment extends BaseFragment {
     PreferenceHelper preferenceHelper;
@@ -92,10 +93,11 @@ public class DepotSelectionFragment extends BaseFragment {
 
             Inspection inspection = new Inspection();
             String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+            String loggedInUser = preferenceHelper.getString(getActivity(), PREF_KEY_SELECTED_USER, "");
             inspection.setDeviceId(selectedImei);
             //   inspection.setDevice_seq_id();
             inspection.setFacilityId(selectedDepotId);
-            //   inspection.setInspection_by();
+            inspection.setInspectionBy(loggedInUser);
             inspection.setInspectionType(selectedScheduleType);
             inspection.setSection(selectedSectionID);
             inspection.setSeqId("null");
