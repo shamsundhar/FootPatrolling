@@ -110,7 +110,7 @@ public class PatrolingListFragment extends BaseFragment {
     public void submitButtonClick(){
         if(validate()) {
             //insert observation data.
-            if(checkList != null && checkList.size()>0) {
+            if(checkList != null && checkList.size() > 0) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                     Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
                         @Override

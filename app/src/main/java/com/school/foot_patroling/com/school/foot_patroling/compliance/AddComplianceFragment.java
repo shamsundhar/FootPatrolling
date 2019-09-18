@@ -146,6 +146,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         compliance.setCompliedDateTime(selectedDate);
         NavigationDrawerActivity.mFPDatabase.complianceDao().insert(compliance);
         Toast.makeText(getActivity(), "Compliance saved successfully", Toast.LENGTH_SHORT).show();
+        clearFields();
         //List<Compliance> list = NavigationDrawerActivity.mFPDatabase.complianceDao().getAllCompliancesDtos();
         complianceModel = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(observationModel.getDeviceSeqId());
         if(complianceModel != null){
@@ -156,7 +157,16 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         }else{
             cameraLayout.setVisibility(View.GONE);
             complianceProvidedStatus.setVisibility(View.GONE);
+
         }
+    }
+    private void clearFields(){
+        actionDone.setText("");
+        actionBy.setText("");
+        dateTv.setText("Action Date");
+        statusTV.setText("Select Status");
+        selectedDate = "";
+        selectedStatusType = "";
     }
     private void initCounter(){
         String deviceSequenceId = observationModel.getDeviceSeqId();

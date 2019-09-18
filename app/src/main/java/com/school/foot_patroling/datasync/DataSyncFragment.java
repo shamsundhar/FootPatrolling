@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -53,10 +55,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -72,6 +79,9 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
@@ -102,6 +112,7 @@ public class DataSyncFragment extends BaseFragment {
     TextView tvResult;
     @BindView(R.id.tvDataSyncStatus)
     TextView tvSyncStatus;
+    String url;
     @OnClick(R.id.btn_syncNow)
     public void clickSyncNow() {
         Boolean isInspectionInProgress = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
@@ -116,7 +127,7 @@ public class DataSyncFragment extends BaseFragment {
                 progressDialog.setIndeterminate(true);
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage(getString(R.string.text_please_wait));
-                progressDialog.show();
+             //   progressDialog.show();
 
                 String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
                 //preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI1, imeiList.get(0));
@@ -152,53 +163,53 @@ public class DataSyncFragment extends BaseFragment {
                 appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
                 model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
-               // uploadImages();
-                registerApi.register(url, model)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<MasterDto>() {
-                            @Override
-                            public void onError(Throwable e) {
-                                System.out.println("error called::" + e.fillInStackTrace());
-                                progressDialog.dismiss();
-                                tvResult.setText("Result : Failed");
-                                tvSyncStatus.setText("Data Sync Status : Failed");
-                                String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-                                tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                System.out.println("complete called");
-                            }
-
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                System.out.println("onsubscribe called");
-                            }
-
-                            @Override
-                            public void onNext(MasterDto masterDto) {
-                                if (masterDto.getImeiAuth()) {
-                                    progressDialog.dismiss();
-                                    try {
-                                        String result = syncMasterData(masterDto);
-                                        tvResult.setText("Result : " + result);
-                                        tvSyncStatus.setText("Data Sync Status : Completed");
-
-                                        if (result.equals("Success")) {
-                                            String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-                                            preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
-                                            tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-                                        } else {
-
-                                        }
-                                    } catch (Exception e) {
-
-                                    }
-                                }
-                            }
-                        });
+                uploadImages();
+//                registerApi.register(url, model)
+//                        .subscribeOn(Schedulers.io())
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribe(new Observer<MasterDto>() {
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                System.out.println("error called::" + e.fillInStackTrace());
+//                                progressDialog.dismiss();
+//                                tvResult.setText("Result : Failed");
+//                                tvSyncStatus.setText("Data Sync Status : Failed");
+//                                String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+//                                tvSyncEndTime.setText("Finish Time : " + syncEndTime);
+//                            }
+//
+//                            @Override
+//                            public void onComplete() {
+//                                System.out.println("complete called");
+//                            }
+//
+//                            @Override
+//                            public void onSubscribe(Disposable d) {
+//                                System.out.println("onsubscribe called");
+//                            }
+//
+//                            @Override
+//                            public void onNext(MasterDto masterDto) {
+//                                if (masterDto.getImeiAuth()) {
+//                                    progressDialog.dismiss();
+//                                    try {
+//                                        String result = syncMasterData(masterDto);
+//                                        tvResult.setText("Result : " + result);
+//                                        tvSyncStatus.setText("Data Sync Status : Completed");
+//
+//                                        if (result.equals("Success")) {
+//                                            String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+//                                            preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
+//                                            tvSyncEndTime.setText("Finish Time : " + syncEndTime);
+//                                        } else {
+//
+//                                        }
+//                                    } catch (Exception e) {
+//
+//                                    }
+//                                }
+//                            }
+//                        });
             }
         }
         else{
@@ -209,101 +220,138 @@ public class DataSyncFragment extends BaseFragment {
     }
 
     private void uploadImages() {
-        String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
+        url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
         url = url + Constants.REST_POST_FILE_UPLOAD;
-        Map<String, byte[]> imagesMap = new HashMap<String, byte[]>();
+//        Map<String, byte[]> imagesMap = new HashMap<String, byte[]>();
 
         final File directory = new File(Environment.getExternalStorageDirectory() + FP_PICS_FOLDER);
 
-//        File[] files = directory.listFiles();
-//        Log.d("Files", "Size: "+ files.length);
+
+        File[] files = directory.listFiles();
+        Log.d("Files", "Size: "+ files.length);
 //        for (int i = 0; i < files.length; i++)
 //        {
 //            Log.d("Files", "FileName:" + files[i].getName());
 //            int size = (int) files[i].length();
 //            byte[] bytes = new byte[size];
-//            try {
-//                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(files[i]));
-//                buf.read(bytes, 0, bytes.length);
-//                buf.close();
-//            } catch (FileNotFoundException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
+//            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+//            try{
+//            InputStream insS = new FileInputStream(files[i]);
+//
+//            int len;
+//                while((len = insS.read(bytes) ) != -1) {
+//                    bo.write(bytes,0,len);
+//                    bo.close();
+//                }
+//                insS.close();
 //            } catch (IOException e) {
 //                // TODO Auto-generated catch block
 //                e.printStackTrace();
 //            }
-//            imagesMap.put(files[i].getName(),bytes);
+
+
 //        }
 
-        File[] files = directory.listFiles();
-        Log.d("Files", "Size: "+ files.length);
-        for (int i = 0; i < files.length; i++)
-        {
-            Log.d("Files", "FileName:" + files[i].getName());
-            int size = (int) files[i].length();
-            byte[] bytes = new byte[size];
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            int len;
-            try {
-                BufferedInputStream buf = new BufferedInputStream(new FileInputStream(files[i]));
-               // buf.read(bytes, 0, bytes.length);
-                while((len = buf.read(bytes)) != -1){
-                    bo.write(bytes, 0, len);
-                    bo.close();
-                }
+//        File file = new File(Environment.getExternalStorageDirectory()+"/image.png");
+//        File file = files[0];
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+//        MultipartBody.Part fileupload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+//        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+        final File file = files[0];
+     //   RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+//        MultipartBody.Part fileupload = MultipartBody.Part.createFormData("file", "shyamtest.png", requestBody);
+      //  RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
-                buf.close();
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+//MultipartBody multipartBody = new MultipartBody.Builder()
+ //                                   .setType(MultipartBody.FORM)
+   //                                 .addPart(null, requestBody).build();
+
+//        RequestBody requestBody = new MultipartBody.Builder()
+//                .setType(MultipartBody.FORM)
+//                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file))
+//                .build();
+//        val mpart = MultipartBody.Builder()
+//                .addFormDataPart("param", paramValue)
+//                .addPart(null, someRequestBody).build()
+
+     //   final FileDataBodyPart filePart = new FileDataBodyPart("fileName", secFile);
+     //   FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+
+//        File file = new File(filePath);
+//        // Create a request body with file and image media type
+//        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+//        // Create MultipartBody.Part using file request-body,file name and part name
+//        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
+//        //Create request body with text description and text media type
+//        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
+//        //
+//        Call call = uploadAPIs.uploadImage(part, description);
+//        registerApi.fileUpload(url, jsonByteArray)
+//                   .subscribeOn(Schedulers.io())
+//                   .observeOn(AndroidSchedulers.mainThread())
+//
+//                   .subscribe(new Observer<Object>() {
+//                       @Override
+//                       public void onSubscribe(Disposable d) {
+//
+//                       }
+//
+//                       @Override
+//                       public void onNext(Object o) {
+//                            //TODO delete files
+//                          Log.d("next::", "next called");
+//                          // directory.delete();
+//                       }
+//
+//                       @Override
+//                       public void onError(Throwable e) {
+//                           Log.d("error::", "error called");
+//                       }
+//
+//                       @Override
+//                       public void onComplete() {
+//                           Log.d("complete::", "complete called");
+//                       }
+//                   });
+
+        new Thread(new Runnable() {
+            public void run() {
+
+//                uploadFile(url, file);
+                sendPics(url, file);
+
             }
-            imagesMap.put(files[i].getName(), bo.toByteArray());
-        }
-
-       // JSONObject jsonObject = new JSONObject(imagesMap);
-       // String output = MapUtil.mapToString(imagesMap);
-        ObjectMapper objMapper = new ObjectMapper();
-        String json = null;
-        try {
-            json = objMapper.writeValueAsString(imagesMap);
-           // System.out.println("imagesMap object json::: ::: :::::"+json);
-            } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        registerApi.fileUpload(url, json)
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-
-                   .subscribe(new Observer<Object>() {
-                       @Override
-                       public void onSubscribe(Disposable d) {
-
-                       }
-
-                       @Override
-                       public void onNext(Object o) {
-                            //TODO delete files
-                           directory.delete();
-                       }
-
-                       @Override
-                       public void onError(Throwable e) {
-
-                       }
-
-                       @Override
-                       public void onComplete() {
-
-                       }
-                   });
+        }).start();
 
 
+
+//        registerApi.fileUpload2(url, requestBody)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//
+//                .subscribe(new Observer<Object>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Object o) {
+//                        //TODO delete files
+//                        Log.d("next::", "next called");
+//                        // directory.delete();
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.d("error::", "error called");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        Log.d("complete::", "complete called");
+//                    }
+//                });
 
     }
 
@@ -529,4 +577,192 @@ public class DataSyncFragment extends BaseFragment {
 
         return result;
     }
+
+    public int uploadFile(String upLoadServerUri, File sourceFile) {
+
+
+        String fileName = sourceFile.getName();
+        int serverResponseCode = 0;
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+        int bytesRead, bytesAvailable, bufferSize;
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+      //  File sourceFile = new File(sourceFileUri);
+
+        if (!sourceFile.isFile()) {
+
+//            dialog.dismiss();
+//
+//            Log.e("uploadFile", "Source File not exist :"
+//                    +uploadFilePath + "" + uploadFileName);
+//
+//            runOnUiThread(new Runnable() {
+//                public void run() {
+//                    messageText.setText("Source File not exist :"
+//                            +uploadFilePath + "" + uploadFileName);
+//                }
+//            });
+
+            return 0;
+
+        }
+        else
+        {
+            try {
+
+                // open a URL connection to the Servlet
+                FileInputStream fileInputStream = new FileInputStream(sourceFile);
+                URL url = new URL(upLoadServerUri);
+
+                // Open a HTTP  connection to  the URL
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true); // Allow Inputs
+                conn.setDoOutput(true); // Allow Outputs
+                conn.setUseCaches(false); // Don't use a Cached Copy
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Connection", "Keep-Alive");
+                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
+                conn.setRequestProperty("Content-Type", "multipart/form-data;");
+               // conn.setRequestProperty("file", fileName);
+
+                dos = new DataOutputStream(conn.getOutputStream());
+
+                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                dos.writeBytes("Content-Disposition: form-data; name='file';filename='"
+                                + fileName + lineEnd+"'");
+
+                dos.writeBytes(lineEnd);
+
+                // create a buffer of  maximum size
+                bytesAvailable = fileInputStream.available();
+
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
+                // read file and write it into form...
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                while (bytesRead > 0) {
+
+                    dos.write(buffer, 0, bufferSize);
+                    bytesAvailable = fileInputStream.available();
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                }
+
+                // send multipart form data necesssary after file data...
+                dos.writeBytes(lineEnd);
+                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                // Responses from the server (code and message)
+                serverResponseCode = conn.getResponseCode();
+                String serverResponseMessage = conn.getResponseMessage();
+
+                Log.i("uploadFile", "HTTP Response is : "
+                        + serverResponseMessage + ": " + serverResponseCode);
+
+                if(serverResponseCode == 200){
+
+//                    runOnUiThread(new Runnable() {
+//                        public void run() {
+//
+//                            String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
+//                                    +" http://www.androidexample.com/media/uploads/"
+//                                    +uploadFileName;
+//
+//                            messageText.setText(msg);
+//                            Toast.makeText(UploadToServer.this, "File Upload Complete.",
+//                                    Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+                }
+
+                //close the streams //
+                fileInputStream.close();
+                dos.flush();
+                dos.close();
+
+            } catch (MalformedURLException ex) {
+
+              //  dialog.dismiss();
+                ex.printStackTrace();
+
+//                runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        messageText.setText("MalformedURLException Exception : check script url.");
+//                        Toast.makeText(UploadToServer.this, "MalformedURLException",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
+                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
+            } catch (Exception e) {
+
+//                dialog.dismiss();
+                e.printStackTrace();
+
+//                runOnUiThread(new Runnable() {
+//                    public void run() {
+//                        messageText.setText("Got Exception : see logcat ");
+//                        Toast.makeText(UploadToServer.this, "Got Exception : see logcat ",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                Log.e("Upload file to server", "Exception : "
+                        + e.getMessage(), e);
+            }
+           // dialog.dismiss();
+            return serverResponseCode;
+
+        } // End else block
+    }
+    private void sendPics(String url, File file){
+
+
+
+
+            try{
+                Bitmap original = BitmapFactory.decodeFile(file.getAbsolutePath());
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                original.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                byte[] data = out.toByteArray();
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setReadTimeout(10000);
+                connection.setConnectTimeout(15000);
+                connection.setRequestMethod("POST");
+                connection.setUseCaches(false);
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+
+                connection.setRequestProperty("Connection", "Keep-Alive");
+                connection.setRequestProperty("Cache-Control", "no-cache");
+                connection.setRequestProperty("Content-Type", "multipart/form-data");
+
+                DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+                dataOutputStream.write(data);
+                dataOutputStream.flush();
+                dataOutputStream.close();
+                int c = connection.getResponseCode();
+                String serverResponseMessage = connection.getResponseMessage();
+                Log.i("sendpics", "HTTP Response is : "
+                        + serverResponseMessage + ": " + c);
+                if(c == 200){
+
+                }
+               // connection.disconnect();
+
+            }catch(Exception e){
+                Log.e("cedError",e.getMessage());
+            }
+
+
+    }
+
+
 }

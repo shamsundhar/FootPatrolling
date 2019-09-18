@@ -1,16 +1,20 @@
 package com.school.foot_patroling.reports;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,6 +34,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.itextpdf.text.pdf.PdfWriter;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
@@ -57,6 +64,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -157,6 +165,7 @@ public class ReportsFragment extends BaseFragment {
     ReportsListAdapter reportsListAdapter;
     SubDivisionsListAdapter subDivisionsListAdapter;
     DepotsListAdapter depotListAdapter;
+
 
     // TODO: Rename and change types and number of parameters
     public static ReportsFragment newInstance() {
@@ -269,75 +278,42 @@ public class ReportsFragment extends BaseFragment {
     }
 
     private void displayPDF(ReportModel reportModel, Object reportData){
-//        final DialogPDFViewer dialogPDFViewer = new DialogPDFViewer(getContext(),reportData, new DialogPDFViewer.OnDialogPdfViewerListener() {
-//            @Override
-//            public void onAgreeClick(DialogPDFViewer dialogFullEula) {
-//
-//            }
-//
-//            @Override
-//            public void onCloseClick(DialogPDFViewer dialogFullEula) {
-//                dialogFullEula.dismiss();
-//            }
-//        });
-//        dialogPDFViewer.show();
 
         try {
-            final File dwldsPath = new File(Environment.getExternalStorageDirectory()+"/"+reportModel.getReportId() + ".pdf");
-            if(!dwldsPath.exists()){
-                if(reportData != null){
-
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(bos);
-                    oos.writeObject((Object) reportData);
-                    oos.flush();
-                    byte [] data = bos.toByteArray();
-
-                    byte[] pdfAsBytes = data;//Base64.decode(reportData, 0);
-                    FileOutputStream os;
-
-                    os = getContext().openFileOutput(reportModel.getReportId() + ".pdf", Context.MODE_PRIVATE);
-
-                    os.write(pdfAsBytes);
-//                    os.flush();
-//                    os.close();
+                 if(reportData != null) {
+                     if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                             ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
 
+                         String path = Environment.getExternalStorageDirectory() + "/FootPatrolling/files";
 
-                    com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+                         File dir = new File(path);
+                         if (!dir.exists()) {
+                             dir.mkdirs();
+                         }
 
-                    PdfWriter.getInstance(document,os);
+                         File dwldsPath = new File(dir, reportModel.getReportId() + ".pdf");
 
-                    os.flush();
-                    os.close();
-                   // Object obj = dto.getReportProgress();
-                  //  Log.d(TAG,"acquired--" +obj);
+                         BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(dwldsPath));
 
+                         FileOutputStream fos = new FileOutputStream(dwldsPath);
+                         byte[] respuesta = android.util.Base64.decode(((String) reportData).getBytes(), android.util.Base64.DEFAULT);
 
+                         fos.write(respuesta);
 
-//                    FileOutputStream outValue = new FileOutputStream(FILE);
-//                    outValue.write(data);
-//                    outValue.close();
-//                    Log.d(TAG,"written--"+data);
+                         fos.flush();
 
+                         fos.close();
+                         output.close();
 
+                         Log.d("Reports fragment", "new file created");
 
-
-                }
-            }
-            Uri photoURI = GenericFileProvider.getUriForFile(getActivity().getApplicationContext(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", dwldsPath);
-
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(photoURI, "application/pdf");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-//            Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
-//            pdfIntent.setDataAndType(path, "application/pdf");
-//            pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-            startActivity(intent);
+                         viewPdf(reportModel.getReportId() + ".pdf");
+                     }
+                     else{
+                        requestPermission();
+                     }
+                 }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -348,7 +324,44 @@ public class ReportsFragment extends BaseFragment {
         }
 
     }
+    private void requestPermission(){
+        MultiplePermissionsListener dialogMultiplePermissionsListener =
+                DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                        .withContext(getActivity())
+                        .withTitle("Write & Read Storage permission")
+                        .withMessage("Both Write & Read storage permission are needed to display pdf.")
+                        .withButtonText(android.R.string.ok)
+                        .withIcon(R.drawable.ic_launcher)
+                        .build();
 
+        Dexter.withActivity(getActivity())
+                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(dialogMultiplePermissionsListener).check();
+
+    }
+    // Method for opening a pdf file
+    private void viewPdf(String file) {
+
+        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/FootPatrolling/files/" + file);
+        Uri path = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".fileprovider", pdfFile);
+
+        Log.d("Reports fragment","setting up for viewing pdf");
+
+        // Setting the intent for pdf reader
+        Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+        pdfIntent.setDataAndType(path, "application/pdf");
+        pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        // pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        try {
+            getActivity().startActivity(pdfIntent);
+            Log.d("Reports fragment","showing");
+        } catch (ActivityNotFoundException e) {
+            Log.d("Reports fragment","can't read pdf file----" +e);
+        }
+    }
     private void getReportNames(){
         reportList = new ArrayList<Object>();
         if(Common.isNetworkAvailable(getActivity())) {
@@ -536,9 +549,6 @@ public class ReportsFragment extends BaseFragment {
             progressDialog.setMessage(getString(R.string.text_please_wait));
             progressDialog.show();
 
-           // final ReportModel reportModel = new ReportModel();
-
-
             //TODO call reports request API
             String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
             url = url + Constants.REST_REPORT_EXECUTION;
@@ -568,31 +578,12 @@ public class ReportsFragment extends BaseFragment {
                             progressDialog.dismiss();
                             System.out.println("onNext called" + reportResult);
                             if (reportResult != null) {
-//                                    String s = o.toString().replace("/","//");
-//                                    JSONObject jsonObject = new JSONObject(s);
-                                    Object reportData = reportResult.getReportResult();//jsonObject.getString("reportResult");
+                                    Object reportData = reportResult.getReportResult();
                                     if(reportData != null){
 
                                         displayPDF(reportModel, reportData);
-//                                        decodedPDFString = Base64.decode(reportData.toString(), Base64.DEFAULT);
-//
-//                                        //pdfView = ((PDFView) findViewById(R.id.pdfView));
-//                                        reportsRecyclerView.setVisibility(View.GONE);
-//                                        pdfView.fromBytes(decodedPDFString).load();
-//                                        pdfView.setVisibility(View.VISIBLE);
-
-//                                        final File dwldsPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + reportModel.getReportId() + ".pdf");
-//                                        byte[] pdfAsBytes = Base64.decode(reportData, 0);
-//                                        FileOutputStream os;
-//                                        os = new FileOutputStream(dwldsPath, false);
-//                                        os.write(pdfAsBytes);
-//                                        os.flush();
-//                                        os.close();
                                     }
-
-
                             }
-
                         }
                     });
 
