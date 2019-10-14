@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +83,10 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
@@ -113,6 +118,7 @@ public class DataSyncFragment extends BaseFragment {
     @BindView(R.id.tvDataSyncStatus)
     TextView tvSyncStatus;
     String url;
+    ProgressDialog progressDialog;
     @OnClick(R.id.btn_syncNow)
     public void clickSyncNow() {
         Boolean isInspectionInProgress = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
@@ -122,12 +128,12 @@ public class DataSyncFragment extends BaseFragment {
                 String syncStartTime = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
                 tvSyncStartTime.setText("Start Time : " + syncStartTime);
                 tvSyncStatus.setText("Data Sync Status : Started");
-                final ProgressDialog progressDialog = new ProgressDialog(getActivity(),
+                progressDialog = new ProgressDialog(getActivity(),
                         R.style.AppTheme_Dark_Dialog);
                 progressDialog.setIndeterminate(true);
                 progressDialog.setCanceledOnTouchOutside(false);
                 progressDialog.setMessage(getString(R.string.text_please_wait));
-             //   progressDialog.show();
+                progressDialog.show();
 
                 String url = preferenceHelper.getString(getActivity(), BUNDLE_KEY_URL, "");
                 //preferenceHelper.setString(getActivity(), BUNDLE_KEY_IMEI1, imeiList.get(0));
@@ -141,7 +147,7 @@ public class DataSyncFragment extends BaseFragment {
                 model.setCurrentTimestamp(syncStartTime);
                // model.setImeiNumber("867520040587478");
                 //TODO
-            model.setImeiNumber(selectedImei);
+                model.setImeiNumber(selectedImei);
                 model.setPreviousTimestamp(lastSyncDate);
                 List<Inspection> inspectionDtoList = NavigationDrawerActivity.mFPDatabase.inspectionDao().getNotSyncedInspection();
                 AppToServerCreatedFootPatrollingInspectionDto appToServerCreatedFootPatrollingInspectionDto = new AppToServerCreatedFootPatrollingInspectionDto();
@@ -163,53 +169,55 @@ public class DataSyncFragment extends BaseFragment {
                 appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
                 model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
-                uploadImages();
-//                registerApi.register(url, model)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(new Observer<MasterDto>() {
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                System.out.println("error called::" + e.fillInStackTrace());
-//                                progressDialog.dismiss();
-//                                tvResult.setText("Result : Failed");
-//                                tvSyncStatus.setText("Data Sync Status : Failed");
-//                                String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-//                                tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-//                            }
-//
-//                            @Override
-//                            public void onComplete() {
-//                                System.out.println("complete called");
-//                            }
-//
-//                            @Override
-//                            public void onSubscribe(Disposable d) {
-//                                System.out.println("onsubscribe called");
-//                            }
-//
-//                            @Override
-//                            public void onNext(MasterDto masterDto) {
-//                                if (masterDto.getImeiAuth()) {
-//                                    progressDialog.dismiss();
-//                                    try {
-//                                        String result = syncMasterData(masterDto);
-//                                        tvResult.setText("Result : " + result);
-//                                        tvSyncStatus.setText("Data Sync Status : Completed");
-//
-//                                        if (result.equals("Success")) {
-//                                            String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
-//                                            preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
-//                                            tvSyncEndTime.setText("Finish Time : " + syncEndTime);
-//                                        } else {
-//
-//                                        }
-//                                    } catch (Exception e) {
-//
-//                                    }
-//                                }
-//                            }
-//                        });
+
+                registerApi.register(url, model)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<MasterDto>() {
+                            @Override
+                            public void onError(Throwable e) {
+                                System.out.println("error called::" + e.fillInStackTrace());
+                                progressDialog.dismiss();
+                                tvResult.setText("Result : Failed");
+                                tvSyncStatus.setText("Data Sync Status : Failed");
+                                String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+                                tvSyncEndTime.setText("Finish Time : " + syncEndTime);
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                System.out.println("complete called");
+
+                                uploadImages();
+                            }
+
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                System.out.println("onsubscribe called");
+                            }
+
+                            @Override
+                            public void onNext(MasterDto masterDto) {
+                                if (masterDto.getImeiAuth()) {
+                                    progressDialog.dismiss();
+                                    try {
+                                        String result = syncMasterData(masterDto);
+                                        tvResult.setText("Result : " + result);
+                                        tvSyncStatus.setText("Data Sync Status : Completed");
+
+                                        if (result.equals("Success")) {
+                                            String syncEndTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
+                                            preferenceHelper.setString(getActivity(), BUNDLE_KEY_LAST_SYNC_DATE, syncEndTime);
+                                            tvSyncEndTime.setText("Finish Time : " + syncEndTime);
+                                        } else {
+
+                                        }
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }
+                        });
             }
         }
         else{
@@ -226,132 +234,90 @@ public class DataSyncFragment extends BaseFragment {
 
         final File directory = new File(Environment.getExternalStorageDirectory() + FP_PICS_FOLDER);
 
-
         File[] files = directory.listFiles();
         Log.d("Files", "Size: "+ files.length);
-//        for (int i = 0; i < files.length; i++)
-//        {
-//            Log.d("Files", "FileName:" + files[i].getName());
-//            int size = (int) files[i].length();
-//            byte[] bytes = new byte[size];
-//            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-//            try{
-//            InputStream insS = new FileInputStream(files[i]);
+
+int totalFiles = files.length;
+        for (int i = 0; i < totalFiles; i++)
+        {
+            final File selectedFile = files[i];
+            String message = "Uploading "+(i+1) +" / "+(totalFiles)+" images, Please wait.";
+            progressDialog.setMessage(message);
+            progressDialog.show();
+            Map<String, String> filesMap = new HashMap<String, String>();
+            byte[] bytesArray = new byte[(int) selectedFile.length()];
+            try {
+                FileInputStream fis = new FileInputStream(selectedFile);
+                fis.read(bytesArray); //read file into bytes[]
+                fis.close();
+                String base64 = Base64.encodeToString(bytesArray, Base64.NO_WRAP);
+                filesMap.put(files[i].getName(), base64);
+
+                FileUpload fileUpload = new FileUpload();
+                fileUpload.setFileData(filesMap);
+
+                registerApi.fileUpload(url, fileUpload)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+
+                        .subscribe(new Observer<Object>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                progressDialog.show();
+                            }
+
+                            @Override
+                            public void onNext(Object o) {
+                                progressDialog.dismiss();
+                                //TODO delete files
+                                Log.d("next::", "next called");
+                                // directory.delete();
+                                selectedFile.delete();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                progressDialog.dismiss();
+                                Log.d("error::", "error called");
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                progressDialog.setMessage(getString(R.string.text_please_wait));
+                                progressDialog.dismiss();
+                                Log.d("complete::", "complete called");
+                            }
+                        });
+
+
+//                Call<Object> call =
+//                        registerApi.downloadFileWithDynamicUrlSync(url);
+//                call.enqueue(new Callback<ResponseBody>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        Log.d(TAG, "request success");
+//                    }
 //
-//            int len;
-//                while((len = insS.read(bytes) ) != -1) {
-//                    bo.write(bytes,0,len);
-//                    bo.close();
-//                }
-//                insS.close();
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e(TAG, "request failed");
+//                    }
+//                };);
 
 
-//        }
 
-//        File file = new File(Environment.getExternalStorageDirectory()+"/image.png");
-//        File file = files[0];
-//        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-//        MultipartBody.Part fileupload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-//        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
-        final File file = files[0];
-     //   RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-//        MultipartBody.Part fileupload = MultipartBody.Part.createFormData("file", "shyamtest.png", requestBody);
-      //  RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
-//MultipartBody multipartBody = new MultipartBody.Builder()
- //                                   .setType(MultipartBody.FORM)
-   //                                 .addPart(null, requestBody).build();
 
-//        RequestBody requestBody = new MultipartBody.Builder()
-//                .setType(MultipartBody.FORM)
-//                .addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file))
-//                .build();
-//        val mpart = MultipartBody.Builder()
-//                .addFormDataPart("param", paramValue)
-//                .addPart(null, someRequestBody).build()
 
-     //   final FileDataBodyPart filePart = new FileDataBodyPart("fileName", secFile);
-     //   FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
-
-//        File file = new File(filePath);
-//        // Create a request body with file and image media type
-//        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-//        // Create MultipartBody.Part using file request-body,file name and part name
-//        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-//        //Create request body with text description and text media type
-//        RequestBody description = RequestBody.create(MediaType.parse("text/plain"), "image-type");
-//        //
-//        Call call = uploadAPIs.uploadImage(part, description);
-//        registerApi.fileUpload(url, jsonByteArray)
-//                   .subscribeOn(Schedulers.io())
-//                   .observeOn(AndroidSchedulers.mainThread())
-//
-//                   .subscribe(new Observer<Object>() {
-//                       @Override
-//                       public void onSubscribe(Disposable d) {
-//
-//                       }
-//
-//                       @Override
-//                       public void onNext(Object o) {
-//                            //TODO delete files
-//                          Log.d("next::", "next called");
-//                          // directory.delete();
-//                       }
-//
-//                       @Override
-//                       public void onError(Throwable e) {
-//                           Log.d("error::", "error called");
-//                       }
-//
-//                       @Override
-//                       public void onComplete() {
-//                           Log.d("complete::", "complete called");
-//                       }
-//                   });
-
-        new Thread(new Runnable() {
-            public void run() {
-
-//                uploadFile(url, file);
-                sendPics(url, file);
 
             }
-        }).start();
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
 
 
-
-//        registerApi.fileUpload2(url, requestBody)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//
-//                .subscribe(new Observer<Object>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Object o) {
-//                        //TODO delete files
-//                        Log.d("next::", "next called");
-//                        // directory.delete();
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.d("error::", "error called");
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        Log.d("complete::", "complete called");
-//                    }
-//                });
 
     }
 

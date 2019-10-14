@@ -85,9 +85,9 @@
             android:layout_gravity="center_horizontal"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
-            android:background="@drawable/drawable_corners_primary_gradient"
+            android:background="@drawable/drawable_corners_skyblue"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:text="@string/text_register"/>
 
     </LinearLayout>

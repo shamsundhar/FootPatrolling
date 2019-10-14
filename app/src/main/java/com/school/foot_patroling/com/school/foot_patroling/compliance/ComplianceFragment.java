@@ -119,6 +119,7 @@ public class ComplianceFragment extends BaseFragment {
 
 
     private void displayToDateDialog(){
+        String fromDate = from_dateTv.getText().toString();
         DatePickerFragment date = new DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
@@ -129,6 +130,15 @@ public class ComplianceFragment extends BaseFragment {
         args.putInt("month", calender.get(Calendar.MONTH));
         args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
         args.putLong("maxdate", calender.getTimeInMillis());
+        try {
+            if(!fromDate.equals("From Date")) {
+                Calendar minCal = DateTimeUtils.getCalendarObject(fromDate, DATE_FORMAT5);
+                args.putLong("mindate", minCal.getTimeInMillis());
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         date.setListener(new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {

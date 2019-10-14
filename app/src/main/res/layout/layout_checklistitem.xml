@@ -23,10 +23,9 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
+            android:textStyle="italic"
             android:textSize="18sp"
-            android:textColor="@color/oil"
-            android:text="title"
+           android:text="title"
             android:gravity="center_vertical"/>
         <TextView
             android:id="@+id/subtitle"
@@ -36,7 +35,8 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:minLines="2"
-            android:textColor="@color/description_color"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             android:gravity="center_vertical" />
     </LinearLayout>
     <LinearLayout
@@ -68,7 +68,7 @@
             android:id="@+id/edit_comments"
             android:minLines="3"
             android:maxLines="5"
-            android:hint="Enter comments"/>
+            android:hint="Enter Observation"/>
     </LinearLayout>
     <View android:layout_width="match_parent"
         android:layout_height="1dp"

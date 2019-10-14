@@ -63,6 +63,7 @@ import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.register.model.UserLoginDto_;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
@@ -146,6 +147,7 @@ public class RegisterActivity extends BaseActivity {
                     preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI1, imeiList.get(0));
                     preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_IMEI2,imeiList.get(1));
                     preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_SELECTED_IMEI, selectedImei);
+                    final CustomAlertDialog alertDialog = new CustomAlertDialog();
                     url = url + "/warehouse/fpApp/get-fp-data";
                     RegistrationRequestModel model = new RegistrationRequestModel();
                     model.setAppName("TRD_FP");
@@ -160,6 +162,7 @@ public class RegisterActivity extends BaseActivity {
                                 @Override
                                 public void onError(Throwable e) {
                                     System.out.println("error called::" + e.fillInStackTrace());
+                                    alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "Please try Again after sometime");
                                 }
 
                                 @Override

@@ -153,7 +153,19 @@ public class ReportsFragment extends BaseFragment {
             dialog.showAlert1(getActivity(), R.string.text_alert, "Select Report");
         }
     }
-
+    @OnClick(R.id.btn_reset)
+    public void clickOnReset(){
+       reportTV.setText("Select Report");
+       subDivisionTV.setText("Select Sub Division");
+       depotTV.setText("Select Depot");
+       toDateTV.setText("To Date");
+       fromDateTV.setText("From Date");
+       selectedReportID="";
+       selectedSubDivisionID="";
+       selectedDepotId="";
+       selectedFromDate="";
+       selectedToDate="";
+    }
     private List<Object> reportList;
     private List<String> subdivisionsList;
     private List<FacilityDto> depotList;
@@ -230,6 +242,8 @@ public class ReportsFragment extends BaseFragment {
         date.show(getActivity().getSupportFragmentManager(), "Date Picker");
     }
     private void displayToDateDialog(){
+        String fromDate = fromDateTV.getText().toString();
+
         DatePickerFragment date = new DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
@@ -240,6 +254,15 @@ public class ReportsFragment extends BaseFragment {
         args.putInt("month", calender.get(Calendar.MONTH));
         args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
         args.putLong("maxdate", calender.getTimeInMillis());
+        try {
+            if(!fromDate.equals("From Date")) {
+                Calendar minCal = DateTimeUtils.getCalendarObject(fromDate, DATE_FORMAT5);
+                args.putLong("mindate", minCal.getTimeInMillis());
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         date.setListener(new DatePickerDialog.OnDateSetListener(){
 
             @Override

@@ -35,8 +35,8 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:textSize="18sp"
-        android:background="@drawable/layout_corners_primary_gradient"
+        android:background="@drawable/drawable_corners_skyblue"
         android:textAllCaps="false"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:text="Save"/>
 </LinearLayout>

@@ -36,6 +36,9 @@
     <color name="dark_grey">#4D4D4D</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="toolbar_bgcolor">#376091</color>
+    <color name="button_color">#8EB4E3</color>
+    <color name="light_grey3">#C5D9F2</color>
 
     <!--&lt;!&ndash; Indigo 500 &ndash;&gt;-->
     <!--<color name="primary_500">#3F51B5</color>-->

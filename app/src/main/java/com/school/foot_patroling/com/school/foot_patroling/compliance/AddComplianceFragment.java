@@ -91,6 +91,8 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     }
     @BindView(R.id.cameraLayout)
     LinearLayout cameraLayout;
+    @BindView(R.id.tvAttachmentsCounter)
+    TextView attachmentsCounter;
     @BindView(R.id.dateTV)
     TextView dateTv;
     @BindView(R.id.tvChecklistItem)
@@ -105,7 +107,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
 
-            picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+"_"+getImageCounter()+".jpg";
+            picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
 
             pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
             if(!pictureSaveFolderPath.exists()){
@@ -154,6 +156,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
             complianceProvidedStatus.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setText("Compliance already provided");
             initCounter();
+            attachmentsCounter.setText("Attachments : "+currentCounter);
         }else{
             cameraLayout.setVisibility(View.GONE);
             complianceProvidedStatus.setVisibility(View.GONE);

@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/toolbar_bgcolor"
             app:contentInsetStart="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
@@ -39,6 +39,7 @@
                     android:ellipsize="end"
                     android:layout_marginBottom="8dp"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:textColor="@color/white"
                     android:text="Foot Patrolling"/>
 
                 <TextView
@@ -50,6 +51,7 @@
                     android:layout_width="wrap_content"
                     android:textSize="15sp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="depot:MS_OHE"/>
                 </RelativeLayout>
 

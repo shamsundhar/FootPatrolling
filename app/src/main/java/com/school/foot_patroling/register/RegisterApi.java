@@ -1,5 +1,6 @@
 package com.school.foot_patroling.register;
 
+import com.school.foot_patroling.datasync.FileUpload;
 import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
@@ -40,7 +41,7 @@ public interface RegisterApi {
 
  @POST
  @Headers({"Content-Type: application/json"})
- Observable<Object> fileUpload(@Url String url, @Body byte[] fileMap);
+ Observable<Object> fileUpload(@Url String url, @Body FileUpload fileUpload);
 
  @POST
  @Multipart

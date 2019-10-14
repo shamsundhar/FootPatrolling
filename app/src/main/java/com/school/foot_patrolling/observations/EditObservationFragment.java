@@ -63,6 +63,8 @@ public class EditObservationFragment extends BaseFragment{
     TextView tvLocation;
     @BindView(R.id.et_comments)
     TextInputEditText etComments;
+    @BindView(R.id.tvAttachmentsCounter)
+    TextView attachmentsCounter;
     private int CAMERA_PIC_REQUEST = 100;
     private int GALLERY_PIC_REQUEST = 101;
     private int currentCounter;
@@ -88,7 +90,7 @@ public class EditObservationFragment extends BaseFragment{
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
 
-            picname = "O_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+"_"+getImageCounter()+".jpg";
+            picname = "O_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
 
             pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
             if(!pictureSaveFolderPath.exists()){
@@ -144,6 +146,7 @@ public class EditObservationFragment extends BaseFragment{
         tvCheckListItem.setText(observationModel.getObservationItem());
         tvLocation.setText(observationModel.getLocation());
         etComments.setText(observationModel.getObservation());
+        attachmentsCounter.setText("Attachments : "+currentCounter);
 
 
         return view;
@@ -176,7 +179,8 @@ public class EditObservationFragment extends BaseFragment{
             else if(requestCode == GALLERY_PIC_REQUEST){
                 if(resultCode == RESULT_OK){
                     Log.i("gallery pic location", ""+data.getData());
-                    picname = "O"+observationModel.getDeviceSeqId()+observationModel.getDeviceId()+getImageCounter()+".jpg";
+
+                    picname = "O_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
 
                     pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
                     if(!pictureSaveFolderPath.exists()){
@@ -194,8 +198,8 @@ public class EditObservationFragment extends BaseFragment{
                             ContentResolver contentResolver = getActivity().getContentResolver();
 
                     File inputFile = new File(data.getData().getPath());
-                                    copyFile2(inputFile, picToBeSaved);
-                           // copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
+                                   // copyFile2(inputFile, picToBeSaved);
+                            copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
                         } catch (IOException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -244,6 +248,30 @@ public class EditObservationFragment extends BaseFragment{
             Log.e("tag", e.getMessage());
         }
 
+    }
+    /**
+     * helper to retrieve the path of an image URI
+     */
+    public String getPath(Uri uri) {
+        // just some safety built in
+        if( uri == null ) {
+            // TODO perform some logging or show user feedback
+            return null;
+        }
+        // try to retrieve the image from the media store first
+        // this will only work for images selected from gallery
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        // this is our fallback here
+        return uri.getPath();
     }
     private void requestPermission(){
         MultiplePermissionsListener dialogMultiplePermissionsListener =

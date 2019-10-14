@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:background="@color/light_grey3"
         android:id="@+id/filter_layout">
         <LinearLayout
             android:layout_width="match_parent"
@@ -106,9 +108,9 @@
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/drawable_corners_primary_gradient"
+                android:background="@drawable/drawable_corners_skyblue"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:text="@string/text_apply"/>
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_reset"
@@ -117,9 +119,9 @@
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/drawable_corners_primary_gradient"
+                android:background="@drawable/drawable_corners_skyblue"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:text="Reset"/>
         </LinearLayout>
     </LinearLayout>
