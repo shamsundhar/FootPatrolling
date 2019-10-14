@@ -2,6 +2,7 @@ package com.school.foot_patroling.injection.components;
 
 
 
+import com.school.foot_patroling.HomeFragment;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplianceFragment;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.ComplianceFragment;
 import com.school.foot_patroling.datasync.DataSyncFragment;
@@ -28,5 +29,5 @@ public interface FragmentComponent {
     void inject(ObservationsFragment fragment);
     void inject(EditObservationFragment fragment);
     void inject(ViewObservationFragment fragment);
-  //  void inject(OrderHistoryFragment fragment);
+    void inject(HomeFragment fragment);
 }

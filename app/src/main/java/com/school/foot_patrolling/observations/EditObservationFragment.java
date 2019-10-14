@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -193,23 +195,58 @@ public class EditObservationFragment extends BaseFragment{
                     }
 
 
-                        try {
-                            picToBeSaved.createNewFile();
-                            ContentResolver contentResolver = getActivity().getContentResolver();
+                    Uri selectedImage = data.getData();
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                        storeImageInFPDirectory(bitmap, picToBeSaved);
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-                    File inputFile = new File(data.getData().getPath());
-                                   // copyFile2(inputFile, picToBeSaved);
-                            copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            picToBeSaved.createNewFile();
+//                            ContentResolver contentResolver = getActivity().getContentResolver();
+//
+//                    File inputFile = new File(data.getData().getPath());
+//                                   // copyFile2(inputFile, picToBeSaved);
+//
+//                            copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
+//                        } catch (IOException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
 
                 }
                 else if (resultCode == Activity.RESULT_CANCELED) {
                     Log.e("EditObservationFragment", "Selecting picture cancelled");
                 }
             }
+    }
+    public boolean storeImageInFPDirectory(Bitmap imageData, File pictobesaved) {
+
+        try {
+            String filePath = pictobesaved.getPath();
+            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+            BufferedOutputStream bos = new BufferedOutputStream(fileOutputStream);
+            //Toast.makeText(m_cont, "Image Saved at----" + filePath, Toast.LENGTH_LONG).show();
+            // choose another format if PNG doesn't suit you
+            imageData.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            bos.flush();
+            bos.close();
+
+        } catch (FileNotFoundException e) {
+            Log.w("TAG", "Error saving image file: " + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.w("TAG", "Error saving image file: " + e.getMessage());
+            return false;
+        }
+        return true;
     }
     private void copyFile2(File inputFile, File outputFile) {
 
