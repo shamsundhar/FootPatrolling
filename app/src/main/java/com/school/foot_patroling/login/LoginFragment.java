@@ -72,6 +72,8 @@ public class LoginFragment extends BaseFragment {
     @OnClick(R.id.btn_signin)
     public void clickOnLogin(){
         mPassword = etPassword.getText().toString().trim();
+        View view = getView().getRootView();
+        Common.hideKeyboardFrom(getActivity(), view);
         String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
         if(!fpStartedTime.trim().isEmpty()){
             Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(fpStartedTime);

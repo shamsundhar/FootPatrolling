@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -46,7 +47,10 @@ import com.school.foot_patroling.utils.DatePickerFragment;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,6 +79,7 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     Observation observationModel;
     Compliance complianceModel;
     private int CAMERA_PIC_REQUEST = 100;
+    private int GALLERY_PIC_REQUEST = 101;
     PreferenceHelper preferenceHelper;
     String selectedStatusType;
     @BindView(R.id.tvComplianceProvided)
@@ -178,6 +183,13 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     private String getImageCounter(){
         currentCounter++;
         return "_"+currentCounter;
+    }
+    @OnClick(R.id.launchGallery)
+    public void launchGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLERY_PIC_REQUEST);
     }
     /**
      * Use this factory method to create a new instance of
@@ -360,8 +372,68 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
             if (resultCode == RESULT_OK) {
                 Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
                 preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
+                attachmentsCounter.setText("Attachments : "+currentCounter);
                 Log.i("Camera pic location:", ""+outputImgUri);
             }
+            else if(requestCode == GALLERY_PIC_REQUEST){
+                if(resultCode == RESULT_OK){
+                    Log.i("gallery pic location", ""+data.getData());
+
+                    picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
+
+                    pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
+                    if(!pictureSaveFolderPath.exists()){
+                        pictureSaveFolderPath.mkdirs();
+                    }
+
+                    File picToBeSaved = new File(pictureSaveFolderPath, picname);
+                    if(picToBeSaved.exists()){
+                        picToBeSaved.delete();
+                    }
+
+
+                    Uri selectedImage = data.getData();
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                        storeImageInFPDirectory(bitmap, picToBeSaved);
+                        attachmentsCounter.setText("Attachments : "+currentCounter);
+                        Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
+                        preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                }
+                else if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.e("EditObservationFragment", "Selecting picture cancelled");
+                }
+            }
         }
+    }
+    public boolean storeImageInFPDirectory(Bitmap imageData, File pictobesaved) {
+
+        try {
+            String filePath = pictobesaved.getPath();
+            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+            BufferedOutputStream bos = new BufferedOutputStream(fileOutputStream);
+            //Toast.makeText(m_cont, "Image Saved at----" + filePath, Toast.LENGTH_LONG).show();
+            // choose another format if PNG doesn't suit you
+            imageData.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            bos.flush();
+            bos.close();
+
+        } catch (FileNotFoundException e) {
+            Log.w("TAG", "Error saving image file: " + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.w("TAG", "Error saving image file: " + e.getMessage());
+            return false;
+        }
+        return true;
     }
 }

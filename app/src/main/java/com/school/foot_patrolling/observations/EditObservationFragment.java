@@ -3,6 +3,7 @@ package com.school.foot_patrolling.observations;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -75,6 +76,7 @@ public class EditObservationFragment extends BaseFragment{
     private int currentCounter;
     private Uri outputImgUri;
     PreferenceHelper preferenceHelper;
+    ProgressDialog progressDialog;
     // Save the camera taken picture in this folder.
     private File pictureSaveFolderPath;
     @OnClick(R.id.btn_submit)
@@ -170,6 +172,7 @@ public class EditObservationFragment extends BaseFragment{
                 if (resultCode == RESULT_OK) {
                       Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
                     preferenceHelper.setInteger(getActivity(), "counter_"+observationModel.getDeviceSeqId(), currentCounter);
+                    attachmentsCounter.setText("Attachments : "+currentCounter);
                     Log.i("Camera pic location:", ""+outputImgUri);
 //                    // Get content resolver.
 //                    ContentResolver contentResolver = getActivity().getContentResolver();
@@ -185,6 +188,13 @@ public class EditObservationFragment extends BaseFragment{
                 if(resultCode == RESULT_OK){
                     Log.i("gallery pic location", ""+data.getData());
 
+                    progressDialog = new ProgressDialog(getActivity(),
+                            R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setIndeterminate(true);
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    progressDialog.setMessage(getString(R.string.text_please_wait));
+                    progressDialog.show();
+
                     picname = "O_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
 
                     pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
@@ -199,42 +209,23 @@ public class EditObservationFragment extends BaseFragment{
 
 
                     Uri selectedImage = data.getData();
-                   // uriToBitmap(selectedImage, picToBeSaved);
-
-
-//                    try {
-//                        InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
-//                        Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-//                        imageStream.close();
-//                      // iv.setImageBitmap(yourSelectedImage);
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-
                     Bitmap bitmap = null;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
                         storeImageInFPDirectory(bitmap, picToBeSaved);
+                        attachmentsCounter.setText("Attachments : "+currentCounter);
+                        Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
+                        preferenceHelper.setInteger(getActivity(), "counter_"+observationModel.getDeviceSeqId(), currentCounter);
+                        progressDialog.cancel();
                     } catch (FileNotFoundException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
+                        progressDialog.cancel();
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
+                        progressDialog.cancel();
                     }
-
-//                        try {
-//                            picToBeSaved.createNewFile();
-//                            ContentResolver contentResolver = getActivity().getContentResolver();
-//
-//                    File inputFile = new File(data.getData().getPath());
-//                                   // copyFile2(inputFile, picToBeSaved);
-//
-//                            copyFile(new File(getRealPathFromURI(data.getData())), picToBeSaved);
-//                        } catch (IOException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
 
                 }
                 else if (resultCode == Activity.RESULT_CANCELED) {
@@ -242,19 +233,19 @@ public class EditObservationFragment extends BaseFragment{
                 }
             }
     }
-    private void uriToBitmap(Uri selectedFileUri, File picToBeSaved) {
-        try {
-            ParcelFileDescriptor parcelFileDescriptor =
-                    getActivity().getContentResolver().openFileDescriptor(selectedFileUri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-            storeImageInFPDirectory(image, picToBeSaved);
-
-            parcelFileDescriptor.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void uriToBitmap(Uri selectedFileUri, File picToBeSaved) {
+//        try {
+//            ParcelFileDescriptor parcelFileDescriptor =
+//                    getActivity().getContentResolver().openFileDescriptor(selectedFileUri, "r");
+//            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+//            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+//            storeImageInFPDirectory(image, picToBeSaved);
+//
+//            parcelFileDescriptor.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
     public boolean storeImageInFPDirectory(Bitmap imageData, File pictobesaved) {
 
         try {
@@ -276,68 +267,68 @@ public class EditObservationFragment extends BaseFragment{
         }
         return true;
     }
-    private void copyFile2(File inputFile, File outputFile) {
-
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-
-            //create output directory if it doesn't exist
-         //   File dir = new File (outputPath);
-            if (!outputFile.exists())
-            {
-                outputFile.mkdirs();
-            }
-
-
-            in = new FileInputStream(inputFile);
-            out = new FileOutputStream(outputFile);
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            in = null;
-
-            // write the output file (You have now copied the file)
-            out.flush();
-            out.close();
-            out = null;
-
-        }  catch (FileNotFoundException fnfe1) {
-            Log.e("tag", fnfe1.getMessage());
-        }
-        catch (Exception e) {
-            Log.e("tag", e.getMessage());
-        }
-
-    }
+//    private void copyFile2(File inputFile, File outputFile) {
+//
+//        InputStream in = null;
+//        OutputStream out = null;
+//        try {
+//
+//            //create output directory if it doesn't exist
+//         //   File dir = new File (outputPath);
+//            if (!outputFile.exists())
+//            {
+//                outputFile.mkdirs();
+//            }
+//
+//
+//            in = new FileInputStream(inputFile);
+//            out = new FileOutputStream(outputFile);
+//
+//            byte[] buffer = new byte[1024];
+//            int read;
+//            while ((read = in.read(buffer)) != -1) {
+//                out.write(buffer, 0, read);
+//            }
+//            in.close();
+//            in = null;
+//
+//            // write the output file (You have now copied the file)
+//            out.flush();
+//            out.close();
+//            out = null;
+//
+//        }  catch (FileNotFoundException fnfe1) {
+//            Log.e("tag", fnfe1.getMessage());
+//        }
+//        catch (Exception e) {
+//            Log.e("tag", e.getMessage());
+//        }
+//
+//    }
     /**
      * helper to retrieve the path of an image URI
      */
-    public String getPath(Uri uri) {
-        // just some safety built in
-        if( uri == null ) {
-            // TODO perform some logging or show user feedback
-            return null;
-        }
-        // try to retrieve the image from the media store first
-        // this will only work for images selected from gallery
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
-        }
-        // this is our fallback here
-        return uri.getPath();
-    }
+//    public String getPath(Uri uri) {
+//        // just some safety built in
+//        if( uri == null ) {
+//            // TODO perform some logging or show user feedback
+//            return null;
+//        }
+//        // try to retrieve the image from the media store first
+//        // this will only work for images selected from gallery
+//        String[] projection = { MediaStore.Images.Media.DATA };
+//        Cursor cursor = getActivity().managedQuery(uri, projection, null, null, null);
+//        if( cursor != null ){
+//            int column_index = cursor
+//                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//            cursor.moveToFirst();
+//            String path = cursor.getString(column_index);
+//            cursor.close();
+//            return path;
+//        }
+//        // this is our fallback here
+//        return uri.getPath();
+//    }
     private void requestPermission(){
         MultiplePermissionsListener dialogMultiplePermissionsListener =
                 DialogOnAnyDeniedMultiplePermissionsListener.Builder
@@ -413,38 +404,38 @@ public class EditObservationFragment extends BaseFragment{
 
         return ret;
     }
-    private void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!sourceFile.exists()) {
-            return;
-        }
-
-        FileChannel source = null;
-        FileChannel destination = null;
-        source = new FileInputStream(sourceFile).getChannel();
-        destination = new FileOutputStream(destFile).getChannel();
-        if (destination != null && source != null) {
-            destination.transferFrom(source, 0, source.size());
-        }
-        if (source != null) {
-            source.close();
-        }
-        if (destination != null) {
-            destination.close();
-        }
-
-
-    }
-
-
-    public String getRealPathFromURI(Uri contentUri) {
-        String res = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
-        }
-        cursor.close();
-        return res;
-    }
+//    private void copyFile(File sourceFile, File destFile) throws IOException {
+//        if (!sourceFile.exists()) {
+//            return;
+//        }
+//
+//        FileChannel source = null;
+//        FileChannel destination = null;
+//        source = new FileInputStream(sourceFile).getChannel();
+//        destination = new FileOutputStream(destFile).getChannel();
+//        if (destination != null && source != null) {
+//            destination.transferFrom(source, 0, source.size());
+//        }
+//        if (source != null) {
+//            source.close();
+//        }
+//        if (destination != null) {
+//            destination.close();
+//        }
+//
+//
+//    }
+//
+//
+//    public String getRealPathFromURI(Uri contentUri) {
+//        String res = null;
+//        String[] proj = { MediaStore.Images.Media.DATA };
+//        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
+//        if(cursor.moveToFirst()){;
+//            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//            res = cursor.getString(column_index);
+//        }
+//        cursor.close();
+//        return res;
+//    }
 }
