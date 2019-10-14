@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
@@ -39,6 +41,7 @@ import com.school.foot_patroling.utils.PreferenceHelper;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -196,6 +199,18 @@ public class EditObservationFragment extends BaseFragment{
 
 
                     Uri selectedImage = data.getData();
+                   // uriToBitmap(selectedImage, picToBeSaved);
+
+
+//                    try {
+//                        InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
+//                        Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+//                        imageStream.close();
+//                      // iv.setImageBitmap(yourSelectedImage);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+
                     Bitmap bitmap = null;
                     try {
                         bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
@@ -226,6 +241,19 @@ public class EditObservationFragment extends BaseFragment{
                     Log.e("EditObservationFragment", "Selecting picture cancelled");
                 }
             }
+    }
+    private void uriToBitmap(Uri selectedFileUri, File picToBeSaved) {
+        try {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    getActivity().getContentResolver().openFileDescriptor(selectedFileUri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+            storeImageInFPDirectory(image, picToBeSaved);
+
+            parcelFileDescriptor.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public boolean storeImageInFPDirectory(Bitmap imageData, File pictobesaved) {
 
