@@ -92,7 +92,7 @@ public class LoginFragment extends BaseFragment {
                         Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
                         preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_USER, mUsername);
                         if(fpStarted)
-                            ((NavigationDrawerActivity)getActivity()).displayCheckedListFragment();
+                            ((NavigationDrawerActivity)getActivity()).displayHomeFragment();
                         else
                             ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
                     }

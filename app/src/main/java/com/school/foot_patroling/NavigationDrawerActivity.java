@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -74,6 +75,7 @@ public class NavigationDrawerActivity extends BaseActivity
     String market_uri = "https://play.google.com/store/apps/details?id=";
     private static final String LOGIN_FRAGMENT_TAG = "LOGIN_FRAGMENT";
     private static final String CHECKEDLIST_FRAGMENT_TAG = "CHECKEDLIST_FRAGMENT";
+    private static final String HOME_FRAGMENT_TAG = "HOME_FRAGMENT";
     private static final String DEPOT_SELECTION_FRAGMENT_TAG = "DEPO_SELECTION_FRAGMENT";
     private static final String COMPLIANCE_FRAGMENT_TAG = "COMPLIANCE_FRAGMENT";
     private static final String OBSERVATIONS_FRAGMENT_TAG = "OBSERVATIONS_FRAGMENT";
@@ -117,9 +119,19 @@ public class NavigationDrawerActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if(getCurrentFragment() instanceof HomeFragment ||
+                getCurrentFragment() instanceof LoginFragment ||
+                getCurrentFragment() instanceof DepotSelectionFragment){
             displayExitDialog();
+        }else{
+            displayHomeFragment();
         }
+    }
+   public Fragment getCurrentFragment()
+    {
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentById(R.id.container);
+        return currentFragment;
     }
 public void displayExitDialog(){
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -142,6 +154,7 @@ public void displayExitDialog(){
         setTitle("Login");
         displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(true);
+        nav_Menu.findItem(R.id.nav_home).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(false);
         nav_Menu.findItem(R.id.nav_compliance).setVisible(false);
         nav_Menu.findItem(R.id.nav_observations).setVisible(false);
@@ -150,10 +163,25 @@ public void displayExitDialog(){
                 .replace(R.id.container,  LoginFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                 .commit();
     }
+    public void displayHomeFragment(){
+        setTitle("Home");
+        displayHeaderDetails();
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_home).setVisible(true);
+        nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        nav_Menu.findItem(R.id.nav_observations).setVisible(true);
+        nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  HomeFragment.newInstance(), HOME_FRAGMENT_TAG)
+                .commit();
+
+    }
     public void displayCheckedListFragment(){
         setTitle("Check List");
         displayHeaderDetails();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_home).setVisible(true);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         nav_Menu.findItem(R.id.nav_observations).setVisible(true);
         nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
@@ -165,6 +193,7 @@ public void displayExitDialog(){
     public void displayDepotSelectionFragment(){
         setTitle("FP Inspection");
         displayHeaderDetails();
+        nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
         nav_Menu.findItem(R.id.nav_observations).setVisible(true);
         nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
         getSupportFragmentManager()
@@ -180,6 +209,22 @@ public void displayExitDialog(){
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container,  ComplianceFragment.newInstance(), COMPLIANCE_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayReportsFragment(){
+        setTitle("Reports");
+        displayHeaderDetails();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayDataSyncFragment(){
+        setTitle("Data Sync");
+        displayHeaderDetails();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  DataSyncFragment.newInstance(), LOGIN_FRAGMENT_TAG)
                 .commit();
     }
     public void displayObservationsFragment(){
@@ -202,6 +247,8 @@ public void displayExitDialog(){
             doLogout();
         } else if(id == R.id.nav_login){
             displayLoginFragment();
+        }else if(id == R.id.nav_home){
+            displayHomeFragment();
         }else if(id == R.id.nav_checklist){
             displayHeaderDetails();
             Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
@@ -217,19 +264,9 @@ public void displayExitDialog(){
         }else if(id == R.id.nav_observations) {
             displayObservationsFragment();
         }else if (id == R.id.nav_data) {
-            setTitle("Data Sync");
-            displayHeaderDetails();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container,  DataSyncFragment.newInstance(), LOGIN_FRAGMENT_TAG)
-                    .commit();
+           displayDataSyncFragment();
         } else if (id == R.id.nav_reports) {
-            setTitle("Reports");
-            displayHeaderDetails();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container,  ReportsFragment.newInstance(), LOGIN_FRAGMENT_TAG)
-                    .commit();
+           displayReportsFragment();
         }
         else if (id == R.id.nav_reload) {
             setTitle("Reload");

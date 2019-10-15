@@ -105,7 +105,7 @@ public class DepotSelectionFragment extends BaseFragment {
             inspection.setStartTime(fpStartTime);
             NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
 
-            ((NavigationDrawerActivity) getActivity()).displayCheckedListFragment();
+            ((NavigationDrawerActivity) getActivity()).displayHomeFragment();
         }
     }
     public static DepotSelectionFragment newInstance() {
