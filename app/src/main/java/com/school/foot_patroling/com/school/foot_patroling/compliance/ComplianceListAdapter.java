@@ -96,7 +96,7 @@ public class ComplianceListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 vh1.getImageView().setVisibility(View.GONE);
             }
             else{
-                vh1.getImageView().setVisibility(View.VISIBLE);
+                vh1.getImageView().setVisibility(View.GONE);
             }
 
             vh1.itemView.setOnClickListener(new View.OnClickListener() {

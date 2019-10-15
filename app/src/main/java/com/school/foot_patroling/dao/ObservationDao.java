@@ -18,7 +18,7 @@ public interface ObservationDao {
     @Query("DELETE FROM observations")
     void deleteAll();
 
-    @Query("SELECT * from observations")
+    @Query("SELECT * from observations ORDER BY seq_id DESC")
     List<Observation> getAllObservationDtos();
     @Query("SELECT * FROM observations WHERE device_seq_id=:fpStartedTime")
     Observation getStartedObservation(String fpStartedTime);

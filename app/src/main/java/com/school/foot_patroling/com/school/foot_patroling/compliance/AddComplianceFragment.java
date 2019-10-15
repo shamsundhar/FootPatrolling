@@ -27,8 +27,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -100,10 +102,14 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
     TextView attachmentsCounter;
     @BindView(R.id.dateTV)
     TextView dateTv;
+    @BindView(R.id.syncDoneImage)
+    ImageView syncDoneImage;
     @BindView(R.id.tvChecklistItem)
     TextView tvCheckListItem;
     @BindView(R.id.tvObservation)
     TextView tvObservation;
+    @BindView(R.id.btn_submit)
+    Button submitBtn;
     @BindView(R.id.tvLocation)
     TextView tvLocation;
     @OnClick(R.id.launchCamera)
@@ -226,6 +232,23 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
             cameraLayout.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setText("Compliance already provided");
+            if(complianceModel.getSeqId().equals("null")){
+                actionBy.setText(complianceModel.getComplianceBy());
+                actionDone.setText(complianceModel.getAction());
+                statusTV.setText(complianceModel.getStatus());
+                selectedStatusType = complianceModel.getStatus();
+                String providedDate = complianceModel.getCompliedDateTime();
+                String strDate = DateTimeUtils.parseDateTime(providedDate, DATE_FORMAT6, DATE_FORMAT5);
+                selectedDate = providedDate;
+                dateTv.setText(strDate);
+                syncDoneImage.setVisibility(View.GONE);
+            }
+            else{
+                syncDoneImage.setVisibility(View.VISIBLE);
+                actionDone.setEnabled(false);
+                actionBy.setEnabled(false);
+                submitBtn.setEnabled(false);
+            }
             initCounter();
         }else{
             cameraLayout.setVisibility(View.GONE);
@@ -375,43 +398,43 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
                 attachmentsCounter.setText("Attachments : "+currentCounter);
                 Log.i("Camera pic location:", ""+outputImgUri);
             }
-            else if(requestCode == GALLERY_PIC_REQUEST){
-                if(resultCode == RESULT_OK){
-                    Log.i("gallery pic location", ""+data.getData());
+        }
+        else if(requestCode == GALLERY_PIC_REQUEST){
+            if(resultCode == RESULT_OK){
+                Log.i("gallery pic location", ""+data.getData());
 
-                    picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
+                picname = "C_"+observationModel.getDeviceSeqId()+"_"+observationModel.getDeviceId()+getImageCounter()+".jpg";
 
-                    pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
-                    if(!pictureSaveFolderPath.exists()){
-                        pictureSaveFolderPath.mkdirs();
-                    }
-
-                    File picToBeSaved = new File(pictureSaveFolderPath, picname);
-                    if(picToBeSaved.exists()){
-                        picToBeSaved.delete();
-                    }
-
-
-                    Uri selectedImage = data.getData();
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
-                        storeImageInFPDirectory(bitmap, picToBeSaved);
-                        attachmentsCounter.setText("Attachments : "+currentCounter);
-                        Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
-                        preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
-                    } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
+                pictureSaveFolderPath = new File(Environment.getExternalStorageDirectory(), FP_PICS_FOLDER);
+                if(!pictureSaveFolderPath.exists()){
+                    pictureSaveFolderPath.mkdirs();
                 }
-                else if (resultCode == Activity.RESULT_CANCELED) {
-                    Log.e("EditObservationFragment", "Selecting picture cancelled");
+
+                File picToBeSaved = new File(pictureSaveFolderPath, picname);
+                if(picToBeSaved.exists()){
+                    picToBeSaved.delete();
                 }
+
+
+                Uri selectedImage = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                    storeImageInFPDirectory(bitmap, picToBeSaved);
+                    attachmentsCounter.setText("Attachments : "+currentCounter);
+                    Toast.makeText(getActivity(), "Image saved successfully", Toast.LENGTH_SHORT).show();
+                    preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+            else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.e("EditObservationFragment", "Selecting picture cancelled");
             }
         }
     }

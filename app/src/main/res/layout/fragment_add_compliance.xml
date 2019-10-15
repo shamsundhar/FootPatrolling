@@ -10,17 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
-        <TextView
-            android:id="@+id/tvComplianceProvided"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="right"
-            android:textColor="@color/primary"
-            android:scaleType="center"
-            android:layout_marginTop="10dp"
-            android:textSize="18sp"
-            />
+            android:padding="2dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/syncDoneImage"
+                android:src="@drawable/sync_done"/>
+            <TextView
+                android:id="@+id/tvComplianceProvided"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:text="fdjkfdjkfd"
+                android:textColor="@color/primary"
+                android:scaleType="center"
+                android:textSize="18sp"
+                />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/tvChecklistItem"
             android:layout_width="match_parent"

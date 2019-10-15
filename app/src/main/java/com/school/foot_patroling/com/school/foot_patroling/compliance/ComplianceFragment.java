@@ -308,7 +308,7 @@ public class ComplianceFragment extends BaseFragment {
         try {
             //          if (database != null) {
             Log.d(TAG, "fetching user id");
-            String sql = "select priority, description from observations_check_list";
+          //  String sql = "select priority, description from observations_check_list";
             observationsList = new ArrayList<>();
             observationsList.addAll(NavigationDrawerActivity.mFPDatabase.observationDao().getAllObservationDtos());
             //        }

@@ -38,6 +38,7 @@ import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.register.model.ObservationCategoriesDto;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
@@ -109,52 +110,59 @@ public class PatrolingListFragment extends BaseFragment {
     @OnClick(R.id.btn_submit)
     public void submitButtonClick(){
         if(validate()) {
-            //insert observation data.
-            if(checkList != null && checkList.size() > 0) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                    Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
-                        @Override
-                        public boolean test(ObservationsCheckListDto p) {
-                            return p.isChecked();
-                        }
-                    });
-                    final String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
-                    selectedCheckList.forEach(new Consumer<ObservationsCheckListDto>() {
-                        @Override
-                        public void accept(ObservationsCheckListDto p) {
-                            if(p.isChecked()) {
-                                String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
-                                String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
-                                String location = loc1.getText().toString() + "/" + loc2.getText().toString();
-                                Observation observation = new Observation();
-                                observation.setCreatedBy(preferenceHelper.getString(getActivity(), PREF_KEY_SELECTED_USER, ""));
-                                observation.setCreatedDateTime(currentTimeStamp);
-                                observation.setInspectionSeqId(fpStartedTime);
-                                observation.setDeviceId(selectedImei);
-                                observation.setDeviceSeqId(currentTimeStamp);
-                                observation.setObservationCategory(p.getObservationCategory());
-                                observation.setObservationItem(p.getObservationItem());
-                                observation.setObservation(p.getComments());
-                                observation.setLocation(location);
-                                observation.setSeqId("null");
-                                NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Details will be saved.", new CustomAlertDialog.Callback(){
 
-                            }
+                @Override
+                public void onSucess(int t) {
+                    //insert observation data.
+                    if(checkList != null && checkList.size() > 0) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
+                                @Override
+                                public boolean test(ObservationsCheckListDto p) {
+                                    return p.isChecked();
+                                }
+                            });
+                            final String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
+                            selectedCheckList.forEach(new Consumer<ObservationsCheckListDto>() {
+                                @Override
+                                public void accept(ObservationsCheckListDto p) {
+                                    if(p.isChecked()) {
+                                        String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+                                        String selectedImei = preferenceHelper.getString(getActivity(), BUNDLE_KEY_SELECTED_IMEI, "");
+                                        String location = loc1.getText().toString() + "/" + loc2.getText().toString();
+                                        Observation observation = new Observation();
+                                        observation.setCreatedBy(preferenceHelper.getString(getActivity(), PREF_KEY_SELECTED_USER, ""));
+                                        observation.setCreatedDateTime(currentTimeStamp);
+                                        observation.setInspectionSeqId(fpStartedTime);
+                                        observation.setDeviceId(selectedImei);
+                                        observation.setDeviceSeqId(currentTimeStamp);
+                                        observation.setObservationCategory(p.getObservationCategory());
+                                        observation.setObservationItem(p.getObservationItem());
+                                        observation.setObservation(p.getComments());
+                                        observation.setLocation(location);
+                                        observation.setSeqId("null");
+                                        NavigationDrawerActivity.mFPDatabase.observationDao().insert(observation);
+
+                                    }
+                                }
+                            });
+                            categoryTV.setText("Category");
+                            radioButtonPriority.setChecked(true);
+                            modifyCheckList_Priority();
+                            checklistAdapter.notifyDataSetChanged();
+                            loc1.setText("");
+                            loc2.setText("");
+                            View view = getView().getRootView();
+                            Common.hideKeyboardFrom(getActivity(), view);
+                            Toast.makeText(getActivity(), "Details saved successfully", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                    categoryTV.setText("Category");
-                    radioButtonPriority.setChecked(true);
-                    modifyCheckList_Priority();
-                    checklistAdapter.notifyDataSetChanged();
-                    loc1.setText("");
-                    loc2.setText("");
-                    View view = getView().getRootView();
-                    Common.hideKeyboardFrom(getActivity(), view);
-                    Toast.makeText(getActivity(), "Details saved successfully", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            });
 
 
-            }
         }
     }
     private ChecklistAdapter checklistAdapter;
