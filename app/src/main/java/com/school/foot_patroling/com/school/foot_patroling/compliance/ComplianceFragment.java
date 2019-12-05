@@ -3,9 +3,9 @@ package com.school.foot_patroling.com.school.foot_patroling.compliance;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,48 +13,40 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.school.foot_patroling.AWFActivity;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.datasync.DataSyncFragment;
-import com.school.foot_patroling.patrolinglist.ChecklistAdapter;
+import com.school.foot_patroling.register.model.Compliance;
 import com.school.foot_patroling.register.model.Observation;
-import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.utils.DatePickerFragment;
 import com.school.foot_patroling.utils.DateTimeUtils;
-import com.school.foot_patroling.utils.PreferenceHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
-import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT3;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 
 public class ComplianceFragment extends BaseFragment {
     private ComplianceListAdapter complianceListAdapter;
+    public static int EDIT_COMPLIANCE_CODE = 200;
     @BindView(R.id.observationsRecyclerview)
     RecyclerView observationsRecyclerview;
     List<Observation> observationsList;
@@ -291,18 +283,46 @@ public class ComplianceFragment extends BaseFragment {
 
             @Override
             public void onItemClick(Object model, int position) {
-                Intent in = new Intent(getActivity(), AWFActivity.class);
-                in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_COMPLIANCE);
-                in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, ((Observation)model).getDeviceSeqId());
-                getActivity().startActivity(in);
-            }
-        });
+
+                Compliance compliance = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(((Observation)model).getDeviceSeqId());
+                if(compliance != null){
+                    if(!compliance.getSeqId().equals("null")) {
+                        Intent in = new Intent(getActivity(), AWFActivity.class);
+                        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_VIEW_COMPLIANCE);
+                        in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, ((Observation) model).getDeviceSeqId());
+                        getActivity().startActivity(in);
+                    }
+                    else{
+                        Intent in = new Intent(getActivity(), AWFActivity.class);
+                        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_COMPLIANCE);
+                        in.putExtra("BUNDLE_KEY_ACTIVITY_TITLE", "Edit Compliance");
+                        in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, ((Observation)model).getDeviceSeqId());
+                        startActivityForResult(in, EDIT_COMPLIANCE_CODE);
+                    }
+                 }
+                else{
+                    Intent in = new Intent(getActivity(), AWFActivity.class);
+                    in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_COMPLIANCE);
+                    in.putExtra("BUNDLE_KEY_ACTIVITY_TITLE", "Add Compliance");
+                    in.putExtra(BUNDLE_KEY_SELECTED_COMPLIANCE, ((Observation)model).getDeviceSeqId());
+                    getActivity().startActivity(in);
+                }
+        }});
         observationsRecyclerview.setAdapter(complianceListAdapter);
         observationsRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         displayObservationsFromDB();
         return view;
     }
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EDIT_COMPLIANCE_CODE){
+            if(resultCode == RESULT_OK){
+                //  Toast.makeText(getActivity(), "from observation edit", Toast.LENGTH_SHORT).show();
+                displayObservationsFromDB();
+            }
+        }
+    }
     private void displayObservationsFromDB(){
 
         try {

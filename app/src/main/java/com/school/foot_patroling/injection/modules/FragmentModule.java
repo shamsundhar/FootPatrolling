@@ -1,7 +1,7 @@
 package com.school.foot_patroling.injection.modules;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.school.foot_patroling.injection.qualifier.ChildFragmentManager;
 import com.school.foot_patroling.injection.scopes.PerFragment;

@@ -1,23 +1,17 @@
 package com.school.foot_patroling.com.school.foot_patroling.compliance;
 
 import android.graphics.Typeface;
-import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.school.foot_patroling.R;
 
 import com.school.foot_patroling.register.model.Observation;
-import com.school.foot_patroling.register.model.ObservationsCheckListDto;
 import com.school.foot_patroling.utils.DateTimeUtils;
 
 import java.util.List;

@@ -32,7 +32,9 @@ CREATE TABLE facility
    facility_size_uom_id TEXT,
    default_dimension_uom_id TEXT,
      skip_pack_inv_check TEXT,
-     manuf_alloc_enable TEXT
+     manuf_alloc_enable TEXT,
+     fp_track_enable TEXT varying(10),
+          fp_track_record_frequency numeric(20,0)
  );
 
 CREATE TABLE foot_patrolling_sections
@@ -307,6 +309,7 @@ CREATE TABLE observations_check_list
   last_updated_stamp TEXT,
   last_updated_tx_stamp TEXT,
   created_stamp TEXT,
+  severity TEXT,
   created_tx_stamp TEXT,
   CONSTRAINT pk_observations_check_list PRIMARY KEY (seq_id),
   CONSTRAINT inspectiontype FOREIGN KEY (inspection_type)
@@ -482,6 +485,22 @@ CREATE TABLE functional_location_hierarchy
   CONSTRAINT pk_functional_location_hierarc PRIMARY KEY (party_id)
 );
 
+CREATE TABLE fp_movement
+             (
+               seq_id TEXT varying(20) NOT NULL,
+               device_id TEXT varying(255),
+               device_seq_id TEXT varying(255),
+               track_type TEXT varying(100),
+               track_of TEXT varying(20),
+               date_time TEXT,
+               longitude TEXT varying(255),
+               latitude TEXT varying(255),
+               altitude TEXT varying(255),
+               last_updated_stamp TEXT,
+               last_updated_tx_stamp TEXT,
+               created_stamp TEXT,
+               created_tx_stamp TEXT
+             );
 
 
 

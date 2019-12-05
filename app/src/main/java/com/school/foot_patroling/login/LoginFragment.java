@@ -1,11 +1,9 @@
 package com.school.foot_patroling.login;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,16 +20,12 @@ import android.widget.TextView;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.database.DatabaseHelper;
-import com.school.foot_patroling.depotselection.SectionsListAdapter;
-import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.utils.Common;
 import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.UnsupportedEncodingException;
@@ -46,14 +40,13 @@ import butterknife.OnClick;
 import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
-import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTION;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class LoginFragment extends BaseFragment {
-    DatabaseHelper dbhelper = null;
+//    DatabaseHelper dbhelper = null;
     private String previousInspectionUser = "";
     PreferenceHelper preferenceHelper;
-    SQLiteDatabase database;
+   // SQLiteDatabase database;
     @BindView(R.id.input_password)
     EditText etPassword;
     @BindView(R.id.usernameLayout)
@@ -82,25 +75,23 @@ public class LoginFragment extends BaseFragment {
 
         if(validate(mUsername, mPassword)) {
             try {
-                if (database != null) {
                     Log.d(TAG, "fetching user id");
                     UserLoginDto userLoginDto = NavigationDrawerActivity.mFPDatabase.userLoginDtoDao().getUserByUnamePassword(mUsername);
                     shaPassword = sha1(mPassword);
                     if(shaPassword.equals(userLoginDto.getCurrentPassword()))
                     {
                         ((NavigationDrawerActivity)getActivity()).setDISPLAY_LOGIN(true);
-                        Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
+                       // Boolean fpStarted = preferenceHelper.getBoolean(getActivity(), PREF_KEY_FP_STARTED, false);
                         preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_USER, mUsername);
-                        if(fpStarted)
+                      //  if(fpStarted)
                             ((NavigationDrawerActivity)getActivity()).displayHomeFragment();
-                        else
-                            ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
+//                        else
+//                            ((NavigationDrawerActivity)getActivity()).displayDepotSelectionFragment();
                     }
                     else{
                         CustomAlertDialog dialog = new CustomAlertDialog();
                         dialog.showAlert1(getActivity(), R.string.text_alert, "Invalid Username or Password");
                     }
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -129,20 +120,15 @@ public class LoginFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-        try {
-            dbhelper = DatabaseHelper.getInstance(getActivity());
-            dbhelper.createDataBase();
-            database = dbhelper.getReadableDatabase("Wf@trd841$ams327");
-
-        } catch (Exception e){
-
-            Log.e(TAG, "creating database - "+ e.getMessage());
-        }
-
-
-
-
-
+//        try {
+//            dbhelper = DatabaseHelper.getInstance(getActivity());
+//            dbhelper.createDataBase();
+//            database = dbhelper.getReadableDatabase("Wf@trd841$ams327");
+//
+//        } catch (Exception e){
+//
+//            Log.e(TAG, "creating database - "+ e.getMessage());
+//        }
         return view;
     }
     private String sha1(String password)

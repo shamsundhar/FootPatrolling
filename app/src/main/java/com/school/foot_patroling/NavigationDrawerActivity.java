@@ -1,27 +1,22 @@
 package com.school.foot_patroling;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 
-import android.arch.persistence.room.Room;
-import android.content.ActivityNotFoundException;
+import androidx.room.Room;
+
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.school.foot_patroling.com.school.foot_patroling.compliance.ComplianceFragment;
@@ -29,6 +24,7 @@ import com.school.foot_patroling.database.DtoWrapper;
 import com.school.foot_patroling.database.FPDatabase;
 import com.school.foot_patroling.datasync.DataSyncFragment;
 import com.school.foot_patroling.depotselection.DepotSelectionFragment;
+import com.school.foot_patroling.depotselection.LocationMonitoringService;
 import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
 import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.patrolinglist.PatrolingListFragment;
@@ -39,14 +35,8 @@ import com.school.foot_patroling.utils.PreferenceHelper;
 import com.school.foot_patrolling.observations.ObservationsFragment;
 
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
@@ -105,9 +95,23 @@ public class NavigationDrawerActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         nav_Menu = navigationView.getMenu();
+        String loggedUser = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, "");
+        if(loggedUser != null && !loggedUser.isEmpty()){
+            nav_Menu.findItem(R.id.nav_login).setVisible(false);
+           // nav_Menu.findItem(R.id.nav_home).setVisible(true);
+            nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+            nav_Menu.findItem(R.id.nav_observations).setVisible(true);
+            nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
+         //   Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
+          //  if(fpStarted)
+               displayHomeFragment();
+//            else
+//                displayDepotSelectionFragment();
+        }
+        else{
+            displayLoginFragment();
+        }
 
-
-        displayLoginFragment();
     }
 
     private void setTitle(String title){
@@ -117,15 +121,22 @@ public class NavigationDrawerActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if(getCurrentFragment() instanceof HomeFragment ||
-                getCurrentFragment() instanceof LoginFragment ||
-                getCurrentFragment() instanceof DepotSelectionFragment){
-            displayExitDialog();
-        }else{
-            displayHomeFragment();
-        }
+        String loggedUser = preferenceHelper.getString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, "");
+
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else if(getCurrentFragment() instanceof HomeFragment ||
+                    getCurrentFragment() instanceof LoginFragment ){
+                displayExitDialog();
+            }else{
+                if(loggedUser != null && !loggedUser.isEmpty()){
+                    displayHomeFragment();
+                }
+                else{
+                    displayExitDialog();
+                }
+
+            }
     }
    public Fragment getCurrentFragment()
     {
@@ -178,22 +189,34 @@ public void displayExitDialog(){
 
     }
     public void displayCheckedListFragment(){
-        setTitle("Check List");
-        displayHeaderDetails();
-        nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        nav_Menu.findItem(R.id.nav_home).setVisible(true);
-        nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
-        nav_Menu.findItem(R.id.nav_observations).setVisible(true);
-        nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container,  PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
-                .commit();
+
+
+        Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
+        if(!fpStarted){
+            displayDepotSelectionFragment();
+        }
+        else {
+            Intent intent = new Intent(this, LocationMonitoringService.class);
+            startService(intent);
+            setTitle("Check List");
+            displayHeaderDetails();
+            nav_Menu.findItem(R.id.nav_login).setVisible(false);
+            nav_Menu.findItem(R.id.nav_home).setVisible(true);
+            nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+            nav_Menu.findItem(R.id.nav_observations).setVisible(true);
+            nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, PatrolingListFragment.newInstance(), CHECKEDLIST_FRAGMENT_TAG)
+                    .commit();
+        }
     }
     public void displayDepotSelectionFragment(){
         setTitle("FP Inspection");
         displayHeaderDetails();
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_checklist).setVisible(true);
+        nav_Menu.findItem(R.id.nav_home).setVisible(true);
         nav_Menu.findItem(R.id.nav_observations).setVisible(true);
         nav_Menu.findItem(R.id.nav_compliance).setVisible(true);
         getSupportFragmentManager()
@@ -250,15 +273,7 @@ public void displayExitDialog(){
         }else if(id == R.id.nav_home){
             displayHomeFragment();
         }else if(id == R.id.nav_checklist){
-            displayHeaderDetails();
-            Boolean fpStarted = preferenceHelper.getBoolean(NavigationDrawerActivity.this, PREF_KEY_FP_STARTED, false);
-            if(fpStarted){
-                displayCheckedListFragment();
-            }
-            else{
-                displayDepotSelectionFragment();
-            }
-
+            displayCheckedListFragment();
         }else if(id == R.id.nav_compliance) {
             displayComplianceFragment();
         }else if(id == R.id.nav_observations) {
@@ -297,6 +312,7 @@ public void displayExitDialog(){
         return true;
     }
     private void doLogout(){
+        preferenceHelper.setString(NavigationDrawerActivity.this, PREF_KEY_SELECTED_USER, "");
         displayLoginFragment();
     }
 

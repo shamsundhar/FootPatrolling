@@ -3,6 +3,7 @@ package com.school.foot_patroling.register.model;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MasterDto {
 
@@ -46,6 +47,30 @@ public class MasterDto {
     private HashMap<String, String> serverToAppObservationMap;
     private HashMap<String, String> serverToAppCompliancesMap;
     private String reportResult;
+    private ResponseFpMovementDto
+            appToServerCreatedResponseFpMovementDto;
+    private Map<String, String> serverToAppFpMovementMap;
+
+
+    public ResponseFpMovementDto
+    getAppToServerCreatedResponseFpMovementDto() {
+        return appToServerCreatedResponseFpMovementDto;
+    }
+
+    public void setAppToServerCreatedResponseFpMovementDto(
+            ResponseFpMovementDto appToServerCreatedResponseFpMovementDto) {
+        this.appToServerCreatedResponseFpMovementDto =
+                appToServerCreatedResponseFpMovementDto;
+    }
+
+    public Map<String, String> getServerToAppFpMovementMap() {
+        return serverToAppFpMovementMap;
+    }
+
+    public void setServerToAppFpMovementMap(
+            Map<String, String> serverToAppFpMovementMap) {
+        this.serverToAppFpMovementMap = serverToAppFpMovementMap;
+    }
 
     public String getReportResult() {
         return reportResult;

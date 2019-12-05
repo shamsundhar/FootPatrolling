@@ -4,25 +4,20 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,25 +33,20 @@ import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.utils.Common;
+import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
-import static android.support.constraint.Constraints.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
 
@@ -83,12 +73,14 @@ public class EditObservationFragment extends BaseFragment{
     public void clickOnSave() {
         String updatedComments = etComments.getText().toString().trim();
         observationModel.setObservation(updatedComments);
+        String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+        observationModel.setLastUpdatedStamp(currentTimeStamp);
         NavigationDrawerActivity.mFPDatabase.observationDao().insert(observationModel);
         Toast.makeText(getActivity(), "Observation updated successfully", Toast.LENGTH_LONG).show();
         View view = getView().getRootView();
         Common.hideKeyboardFrom(getActivity(), view);
         Intent resultIntent = new Intent();
-        getActivity().setResult(Activity.RESULT_OK, resultIntent);
+        getActivity().setResult(RESULT_OK, resultIntent);
         getActivity().finish();
     }
     @OnClick(R.id.launchCamera)
@@ -182,6 +174,9 @@ public class EditObservationFragment extends BaseFragment{
 //                    Bitmap pictureBitmap = BitmapFactory.decodeStream(inputStream);
 ////                    // Set the camera taken image bitmap in the image view component to display.
 ////                    takePictureImageView.setImageBitmap(pictureBitmap);
+                }
+                else{
+                    currentCounter--;
                 }
             }
             else if(requestCode == GALLERY_PIC_REQUEST){

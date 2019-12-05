@@ -1,11 +1,14 @@
 package com.school.foot_patroling.depotselection;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
+import com.google.android.material.snackbar.Snackbar;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,22 +18,19 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.core.app.ActivityCompat;
 
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.database.DatabaseHelper;
-import com.school.foot_patroling.login.LoginFragment;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.content.ContentValues.TAG;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
@@ -69,6 +68,8 @@ public class DepotSelectionFragment extends BaseFragment {
     String selectedDepotName;
     String selectedSectionName;
     String selectedSectionID;
+    String selectedDepotTrackingFlag;
+    String selectedDepotTrackingFrequency;
     String selectedScheduleType;
     @OnClick(R.id.depotLayout)
     public void depotClick(){
@@ -104,7 +105,14 @@ public class DepotSelectionFragment extends BaseFragment {
             inspection.setDeviceSeqId(fpStartTime);
             inspection.setStartTime(fpStartTime);
             NavigationDrawerActivity.mFPDatabase.inspectionDao().insert(inspection);
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            }else{
+                //    if(selectedDepotTrackingFlag != null && selectedDepotTrackingFlag.equalsIgnoreCase("true")) {
+                getActivity().startService(new Intent(getActivity(), LocationMonitoringService.class));
+                //    }
+            }
             ((NavigationDrawerActivity) getActivity()).displayHomeFragment();
         }
     }
@@ -153,6 +161,8 @@ public class DepotSelectionFragment extends BaseFragment {
                 depotTV.setText(dataModel.getFacilityName());
                 selectedDepotName = dataModel.getFacilityName();
                 selectedDepotId = dataModel.getFacilityId();
+                selectedDepotTrackingFlag = dataModel.getFpTrackEnable();
+                selectedDepotTrackingFrequency = dataModel.getFpTrackRecordFrequency();
                 Snackbar.make(view, " " +dataModel.getFacilityName()+" "+dataModel.getFacilityId(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
                 //   displaySectionsPopup();

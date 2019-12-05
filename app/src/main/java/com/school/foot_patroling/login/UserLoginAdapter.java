@@ -1,7 +1,7 @@
 package com.school.foot_patroling.login;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.patrolinglist.CategoryListAdapter;
-import com.school.foot_patroling.register.model.ObservationCategoriesDto;
 import com.school.foot_patroling.register.model.UserLoginDto;
 
 import java.util.List;

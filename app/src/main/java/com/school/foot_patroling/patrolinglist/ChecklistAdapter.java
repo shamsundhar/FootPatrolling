@@ -1,13 +1,10 @@
 package com.school.foot_patroling.patrolinglist;
 
 import android.graphics.Typeface;
-import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +16,6 @@ import android.widget.TextView;
 
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
-import com.school.foot_patroling.utils.Constants;
-import com.school.foot_patroling.utils.DateTimeUtils;
 
 import java.util.List;
 

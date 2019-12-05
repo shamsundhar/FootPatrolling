@@ -1,9 +1,9 @@
 package com.school.foot_patroling.register.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 @Entity(tableName = "ObservationsCheckListDto")
 public class ObservationsCheckListDto{
@@ -36,6 +36,16 @@ public class ObservationsCheckListDto{
 
     @ColumnInfo(name = "thruDate")
     private String thruDate;
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(String severity) {
+        this.severity = severity;
+    }
+    @ColumnInfo(name = "severity")
+    private String severity;
 
     private String comments;
 

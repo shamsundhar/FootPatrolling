@@ -1,21 +1,18 @@
 package com.school.foot_patroling.depotselection;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.register.model.FacilityDto;
-import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DepotsListAdapter extends ArrayAdapter<FacilityDto>{

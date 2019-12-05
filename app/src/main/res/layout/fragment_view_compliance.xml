@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/syncDoneImage"
+                android:src="@drawable/sync_done"/>
+            <TextView
+                android:id="@+id/tvComplianceProvided"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                android:text="Compliance already Provided"
+                android:textColor="@color/primary"
+                android:scaleType="center"
+                android:textSize="18sp"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tvChecklistItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="center"
+            android:textStyle="italic"
+            android:layout_marginTop="10dp"
+            android:text=""
+            android:textSize="18sp"
+            />
+
+
+        <TextView
+            android:id="@+id/tvObservation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="center"
+            android:textColor="@color/light_red"
+            android:layout_marginTop="20dp"
+            android:text=""
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="center"
+            android:layout_marginTop="20dp"
+            android:text=""
+            android:textSize="16sp"
+            />
+
+        <!--<TextView-->
+        <!--android:id="@+id/tvDepot"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:scaleType="center"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:text=""-->
+        <!--android:textSize="16sp"-->
+        <!--/>-->
+        <TextView
+            android:id="@+id/tvAttachmentsCounter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="center"
+            android:textStyle="italic"
+            android:textColor="@color/holo_green_dark"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Attachments : "
+            android:textSize="18sp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sectionLayout"
+                android:padding="10dp"
+                android:background="@drawable/layout_corners_grey_border"
+                android:layout_weight="9">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dateTV"
+                    android:layout_centerVertical="true"
+                    android:text="Action Date"/>
+            </RelativeLayout>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:id="@+id/calendar"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/calendar"/>
+
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/statusLayout"
+            android:layout_marginTop="15dp"
+            android:padding="5dp"
+            android:background="@drawable/layout_corners_grey_border"
+            android:layout_weight="9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/statusTV"
+                android:layout_centerVertical="true"
+                android:text="Select Status"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_expand_more_grey"/>
+        </RelativeLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_actionBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:hint="Action By"
+                android:text=""
+                android:inputType="textUri"
+                android:enabled="false"
+                android:maxLines="1"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_actionDone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:hint="Action Done"
+                android:text=""
+                android:enabled="false"
+                android:minLines="3"
+                android:maxLines="5" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:background="@drawable/drawable_corners_skyblue"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:text="OK"/>
+
+    </LinearLayout>
+</ScrollView>

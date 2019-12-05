@@ -73,7 +73,7 @@
                 android:src="@mipmap/ic_expand_more_grey"/>
         </RelativeLayout>
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -83,14 +83,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv1"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:textColor="@color/black"
         android:paddingLeft="10dp"
         android:text="Location : "
         android:textSize="15sp"/>
-        <android.support.design.widget.TextInputEditText
+
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_loc1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv1"
             android:hint=""
             android:text=""
             android:inputType="textUri"
@@ -101,14 +105,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/et_loc1"
+            android:layout_centerVertical="true"
             android:id="@+id/tv2"
             android:textColor="@color/black"
             android:text=" / "
             android:textSize="15sp"/>
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_loc2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv2"
             android:hint=""
             android:text=""
             android:inputType="textUri"
@@ -117,7 +124,15 @@
             android:ems="6"
             android:singleLine="true" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/locIcon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/et_loc2"
+            android:layout_centerVertical="true"
+            android:src="@drawable/location_picker"/>
+    </RelativeLayout>
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -125,7 +140,7 @@
         android:layout_weight="1"
         android:layout_marginTop="10dp"
         android:layout_height="0dp">
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/checklistRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -139,7 +154,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center"
         android:weightSum="3">
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -150,7 +165,7 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:text="@string/text_back"/>
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -160,7 +175,7 @@
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:text="@string/text_stop"/>
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

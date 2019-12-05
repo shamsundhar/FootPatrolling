@@ -2,13 +2,14 @@ package com.school.foot_patroling.patrolinglist;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,12 +28,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.school.foot_patroling.AWFActivity;
 import com.school.foot_patroling.BaseFragment;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.database.DatabaseHelper;
-import com.school.foot_patroling.depotselection.DepotsListAdapter;
-import com.school.foot_patroling.register.model.FacilityDto;
+import com.school.foot_patroling.depotselection.LocationMonitoringService;
 import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.Observation;
 import com.school.foot_patroling.register.model.ObservationCategoriesDto;
@@ -56,8 +56,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_COMPLIANCE;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_LOCATION_MAP;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED_TIME;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
@@ -65,6 +70,7 @@ import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_SECTIO
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 
 public class PatrolingListFragment extends BaseFragment {
+    public static int OPEN_MAP_FRAGMENT_REQUEST_CODE = 109;
     PreferenceHelper preferenceHelper;
     @BindView(R.id.checklistRecyclerview)
     RecyclerView checklistRecyclerView;
@@ -85,11 +91,19 @@ public class PatrolingListFragment extends BaseFragment {
     @BindView(R.id.et_loc2)
     EditText loc2;
     CategoryListAdapter categoryListAdapter;
+    private ChecklistAdapter checklistAdapter;
+    private ArrayList<ObservationsCheckListDto> checkList;
     String selectedCategoryId;
     String selectedCategory;
     @OnClick(R.id.categoryLayout)
     public void categoryClick(){
         displayCategoryListPopup();
+    }
+    @OnClick(R.id.locIcon)
+    public void openMapFragment(){
+        Intent in = new Intent(getActivity(), AWFActivity.class);
+        in.putExtra(BUNDLE_KEY_DISPLAY_FRAGMENT, BUNDLE_VALUE_VIEW_LOCATION_MAP);
+        startActivityForResult(in, OPEN_MAP_FRAGMENT_REQUEST_CODE);
     }
     @OnClick(R.id.btn_stop)
     public void stopButtonClick(){
@@ -98,6 +112,8 @@ public class PatrolingListFragment extends BaseFragment {
         preferenceHelper.setBoolean(getActivity(), PREF_KEY_FP_STARTED, Boolean.FALSE);
         preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_DEPOT, "");
         preferenceHelper.setString(getActivity(), PREF_KEY_SELECTED_SECTION, "");
+
+        getActivity().stopService(new Intent(getActivity(), LocationMonitoringService.class));
 
         String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
         Inspection inspection = NavigationDrawerActivity.mFPDatabase.inspectionDao().getStartedInspection(fpStartedTime);
@@ -110,20 +126,24 @@ public class PatrolingListFragment extends BaseFragment {
     @OnClick(R.id.btn_submit)
     public void submitButtonClick(){
         if(validate()) {
-            CustomAlertDialog dialog = new CustomAlertDialog();
-            dialog.showAlert1(getActivity(), R.string.text_alert, "Details will be saved.", new CustomAlertDialog.Callback(){
-
-                @Override
-                public void onSucess(int t) {
                     //insert observation data.
                     if(checkList != null && checkList.size() > 0) {
+
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
+                            final Stream<ObservationsCheckListDto> selectedCheckList = checkList.stream().filter(new Predicate<ObservationsCheckListDto>() {
                                 @Override
                                 public boolean test(ObservationsCheckListDto p) {
                                     return p.isChecked();
                                 }
                             });
+
+                            CustomAlertDialog dialog = new CustomAlertDialog();
+            dialog.showAlert1(getActivity(), R.string.text_alert, "Details will be saved.", new CustomAlertDialog.Callback(){
+
+                @Override
+                public void onSucess(int t) {
+
+
                             final String fpStartedTime = preferenceHelper.getString(getActivity(), PREF_KEY_FP_STARTED_TIME, "" );
                             selectedCheckList.forEach(new Consumer<ObservationsCheckListDto>() {
                                 @Override
@@ -135,6 +155,7 @@ public class PatrolingListFragment extends BaseFragment {
                                         Observation observation = new Observation();
                                         observation.setCreatedBy(preferenceHelper.getString(getActivity(), PREF_KEY_SELECTED_USER, ""));
                                         observation.setCreatedDateTime(currentTimeStamp);
+                                        observation.setLastUpdatedStamp(currentTimeStamp);
                                         observation.setInspectionSeqId(fpStartedTime);
                                         observation.setDeviceId(selectedImei);
                                         observation.setDeviceSeqId(currentTimeStamp);
@@ -157,19 +178,15 @@ public class PatrolingListFragment extends BaseFragment {
                             View view = getView().getRootView();
                             Common.hideKeyboardFrom(getActivity(), view);
                             Toast.makeText(getActivity(), "Details saved successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    }
                 }
             });
+                        }
+
+                    }
 
 
         }
     }
-    private ChecklistAdapter checklistAdapter;
-    SQLiteDatabase database;
-    DatabaseHelper dbhelper = null;
-
-    private ArrayList<ObservationsCheckListDto> checkList;
 
     /**
      * Use this factory method to create a new instance of
@@ -195,16 +212,6 @@ public class PatrolingListFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         fragmentComponent().inject(this);
         preferenceHelper = PreferenceHelper.getPrefernceHelperInstace();
-
-        try {
-            dbhelper = DatabaseHelper.getInstance(getActivity());
-            dbhelper.createDataBase();
-            database = dbhelper.getReadableDatabase("Wf@trd841$ams327");
-
-        } catch (Exception e){
-
-            Log.e(TAG, "creating database - "+ e.getMessage());
-        }
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
@@ -244,13 +251,30 @@ public class PatrolingListFragment extends BaseFragment {
 
         return view;
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        // Process result for camera activity.
+        if (requestCode == OPEN_MAP_FRAGMENT_REQUEST_CODE) {
+
+            // If camera take picture success.
+            if (resultCode == RESULT_OK) {
+               Bundle bundle = data.getExtras();
+               String location = bundle.getString("location");
+               String[] locationArray = location.split("/");
+               if(!location.isEmpty()){
+                   loc1.setText(locationArray[0]);
+                   loc2.setText(locationArray[1]);
+               }
+            } else {
+
+            }
+        }
+    }
     private void displayNewsFromDB(){
 
         try {
-            if (database != null) {
                 Log.d(TAG, "fetching user id");
-                String sql = "select priority, description from observations_check_list";
                 checkList = new ArrayList<>();
                 List<ObservationsCheckListDto> observationsCheckListDtoList = NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getAllObservationsCheckListDtos();
                 Collections.sort(observationsCheckListDtoList, new Comparator()
@@ -272,7 +296,6 @@ public class PatrolingListFragment extends BaseFragment {
                         }
                 );
                 checkList.addAll(observationsCheckListDtoList);
-            }
         }catch(Exception e){
 
         }

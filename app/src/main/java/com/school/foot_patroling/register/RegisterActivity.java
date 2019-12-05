@@ -1,29 +1,27 @@
 package com.school.foot_patroling.register;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.arch.persistence.room.Room;
-import android.content.ContentValues;
+import androidx.room.Room;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -33,23 +31,16 @@ import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.school.foot_patroling.BaseActivity;
-import com.school.foot_patroling.MainActivity;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
 import com.school.foot_patroling.database.DataUpdateDAO;
-import com.school.foot_patroling.database.DatabaseHelper;
 import com.school.foot_patroling.database.DtoWrapper;
 import com.school.foot_patroling.database.FPDatabase;
-import com.school.foot_patroling.datasync.DataSyncActivity;
-import com.school.foot_patroling.register.model.DeviceAuthModel;
 import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
@@ -57,8 +48,7 @@ import com.school.foot_patroling.register.model.FootPatrollingSectionsDto_;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.ObservationCategoriesDto;
 import com.school.foot_patroling.register.model.ObservationsCheckListDto;
-import com.school.foot_patroling.register.model.ProductDto;
-import com.school.foot_patroling.register.model.ProductDto_;
+import com.school.foot_patroling.register.model.OheLocationDto;
 import com.school.foot_patroling.register.model.RegistrationRequestModel;
 import com.school.foot_patroling.register.model.UserLoginDto;
 import com.school.foot_patroling.register.model.UserLoginDto_;
@@ -67,19 +57,12 @@ import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 
-import net.sqlcipher.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -90,20 +73,12 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_REG_ID;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
 import static com.school.foot_patroling.utils.Constants.FOOTPATROLLING_DATABASE;
@@ -121,7 +96,6 @@ public class RegisterActivity extends BaseActivity {
     EditText etUrl;
     String TAG = "Registration Activity";
     String selectedImei;
-    DatabaseHelper dbhelper;
     public static FPDatabase mFPDatabase;
     public static DtoWrapper mDtoWrapper;
     PreferenceHelper preferenceHelper;
@@ -131,6 +105,9 @@ public class RegisterActivity extends BaseActivity {
     }
     @OnClick(R.id.btn_register)
     public void clickRegister() {
+        View view = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
+        Common.hideKeyboardFrom(RegisterActivity.this, view);
+
         if (validate()) {
             if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED) {
                 if (Common.isNetworkAvailable(RegisterActivity.this)) {
@@ -162,7 +139,8 @@ public class RegisterActivity extends BaseActivity {
                                 @Override
                                 public void onError(Throwable e) {
                                     System.out.println("error called::" + e.fillInStackTrace());
-                                    alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "Please try Again after sometime");
+                                    progressDialog.dismiss();
+                                    alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "Please verify IP address and port number or check the server availability");
                                 }
 
                                 @Override
@@ -182,15 +160,15 @@ public class RegisterActivity extends BaseActivity {
                                         //   preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_REG_ID, masterDto.getRegistrationId());
                                         preferenceHelper.setBoolean(RegisterActivity.this, BUNDLE_KEY_AUTH, masterDto.getImeiAuth());
                                         try {
-                                            dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
-                                            dbhelper.deleteDatabase();
-                                            dbhelper.createDataBase();
+//                                            dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
+//                                            dbhelper.deleteDatabase();
+//                                            dbhelper.createDataBase();
 
-                                            DatabaseHelper dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
-                                            SQLiteDatabase db = dbhelper.getDBObject(0);
+//                                            DatabaseHelper dbhelper = DatabaseHelper.getInstance(RegisterActivity.this);
+//                                            SQLiteDatabase db = dbhelper.getDBObject(0);
                                             String currentTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.S").format(Calendar.getInstance().getTime());
                                             preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_LAST_SYNC_DATE, currentTime);
-                                            String result = syncMasterData(db, masterDto);
+                                            String result = syncMasterData( masterDto);
 
                                         } catch (Exception e){
 
@@ -198,6 +176,11 @@ public class RegisterActivity extends BaseActivity {
                                         }
                                         startActivity(new Intent(RegisterActivity.this, NavigationDrawerActivity.class));
                                         finish();
+                                    }
+                                    else{
+                                        progressDialog.dismiss();
+                                        //IMEI registration is not matched so please contact admin
+                                        alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "IMEI registration is not matched so please contact admin");
                                     }
                                 }
                             });
@@ -222,6 +205,8 @@ public class RegisterActivity extends BaseActivity {
 
         requestPhoneStatePermission();
         requestAccessStatePermission();
+        requestLocationPermission();
+        requestLocation2Permission();
 
     }
     private void readIMEI(){
@@ -280,6 +265,52 @@ public class RegisterActivity extends BaseActivity {
                     public void onPermissionGranted(PermissionGrantedResponse response) {
                         // permission is granted
                         readIMEI();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        // check for permanent denial of permission
+                        if (response.isPermanentlyDenied()) {
+                            showSettingsDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+    private void requestLocationPermission() {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        // check for permanent denial of permission
+                        if (response.isPermanentlyDenied()) {
+                            showSettingsDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+    private void requestLocation2Permission() {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+
                     }
 
                     @Override
@@ -360,15 +391,17 @@ public class RegisterActivity extends BaseActivity {
     }
     public boolean validate() {
         boolean valid = true;
-
+        CustomAlertDialog alertDialog = new CustomAlertDialog();
         String url = etUrl.getText().toString().trim();
         if (url.isEmpty()) {
             etUrl.setError("Enter a valid URL");
+            alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "Enter a valid URL");
             valid = false;
         } else {
             etUrl.setError(null);
             if (!Common.isValidURL(url)) {
-                etUrl.setError("Enter between 4 and 10 alphanumeric characters");
+                etUrl.setError("Please verify URL");
+                alertDialog.showAlert1(RegisterActivity.this, R.string.text_alert, "Please verify URL");
                 valid = false;
             } else {
                 etUrl.setError(null);
@@ -377,7 +410,7 @@ public class RegisterActivity extends BaseActivity {
         return valid;
     }
 
-    private String syncMasterData(final SQLiteDatabase db, MasterDto masterDto) {
+    private String syncMasterData( MasterDto masterDto) {
 
         String result = "Failed";
 
@@ -388,7 +421,7 @@ public class RegisterActivity extends BaseActivity {
             String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
             preferenceHelper.setString(RegisterActivity.this, BUNDLE_KEY_CURRENT_SYNC_TIME, currentTimeStamp);
 
-            if (updateDatabase(masterDto, db)) {
+            if (updateDatabase(masterDto)) {
 
                 result = "Success";
 
@@ -404,19 +437,19 @@ public class RegisterActivity extends BaseActivity {
 
         return result;
     }
-    private boolean updateDatabase(MasterDto dto, SQLiteDatabase db) {
+    private boolean updateDatabase(MasterDto dto) {
 
         Log.d(TAG, "flow checking**");
         boolean result = false;
 
-        int progressValue = 7;
+//        int progressValue = 7;
 
         if (dto != null) {
 
             Log.d(TAG,"in update database method");
 
             try {
-                DataUpdateDAO dataUpdateDAO = DataUpdateDAO.getInstance();
+              //  DataUpdateDAO dataUpdateDAO = DataUpdateDAO.getInstance();
 
                 List<FacilityDto> insertFacilityDtos = dto.getCreatedResponseFacilityDto().getFacilityDtos();
 
@@ -431,7 +464,7 @@ public class RegisterActivity extends BaseActivity {
 
                     }
 
-                    progressValue = progressValue + 1;
+//                    progressValue = progressValue + 1;
 //                    publishProgress(progressValue);
                 }
 
@@ -445,7 +478,7 @@ public class RegisterActivity extends BaseActivity {
                         //dataUpdateDAO.updateFacilityData(facilityDto, db);
                         RegisterActivity.mDtoWrapper.updateFacilityData(facilityDto);
                     }
-                    progressValue = progressValue + 1;
+//                    progressValue = progressValue + 1;
                     // publishProgress(progressValue);
                 }
 
@@ -468,13 +501,13 @@ public class RegisterActivity extends BaseActivity {
                 List<ObservationsCheckListDto> insertChecklistDtos = dto.getCreatedObservationsCheckListDto().getObservationsCheckListDtos();
                 if (insertChecklistDtos != null && insertChecklistDtos.size() > 0) {
 
-                    Log.d(TAG, "product insert records : " + insertChecklistDtos.size());
+                    Log.d(TAG, "checklist insert records : " + insertChecklistDtos.size());
 
                     for (ObservationsCheckListDto checkListDto : insertChecklistDtos) {
                         //dataUpdateDAO.insertChecklistData(checkListDto, db);
                         RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(checkListDto);
                     }
-                    progressValue = progressValue + 1;
+//                    progressValue = progressValue + 1;
                     //  publishProgress(progressValue);
                 }
 
@@ -487,7 +520,7 @@ public class RegisterActivity extends BaseActivity {
                         //dataUpdateDAO.insertChecklistData(checkListDto, db);
                         RegisterActivity.mFPDatabase.observationCategoriesDtoDao().insert(categoriesDto);
                     }
-                    progressValue = progressValue + 1;
+//                    progressValue = progressValue + 1;
                     //  publishProgress(progressValue);
                 }
 
@@ -509,7 +542,7 @@ public class RegisterActivity extends BaseActivity {
                         RegisterActivity.mFPDatabase.observationsCheckListDtoDao().insert(observationsCheckListDto);
                     }
 
-                    progressValue = progressValue + 1;
+//                    progressValue = progressValue + 1;
                     //    publishProgress(progressValue);
                 }
 
@@ -525,9 +558,18 @@ public class RegisterActivity extends BaseActivity {
                         //RegisterActivity.mFPDatabase.userLoginDtoDao().insert(userLoginDto);
                         RegisterActivity.mDtoWrapper.updateUserLoginData(userLoginDto);
                     }
+                }
 
-                    progressValue = progressValue + 1;
-                    //  publishProgress(progressValue);
+               List<OheLocationDto> locationDtoList = dto.getCreatedResponseOheLocationDto().getOheLocationDtoList();
+                if (locationDtoList != null && locationDtoList.size() > 0) {
+
+                    Log.d(TAG, "ohe location records : " + locationDtoList.size());
+
+                    for (OheLocationDto locationDto : locationDtoList) {
+                        //dataUpdateDAO.insertChecklistData(checkListDto, db);
+                        RegisterActivity.mFPDatabase.oheLocationDtoDao().insert(locationDto);
+                      //  Log.i("insert location", "count :"+RegisterActivity.mFPDatabase.oheLocationDtoDao().getCount());
+                    }
                 }
 
                 result = true;

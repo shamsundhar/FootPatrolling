@@ -1,12 +1,12 @@
 package com.school.foot_patroling;
 
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DimenRes;
-import android.support.annotation.IntegerRes;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.CallSuper;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.IntegerRes;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.school.foot_patroling.injection.components.ActivityComponent;
 import com.school.foot_patroling.injection.components.DaggerActivityComponent;

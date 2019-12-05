@@ -1,7 +1,7 @@
 package com.school.foot_patroling;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 import android.content.res.Resources;
 
 import com.school.foot_patroling.database.FPDatabase;

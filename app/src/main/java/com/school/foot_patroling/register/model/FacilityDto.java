@@ -1,10 +1,10 @@
 
 package com.school.foot_patroling.register.model;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 @Entity(tableName = "facility")
 public class FacilityDto {
@@ -75,6 +75,28 @@ public class FacilityDto {
     private String division;
     @ColumnInfo(name = "sub_division")
     private String subDivision;
+    @ColumnInfo(name = "fp_track_enable")
+    private String fpTrackEnable;
+    @ColumnInfo(name = "fp_track_record_frequency")
+    private String fpTrackRecordFrequency;
+
+    public String getFpTrackEnable() {
+        return fpTrackEnable;
+    }
+
+    public void setFpTrackEnable(String fpTrackEnable) {
+        this.fpTrackEnable = fpTrackEnable;
+    }
+
+    public String getFpTrackRecordFrequency() {
+        return fpTrackRecordFrequency;
+    }
+
+    public void setFpTrackRecordFrequency(String fpTrackRecordFrequency) {
+        this.fpTrackRecordFrequency = fpTrackRecordFrequency;
+    }
+
+
 
     public String getParentDepot() {
         return parentDepot;

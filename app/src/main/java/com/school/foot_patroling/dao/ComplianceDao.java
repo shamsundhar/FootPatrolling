@@ -1,12 +1,11 @@
 package com.school.foot_patroling.dao;
 
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.OnConflictStrategy;
-import android.arch.persistence.room.Query;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
 
 import com.school.foot_patroling.register.model.Compliance;
-import com.school.foot_patroling.register.model.Observation;
 
 import java.util.List;
 

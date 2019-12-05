@@ -2,10 +2,21 @@
 package com.school.foot_patroling.register.model;
 
 
+import java.util.List;
+
 public class CreatedResponseOheLocationDto {
 
     private Integer count;
-    private Object oheLocationDtos;
+
+    public List<OheLocationDto> getOheLocationDtoList() {
+        return oheLocationDtos;
+    }
+
+    public void setOheLocationDtoList(List<OheLocationDto> oheLocationDtos) {
+        this.oheLocationDtos = oheLocationDtos;
+    }
+
+    private List<OheLocationDto> oheLocationDtos;
 
     public Integer getCount() {
         return count;
@@ -15,12 +26,6 @@ public class CreatedResponseOheLocationDto {
         this.count = count;
     }
 
-    public Object getOheLocationDtos() {
-        return oheLocationDtos;
-    }
 
-    public void setOheLocationDtos(Object oheLocationDtos) {
-        this.oheLocationDtos = oheLocationDtos;
-    }
 
 }

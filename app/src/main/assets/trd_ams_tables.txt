@@ -70,7 +70,9 @@ CREATE TABLE facility
      manuf_alloc_enable TEXT,
      parent_depot character varying(100),
      division character varying(100),
-     sub_division character varying(100)
+     sub_division character varying(100),
+     fp_track_enable character varying(10)
+     fp_track_record_frequency numeric(20,0)
  );
 
 
@@ -716,3 +718,20 @@ CREATE TABLE app_device_unit
 
 
 );
+
+CREATE TABLE fp_movement
+             (
+               seq_id TEXT varying(20) NOT NULL,
+               device_id TEXT varying(255),
+               device_seq_id TEXT varying(255),
+               track_type TEXT varying(100),
+               track_of TEXT varying(20),
+               date_time TEXT,
+               longitude TEXT varying(255),
+               latitude TEXT varying(255),
+               altitude TEXT varying(255),
+               last_updated_stamp TEXT,
+               last_updated_tx_stamp TEXT,
+               created_stamp TEXT,
+               created_tx_stamp TEXT
+             );

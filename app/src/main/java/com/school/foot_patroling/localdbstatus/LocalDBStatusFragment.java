@@ -31,6 +31,10 @@ public class LocalDBStatusFragment extends BaseFragment {
     TextView tvProduct;
     @BindView(R.id.tvObservationCheckList)
     TextView tvObservationChecklist;
+    @BindView(R.id.tvTracking)
+    TextView tvTracking;
+    @BindView(R.id.tvOheLocation)
+    TextView tvOheLocation;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -61,6 +65,8 @@ public class LocalDBStatusFragment extends BaseFragment {
         tvObservationChecklist.setText("CheckList : "+NavigationDrawerActivity.mFPDatabase.observationsCheckListDtoDao().getCount());
         tvProduct.setText("Product : "+NavigationDrawerActivity.mFPDatabase.productDtoDao().getCount());
         tvObservation.setText("Observation : "+NavigationDrawerActivity.mFPDatabase.observationDao().getCount());
+        tvTracking.setText("Fp Movement : "+NavigationDrawerActivity.mFPDatabase.movementDao().getCount());
+        tvOheLocation.setText("Ohe Location : "+NavigationDrawerActivity.mFPDatabase.oheLocationDtoDao().getCount());
 
         return view;
     }

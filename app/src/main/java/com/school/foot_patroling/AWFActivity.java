@@ -4,21 +4,14 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.karumi.dexter.Dexter;
@@ -28,7 +21,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.school.foot_patroling.com.school.foot_patroling.compliance.AddComplianceFragment;
-import com.school.foot_patroling.register.RegisterActivity;
+import com.school.foot_patroling.com.school.foot_patroling.compliance.ViewComplianceFragment;
+import com.school.foot_patroling.patrolinglist.LocationMapFragment;
 import com.school.foot_patroling.utils.PreferenceHelper;
 import com.school.foot_patrolling.observations.EditObservationFragment;
 import com.school.foot_patrolling.observations.ViewObservationFragment;
@@ -39,6 +33,8 @@ import butterknife.ButterKnife;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_DISPLAY_FRAGMENT;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_COMPLIANCE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_EDIT_OBSERVATION;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_COMPLIANCE;
+import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_LOCATION_MAP;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_VALUE_VIEW_OBSERVATION;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_FP_STARTED;
 import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_DEPOT;
@@ -52,8 +48,10 @@ import static com.school.foot_patroling.utils.Constants.PREF_KEY_SELECTED_USER;
 public class AWFActivity extends BaseActivity {
 
     private static final String ADD_COMPLIANCE_FRAGMENT_TAG = "ADD_COMPLIANCE_FRAGMENT";
+    private static final String VIEW_COMPLIANCE_FRAGMENT_TAG = "VIEW_COMPLIANCE_FRAGMENT";
     private static final String EDIT_OBSERVATION_FRAGMENT_TAG = "EDIT_OBSERVATION_FRAGMENT";
     private static final String VIEW_OBSERVATION_FRAGMENT_TAG = "VIEW_OBSERVATION_FRAGMENT";
+    private static final String VIEW_MAP_FRAGMENT_TAG = "VIEW_MAP_FRAGMENT";
     @BindView(R.id.toolbarDetails)
     TextView toolbarDetails;
 
@@ -77,18 +75,49 @@ public class AWFActivity extends BaseActivity {
                 case BUNDLE_VALUE_COMPLIANCE :
                     displayAddComplianceFragment(bundle);
                     break;
+                case BUNDLE_VALUE_VIEW_COMPLIANCE:
+                    displayViewComplianceFragment(bundle);
+                    break;
                 case BUNDLE_VALUE_EDIT_OBSERVATION :
                     displayEditObservationFragment(bundle);
                     break;
                 case BUNDLE_VALUE_VIEW_OBSERVATION :
                     displayViewObservationFragment(bundle);
                     break;
+                case BUNDLE_VALUE_VIEW_LOCATION_MAP :
+                    displayMapFragment(bundle);
+                    break;
             }
         }
 
     }
+    public void displayViewComplianceFragment(Bundle bundle){
+        setTitle("View Compliance");
+
+        ViewComplianceFragment fragment = ViewComplianceFragment.newInstance();
+        if(bundle != null){
+            fragment.setArguments(bundle);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  fragment, VIEW_COMPLIANCE_FRAGMENT_TAG)
+                .commit();
+    }
+    public void displayMapFragment(Bundle bundle){
+        setTitle("Select Location");
+
+        LocationMapFragment fragment = LocationMapFragment.newInstance();
+        if(bundle != null){
+            fragment.setArguments(bundle);
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container,  fragment, VIEW_MAP_FRAGMENT_TAG)
+                .commit();
+    }
     public void displayAddComplianceFragment(Bundle bundle){
-        setTitle("Add Compliance");
+        String title = bundle.getString("BUNDLE_KEY_ACTIVITY_TITLE");
+        setTitle(title);
 
         AddComplianceFragment fragment = AddComplianceFragment.newInstance();
         if(bundle != null){

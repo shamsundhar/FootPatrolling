@@ -3,7 +3,7 @@ package com.school.foot_patroling.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * Created by shyam on 4/7/2018.

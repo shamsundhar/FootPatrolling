@@ -9,6 +9,16 @@ public class RegistrationRequestModel {
     private AppToServerCreatedResponseObservationsDto appToServerCreatedResponseObservationsDto;
     private AppToServerCreatedResponseCompliancesDto appToServerCreatedResponseCompliancesDto;
 
+    public AppToServerCreatedFootPatrollingMovementDto getAppToServerCreatedResponseFpMovementDto() {
+        return appToServerCreatedResponseFpMovementDto;
+    }
+
+    public void setAppToServerCreatedResponseFpMovementDto(AppToServerCreatedFootPatrollingMovementDto appToServerCreatedResponseFpMovementDto) {
+        this.appToServerCreatedResponseFpMovementDto = appToServerCreatedResponseFpMovementDto;
+    }
+
+    private AppToServerCreatedFootPatrollingMovementDto appToServerCreatedResponseFpMovementDto;
+
     public AppToServerCreatedResponseCompliancesDto getAppToServerCreatedResponseCompliancesDto() {
         return appToServerCreatedResponseCompliancesDto;
     }

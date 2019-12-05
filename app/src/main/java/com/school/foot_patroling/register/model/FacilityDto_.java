@@ -36,6 +36,24 @@ public class FacilityDto_ {
     private String parentDepot;
     private String division;
     private String subDivision;
+    private String fpTrackEnable;
+    private String fpTrackRecordFrequency;
+
+    public String getFpTrackEnable() {
+        return fpTrackEnable;
+    }
+
+    public void setFpTrackEnable(String fpTrackEnable) {
+        this.fpTrackEnable = fpTrackEnable;
+    }
+
+    public String getFpTrackRecordFrequency() {
+        return fpTrackRecordFrequency;
+    }
+
+    public void setFpTrackRecordFrequency(String fpTrackRecordFrequency) {
+        this.fpTrackRecordFrequency = fpTrackRecordFrequency;
+    }
 
     public String getParentDepot() {
         return parentDepot;

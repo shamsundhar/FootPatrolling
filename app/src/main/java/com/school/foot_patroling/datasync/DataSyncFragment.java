@@ -1,15 +1,10 @@
 package com.school.foot_patroling.datasync;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,18 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.school.foot_patroling.BaseFragment;
-import com.school.foot_patroling.GenericFileProvider;
 import com.school.foot_patroling.NavigationDrawerActivity;
 import com.school.foot_patroling.R;
-import com.school.foot_patroling.database.DataUpdateDAO;
-import com.school.foot_patroling.database.DatabaseHelper;
-import com.school.foot_patroling.localdbstatus.LocalDBStatusFragment;
-import com.school.foot_patroling.register.RegisterActivity;
 import com.school.foot_patroling.register.RegisterApi;
 import com.school.foot_patroling.register.model.AppToServerCreatedFootPatrollingInspectionDto;
+import com.school.foot_patroling.register.model.AppToServerCreatedFootPatrollingMovementDto;
 import com.school.foot_patroling.register.model.AppToServerCreatedResponseCompliancesDto;
 import com.school.foot_patroling.register.model.AppToServerCreatedResponseObservationsDto;
 import com.school.foot_patroling.register.model.Compliance;
@@ -36,6 +25,7 @@ import com.school.foot_patroling.register.model.FacilityDto;
 import com.school.foot_patroling.register.model.FacilityDto_;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto;
 import com.school.foot_patroling.register.model.FootPatrollingSectionsDto_;
+import com.school.foot_patroling.register.model.FpMovementDto;
 import com.school.foot_patroling.register.model.Inspection;
 import com.school.foot_patroling.register.model.MasterDto;
 import com.school.foot_patroling.register.model.Observation;
@@ -50,18 +40,11 @@ import com.school.foot_patroling.utils.CustomAlertDialog;
 import com.school.foot_patroling.utils.DateTimeUtils;
 import com.school.foot_patroling.utils.PreferenceHelper;
 //import com.fasterxml.jackson.databind.ObjectMapper;
-import net.sqlcipher.database.SQLiteDatabase;
 
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -80,23 +63,11 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_AUTH;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_CURRENT_SYNC_TIME;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI1;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_IMEI2;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_LAST_SYNC_DATE;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_IMEI;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_URL;
-import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
-import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT7;
 import static com.school.foot_patroling.utils.Constants.FP_PICS_FOLDER;
@@ -169,6 +140,12 @@ public class DataSyncFragment extends BaseFragment {
                 appToServerCreatedResponseCompliancesDto.setCount(""+complianceList.size());
 
                 model.setAppToServerCreatedResponseCompliancesDto(appToServerCreatedResponseCompliancesDto);
+
+                List<FpMovementDto> movementDtoList= NavigationDrawerActivity.mFPDatabase.movementDao().getAllFpMovementDtos();
+                AppToServerCreatedFootPatrollingMovementDto appToServerCreatedResponseFpMovementDto = new AppToServerCreatedFootPatrollingMovementDto();
+                appToServerCreatedResponseFpMovementDto.setCount(movementDtoList.size()+"");
+                appToServerCreatedResponseFpMovementDto.setFootPatrollingMovementDtos(movementDtoList);
+                model.setAppToServerCreatedResponseFpMovementDto(appToServerCreatedResponseFpMovementDto);
 
                 registerApi.register(url, model)
                         .subscribeOn(Schedulers.io())

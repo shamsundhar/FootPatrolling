@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,9 +15,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -64,8 +63,6 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_COMPLIANCE;
-import static com.school.foot_patroling.utils.Constants.BUNDLE_KEY_SELECTED_OBSERVATION;
-import static com.school.foot_patroling.utils.Constants.DATE_FORMAT1;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT2;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT5;
 import static com.school.foot_patroling.utils.Constants.DATE_FORMAT6;
@@ -149,7 +146,9 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         Compliance compliance = new Compliance();
         compliance.setAction(actionDone.getText().toString().trim());
         compliance.setComplianceBy(actionBy.getText().toString().trim());
-        compliance.setCreatedStamp(observationModel.getCreatedStamp());
+        String currentTimeStamp = DateTimeUtils.getCurrentDate("dd-MM-yyyy HH:mm:ss.S");
+        compliance.setCreatedStamp(currentTimeStamp);
+        compliance.setLastUpdatedStamp(currentTimeStamp);
         compliance.setDescription(observationModel.getDescription());
         compliance.setDeviceId(observationModel.getDeviceId());
         compliance.setDeviceSeqId(observationModel.getDeviceSeqId());
@@ -226,21 +225,24 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
         tvCheckListItem.setText(observationModel.getObservationItem());
         tvObservation.setText(observationModel.getObservation());
         tvLocation.setText(observationModel.getLocation());
-
+        initCounter();
         complianceModel = NavigationDrawerActivity.mFPDatabase.complianceDao().getStartedCompliance(deviceSequenceId);
         if(complianceModel != null){
             cameraLayout.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setVisibility(View.VISIBLE);
             complianceProvidedStatus.setText("Compliance already provided");
             if(complianceModel.getSeqId().equals("null")){
+                getActivity().setTitle("Edit Compliance");
                 actionBy.setText(complianceModel.getComplianceBy());
                 actionDone.setText(complianceModel.getAction());
                 statusTV.setText(complianceModel.getStatus());
                 selectedStatusType = complianceModel.getStatus();
                 String providedDate = complianceModel.getCompliedDateTime();
-                String strDate = DateTimeUtils.parseDateTime(providedDate, DATE_FORMAT6, DATE_FORMAT5);
-                selectedDate = providedDate;
-                dateTv.setText(strDate);
+                if(providedDate != null && !providedDate.isEmpty()) {
+                    String strDate = DateTimeUtils.parseDateTime(providedDate, DATE_FORMAT6, DATE_FORMAT5);
+                    selectedDate = providedDate;
+                    dateTv.setText(strDate);
+                }
                 syncDoneImage.setVisibility(View.GONE);
             }
             else{
@@ -249,11 +251,12 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
                 actionBy.setEnabled(false);
                 submitBtn.setEnabled(false);
             }
-            initCounter();
+
         }else{
             cameraLayout.setVisibility(View.GONE);
             complianceProvidedStatus.setVisibility(View.GONE);
         }
+        attachmentsCounter.setText("Attachments : "+currentCounter);
 
         return view;
     }
@@ -397,6 +400,9 @@ public class AddComplianceFragment extends BaseFragment implements DatePickerDia
                 preferenceHelper.setInteger(getActivity(), "Ccounter_"+observationModel.getDeviceSeqId(), currentCounter);
                 attachmentsCounter.setText("Attachments : "+currentCounter);
                 Log.i("Camera pic location:", ""+outputImgUri);
+            }
+            else{
+                currentCounter--;
             }
         }
         else if(requestCode == GALLERY_PIC_REQUEST){

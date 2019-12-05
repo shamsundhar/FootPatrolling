@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:minHeight="45dp"
+    android:orientation="horizontal"
+    android:weightSum="1" >
+
+
+    <LinearLayout
+        android:id="@+id/colorChangerLayout"
+        android:layout_width="160dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="5dp" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingTop="2dp"
+            android:text="titleee"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="2"
+            android:maxLines="2"
+            android:paddingBottom="2dp"
+            android:paddingRight="5dp"
+            android:text="titleefdfdfdfdfdfe"
+            android:textColor="@color/black"
+            android:textSize="10sp" />
+    </LinearLayout>
+    <ViewSwitcher
+        android:id="@+id/viewSwitcher1"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:paddingLeft="0dp" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button"
+            android:text="Select"/>
+    </ViewSwitcher>
+
+
+</LinearLayout>

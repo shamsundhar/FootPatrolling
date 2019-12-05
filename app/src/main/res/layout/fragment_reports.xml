@@ -138,7 +138,7 @@
             android:layout_marginBottom="24dp"
             android:orientation="horizontal"
             android:weightSum="2">
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:text="@string/text_reset"/>
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

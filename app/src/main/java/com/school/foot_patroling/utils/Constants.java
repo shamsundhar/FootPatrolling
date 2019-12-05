@@ -26,6 +26,9 @@ public class Constants {
 
     public static final String BUNDLE_KEY_LAST_SYNC_DATE = "BUNDLE_LAST_SYNC_DATE";
 
+    public static final int LOCATION_INTERVAL = 10000;
+    public static final int FASTEST_LOCATION_INTERVAL = 10000;
+
     public static final String PREF_KEY_LOGIN_ID = "KEY_LOGIN_ID";
     public static final String PREF_KEY_TOKEN = "KEY_TOKEN";
     public static final String PREF_KEY_FP_STARTED = "KEY_FP_STARTED";
@@ -40,6 +43,8 @@ public class Constants {
     public static final String BUNDLE_KEY_DISPLAY_FRAGMENT = "DISPLAY_FRAGMENT";
     public static final String BUNDLE_KEY_SELECTED_COMPLIANCE = "SELECTED_COMPLIANCE";
     public static final String BUNDLE_VALUE_COMPLIANCE = "COMPLIANCE";
+    public static final String BUNDLE_VALUE_VIEW_COMPLIANCE = "VIEW_COMPLIANCE";
+    public static final String BUNDLE_VALUE_VIEW_LOCATION_MAP = "VIEW_MAP";
     public static final String BUNDLE_VALUE_EDIT_OBSERVATION = "EDIT_OBSERVATION";
     public static final String BUNDLE_VALUE_VIEW_OBSERVATION = "VIEW_OBSERVATION";
     public static final String BUNDLE_KEY_SELECTED_OBSERVATION = "SELECTED_OBSERVATION";
